@@ -1,0 +1,36 @@
+<IfModule dir_module>
+	# Swap order of index files, (so the application gets priority)
+	DirectoryIndex index.php index.html
+</IfModule>
+
+<IfModule mod_rewrite.c>
+	# Disable indexes if the backend is installed; it's not necessary in this mode.
+	Options -Indexes
+
+	# Not strictly needed, but useful in some environments.
+	Options SymLinksIfOwnerMatch
+
+	# Required for rewrite lines
+	RewriteEngine On
+
+	# MUST MATCH VALUE OF config.webpath
+	# This is the directory path of the application on the server,
+	# with leading AND trailing slash (if applicable).
+	# ex: if your website is installed in ~/username/public_html/myapp,
+	# the rewritebase would probably be /~username/myapp/
+	RewriteBase /
+
+	## Comment out if you do not require SSL
+	RewriteCond %{HTTPS} !on
+	RewriteRule (.*) https://%{HTTP_HOST}%{REQUEST_URI} [L]
+
+	## Uncomment to enforce www. subdomain prefix for site
+	# RewriteCond %{HTTP_HOST} !^www\.
+	# RewriteRule ^(.*)$ https://www.%{HTTP_HOST}/$1 [R=301,L]
+
+	# Required for path translation,
+	# will resolve any non-literal file or directory to the backend handler
+	RewriteCond %{SCRIPT_FILENAME} !-f
+	RewriteCond %{SCRIPT_FILENAME} !-d
+	RewriteRule ^(.*) index.php [L]
+</IfModule>

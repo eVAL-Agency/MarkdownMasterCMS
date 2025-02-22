@@ -1,0 +1,60 @@
+<?php
+/**
+ * MarkdownMaster CMS
+ *
+ * @version 5.0.0-alpha.1
+ * @copyright 2025 eVAL Agency
+ * @license MIT
+ * @link https://github.com/eVAL-Agency/MarkdownMasterCMS
+ * @package MarkdownMasterCMS
+ *
+ * The MIT License (MIT)
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
+ * is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies
+ * or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+ * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
+ * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+class XMLView extends View {
+	public $encoding = 'UTF-8';
+	public $root = 'response';
+	public $namespaces = [];
+	public $data = [];
+
+	public function render() {
+		$xml = new SimpleXMLElement('<?xml version="1.0" encoding="' . $this->encoding . '"?><' . $this->root . '/>');
+		foreach ($this->namespaces as $prefix => $uri) {
+			$xml->addAttribute('xmlns:' . $prefix, $uri);
+		}
+		$this->arrayToXML($this->data, $xml);
+
+		header('Content-Type: application/xml');
+		echo $xml->asXML();
+	}
+
+	protected function arrayToXML($data, &$xml) {
+		foreach ($data as $key => $value) {
+			if (is_array($value)) {
+				if (!is_numeric($key)) {
+					$subnode = $xml->addChild($key);
+					$this->arrayToXML($value, $subnode);
+				} else {
+					$this->arrayToXML($value, $xml);
+				}
+			} else {
+				$xml->addChild($key, htmlspecialchars($value));
+			}
+		}
+	}
+}
