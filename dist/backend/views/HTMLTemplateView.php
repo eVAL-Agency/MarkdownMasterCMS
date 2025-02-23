@@ -35,6 +35,10 @@ class HTMLTemplateView extends View {
 	public array $classes = [];
 
     public function render() {
+		if (!file_exists('index.html')) {
+			throw new Exception('Please copy index.example.html to index.html', 500);
+		}
+
 		libxml_use_internal_errors(true);
 		$dom = new DOMDocument();
 		$dom->loadHTMLFile('index.html');

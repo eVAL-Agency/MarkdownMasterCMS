@@ -48,5 +48,8 @@ try {
 	$view->render();
 }
 catch (Exception $e) {
-	$request->replyError($e->getMessage(), $e->getCode());
+	$request->replyError($e->getMessage(), $e->getCode(), $e->getTraceAsString());
+}
+catch (Error $e) {
+	$request->replyError($e->getMessage(), 500, $e->getTraceAsString());
 }

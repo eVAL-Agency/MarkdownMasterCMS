@@ -54,23 +54,45 @@ class Request {
 	 * @return void
 	 */
 	#[NoReturn]
-	public function replyError(string $message, int $code = 500): void {
+	public function replyError(string $message, int $code = 500, ?string $trace = null): void {
 		http_response_code($code);
+
+		if (class_exists('Config') && Config::IsReady() && Config::GetDebug()) {
+			$trace = $trace ?? print_r(debug_backtrace(), true);
+		}
+		else {
+			$trace = null;
+		}
+
 
 		if ($this->prefersJSON()) {
 			header('Content-Type: application/json');
-			echo json_encode(['error' => $message]);
+			if ($trace) {
+				echo json_encode(['error' => $message, 'trace' => $trace]);
+			}
+			else {
+				echo json_encode(['error' => $message]);
+			}
 		} elseif ($this->prefersXML()) {
 			header('Content-Type: application/xml');
 			echo '<?xml version="1.0" encoding="UTF-8"?>';
 			echo '<error>' . $message . '</error>';
+			if ($trace) {
+				echo '<trace><![CDATA[' . $trace . ']]></trace>';
+			}
 		} elseif ($this->prefersHTML()) {
 			header('Content-Type: text/html');
 			echo '<h1>Error ' . $code . '</h1>';
 			echo '<p>' . $message . '</p>';
+			if ($trace) {
+				echo '<pre>' . $trace . '</pre>';
+			}
 		} else {
 			header('Content-Type: text/plain');
 			echo $message;
+			if ($trace) {
+				echo "\n\n" . $trace;
+			}
 		}
 		die();
 	}

@@ -160,6 +160,14 @@ class Config {
 		return $forms[$formName];
 	}
 
+	public static function GetDebug(): bool {
+		return self::_Get('debug') ?? false;
+	}
+
+	public static function IsReady(): bool {
+		return self::$_config !== null;
+	}
+
 	/**
 	 * Override system configuration, useful in tests
 	 * @param array $config
