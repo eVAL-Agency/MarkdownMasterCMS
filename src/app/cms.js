@@ -25,6 +25,9 @@ class CMS {
 		this.view = view;
 		this.config = new Config();
 		this.lastPage = null;
+		this.extras = [];
+		// Set up the logger and a local link for external scripts to tap into easily
+		this.log = Log;
 
 		// Register the CMS object as a global variable
 		// This is useful for plugins which tap into internal functional for features such as
@@ -37,38 +40,63 @@ class CMS {
 		});
 	}
 
+	/**
+	 * Load an extra / plugin, optionally with plugin configuration options
+	 *
+	 * @param {string} extra Plugin name to load
+	 * @param {Object|null} [options=null] Configuration options for the plugin
+	 */
+	loadExtra(extra, options) {
+		options = options || {};
+		if (this.extras.indexOf(extra) === -1) {
+			// Only load this plugin if not already included.
+			this.log.Debug('CMS', 'Loading extra plugin:', extra);
+			this.config.extras[extra] = options;
+			this.extras.push(extra);
+			let script = document.createElement('script');
+			script.src = this.config.webpath + 'extras/' + extra + '/init.js';
+			document.body.appendChild(script);
+		}
+	}
+
+	/**
+	 * Set the options for the CMS and initialize the system
+	 *
+	 * @param {Object} options List of config options
+	 */
 	setOptions(options) {
 		this.config.load(options);
 
-		// Set up the logger and a local link for external scripts to tap into easily
-		this.log = Log;
 		if (this.config.debug) {
 			Log.EnableDebug();
 		}
 
 		// Load any plugins requested
-		for (let [extra] of Object.entries(this.config.extras)) {
-			this.log.Debug('CMS', 'Loading extra plugin:', extra);
-			let script = document.createElement('script');
-			script.src = this.config.webpath + 'extras/' + extra + '/init.js';
-			document.body.appendChild(script);
+		if (options.extras) {
+			for (let [extra] of Object.entries(options.extras)) {
+				this.loadExtra(extra, options.extras[extra]);
+			}
 		}
 
 		// Set up the layout system
-		setSystemLayoutPath(this.config.webpath, this.config.layoutDirectory);
+		if (this.config.layoutDirectory[0] === '/') {
+			setSystemLayoutPath(this.config.layoutDirectory);
+		}
+		else {
+			setSystemLayoutPath(this.config.webpath, this.config.layoutDirectory);
+		}
 
 		this.init();
 	}
 
 	/**
 	 * Init
-	 * @method
-	 * @description
+	 *
 	 * Initializes the application based on the configuration. Sets up config object,
 	 * hash change event listener for router, and loads the content.
 	 */
 	init() {
-		Log.Debug('CMS', 'Initializing MarkdownMaster CMS');
+		Log.Debug('CMS.init', 'Initializing MarkdownMaster CMS');
 
 		// create message container element if debug mode is enabled
 		if (this.config.debug) {
@@ -88,7 +116,7 @@ class CMS {
 			if (this.config.container) {
 				// setup file collections
 				this.initFileCollections().then(() => {
-					Log.Debug('CMS', 'File collections initialized');
+					Log.Debug('CMS.init', 'File collections initialized');
 
 					// AND check for location.history changes (for SEO reasons)
 					this.view.addEventListener('popstate', () => {
@@ -213,14 +241,24 @@ class CMS {
 		this.route();
 	}
 
+	/**
+	 * PUSH the window location, useful for most interactions where the user may click 'back'
+	 *
+	 * This is the normal "go to URL" method for the CMS.
+	 *
+	 * @param {string} url
+	 */
 	historyPushState(url) {
 		window.history.pushState({}, '', url);
 		// Immediately trigger route to switch to the new content.
 		this.route();
 	}
 
+	/**
+	 * Primary method handling the loading of pages and content within the CMS
+	 */
 	route() {
-		Log.Debug('CMS', 'Running routing');
+		Log.Debug('CMS.route', 'Running routing');
 		this.lastPage = window.location.pathname;
 
 		let paths = this.getPathsFromURL(),
@@ -234,7 +272,7 @@ class CMS {
 			file = null,
 			renderer = null;
 
-		Log.Debug('CMS', 'Paths retrieved from URL:', {type: type, filename: filename, collection: collection});
+		Log.Debug('CMS.route', 'Paths retrieved from URL:', {type: type, filename: filename, collection: collection});
 
 		if (!type) {
 			// Default view
@@ -275,7 +313,7 @@ class CMS {
 
 			if (renderer) {
 				renderer.then(() => {
-					Log.Debug('CMS', 'Page render complete, dispatching user-attachable event cms:route');
+					Log.Debug('CMS.route', 'Page render complete, dispatching user-attachable event cms:route');
 					document.dispatchEvent(
 						new CustomEvent(
 							'cms:route',
@@ -290,7 +328,7 @@ class CMS {
 				}).catch(e => {
 					// Try to render the error instead
 					renderError(e).then(() => {
-						Log.Debug('CMS', 'Page render failed, dispatching user-attachable event cms:route');
+						Log.Debug('CMS.route', 'Page render failed, dispatching user-attachable event cms:route');
 						mode = 'error';
 						document.dispatchEvent(
 							new CustomEvent(
@@ -321,7 +359,7 @@ class CMS {
 
 	/**
 	 * Sort method for file collections.
-	 * @method
+	 *
 	 * @param {string} type - Type of file collection.
 	 * @param {function} sort - Sorting function.
 	 */
@@ -336,9 +374,8 @@ class CMS {
 
 	/**
 	 * Search method for file collections.
-	 * @method
+	 *
 	 * @param {string} type - Type of file collection.
-	 * @param {string} attribute - File attribute to search.
 	 * @param {string} search - Search query.
 	 */
 	search(type, search) {
@@ -360,7 +397,7 @@ class CMS {
 	 * Renders a layout with the set data
 	 *
 	 * @param {string} layout Base filename of layout to render
-	 * @param {object} data Data passed to template.
+	 * @param {TemplateObject} data Data passed to template.
 	 * @returns {Promise} Returns rendered HTML on success or the error message on error
 	 */
 	renderLayout(layout, data) {
