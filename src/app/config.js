@@ -46,26 +46,7 @@ export class Config extends Object {
 		 * Types of file collections available on the CMS
 		 * @type {ConfigType[]}
 		 */
-		this.types = [
-			new ConfigType(
-				'posts',
-				{
-					list: 'post-list',
-					single: 'post',
-					sort: 'datetime-r',
-					title: 'Posts'
-				}
-			),
-			new ConfigType(
-				'pages',
-				{
-					list: 'page-list',
-					single: 'page',
-					sort: 'title',
-					title: 'Pages'
-				}
-			)
-		];
+		this.types = [];
 
 		/**
 		 * Function to call when rendering dates to the page, useful for modifying how dates display
@@ -106,6 +87,7 @@ export class Config extends Object {
 				day: 'numeric',
 			};
 
+			// Default lang to en/us, useful in tests
 			let lang = 'en-US';
 
 			if (typeof (window) !== 'undefined') {
@@ -177,7 +159,7 @@ export class Config extends Object {
 		for (let [key, value] of Object.entries(options)) {
 			if (key === 'types' && Array.isArray(value)) {
 				value.forEach(type => {
-					this.types.push(new ConfigType(type.name, type.layout));
+					this.addType(type.name, type.layout);
 				});
 			}
 			else {
@@ -187,11 +169,26 @@ export class Config extends Object {
 	}
 
 	/**
-	 * do a thing
-	 * @param name
-	 * @param key
-	 * @param defaultValue
-	 * @returns {*|null}
+	 * Add a new file type to the CMS
+	 *
+	 * @param {string} name Name of the type, must match directory name
+	 * @param {Object} layout Layout configuration and defaults
+	 * @param {string} layout.list   Template file to use for listing this content type
+	 * @param {string} layout.single Template file to use for rendering a single page
+	 * @param {string} layout.sort   Default sort for files when browsing the listing page
+	 * @param {string} layout.title  Page title set when browsing the listing page
+	 */
+	addType(name, layout) {
+		this.types.push(new ConfigType(name, layout));
+	}
+
+	/**
+	 * Get a plugin / extra configuration value
+	 *
+	 * @param {string} name Name of the plugin
+	 * @param {string} key Key to fetch from the plugin
+	 * @param {mixed} defaultValue Default value if not set
+	 * @returns {mixed}
 	 */
 	extra(name, key, defaultValue) {
 		defaultValue = defaultValue || null;
