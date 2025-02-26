@@ -3,11 +3,12 @@ import {basename, dirname, getDatetime, pathJoin} from './utils';
 import Log from './log';
 import CMSError from './cmserror';
 import jsYaml from 'js-yaml';
+import TemplateObject from './templateobject';
 
 /**
  * Represents a Markdown file installed in one of the collection directories
  */
-class File {
+class File extends TemplateObject {
 
 	/**
 	 * Set of keys which cannot be set from the FrontMatter content
@@ -32,6 +33,7 @@ class File {
 	 * @param {Config} config Configuration from the CMS
 	 */
 	constructor(url, type, layout, config) {
+		super();
 		// Common author-defined parameters
 
 		/**
@@ -192,7 +194,7 @@ class File {
 					this.content = content;
 					this.parseContent();
 
-					Log.Debug(this.type, 'Loaded file ' + this.url);
+					Log.Debug('File.loadContent/' + this.type, 'Loaded file ' + this.url);
 					resolve(content);
 				})
 				.catch(e => {
@@ -354,6 +356,10 @@ class File {
 
 		if (this.title) {
 			checks += this.title.toLowerCase();
+		}
+
+		if (this.excerpt) {
+			checks += this.excerpt.toLowerCase();
 		}
 
 		words.forEach(word => {

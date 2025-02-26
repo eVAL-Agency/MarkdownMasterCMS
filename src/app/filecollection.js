@@ -3,6 +3,7 @@ import {pathJoin} from './utils';
 import File from './file';
 import Log from './log';
 import CMSError from './cmserror';
+import TemplateObject from './templateobject';
 
 let _queuedMetas = null;
 let _queuedMetasPromises = [];
@@ -28,7 +29,7 @@ let _queuedGetMetas = async (path) => {
 				.then(data => {
 					_queuedMetas = data;
 					// Resolve all the queued entries now
-					Log.Debug('server', 'Meta.json loaded from server, resolving all promises now');
+					Log.Debug('FileCollection._queuedGetMetas', 'Meta.json loaded from server, resolving all promises now');
 					_queuedMetasPromises.forEach(r => {
 						r[0](_queuedMetas);
 					});
@@ -57,9 +58,10 @@ let _queuedGetMetas = async (path) => {
  * @param {string} layout.title  Title for listing view
  * @param {Config} config Configuration from the CMS
  */
-class FileCollection {
+class FileCollection extends TemplateObject {
 
 	constructor(type, layout, config) {
+		super();
 		this.type = type;
 		this.layout = layout;
 		this.config = config;
@@ -99,7 +101,7 @@ class FileCollection {
 				})
 				.catch((e) => {
 					// Try the slow method of scanning for directory listings
-					Log.Debug(this.type, 'Failed to load files from server, falling back to directory scan', e);
+					Log.Debug('FileCollection.init/' + this.type, 'Failed to load files from server, falling back to directory scan', e);
 					this.getFiles().then(() => {
 						this.loadFiles().then(() => {
 							resolve();
@@ -221,7 +223,7 @@ class FileCollection {
 	 */
 	async getFilesByServer() {
 		return new Promise((resolve, reject) => {
-			Log.Debug(this.type, 'Retrieving files metadata from server script meta.json');
+			Log.Debug('FileCollection.getFilesByServer/' + this.type, 'Retrieving files metadata from server script meta.json');
 
 			// Try the server-side script first to pull files, this will save on calls
 			_queuedGetMetas(pathJoin(this.config.webpath, 'meta.json'))
@@ -233,7 +235,7 @@ class FileCollection {
 					}
 
 					data[this.type].forEach(file => {
-						Log.Debug(this.type, 'Found valid file, adding to collection', {file});
+						Log.Debug('FileCollection.getFilesByServer/' + this.type, 'Found valid file, adding to collection', {file});
 						let f = new File(file.path, this.type, this.layout.single, this.config);
 						// Set the timestamp from the server, (so clients will request an up-to-date version when applicable)
 						f.timestamp = file.timestamp;
@@ -263,7 +265,7 @@ class FileCollection {
 	 * @returns {Promise<string[]>} Array of subdirectories found
 	 */
 	async scanDirectory(directory) {
-		Log.Debug(this.type, 'Scanning directory', directory);
+		Log.Debug('FileCollection.scanDirectory/' + this.type, 'Scanning directory', directory);
 
 		return new Promise((resolve) => {
 			fetch(directory)
@@ -285,7 +287,7 @@ class FileCollection {
 							fileUrl.endsWith(this.config.extension)
 						) {
 							// Regular markdown file
-							Log.Debug(this.type, 'Found valid file, adding to collection', {directory, file, fileUrl});
+							Log.Debug('FileCollection.scanDirectory/' + this.type, 'Found valid file, adding to collection', {directory, file, fileUrl});
 							this.files.push(new File(fileUrl, this.type, this.layout.single, this.config));
 						} else if (
 							// skip checking '?...' sort option links
@@ -299,11 +301,11 @@ class FileCollection {
 							// Allow this for any directory listing NOT absolutely resolved (they will just point back to the parent directory)
 							directories.push(fileUrl);
 						} else {
-							Log.Debug(this.type, 'Skipping invalid link', {directory, file, fileUrl});
+							Log.Debug('FileCollection.scanDirectory/' + this.type, 'Skipping invalid link', {directory, file, fileUrl});
 						}
 					});
 
-					Log.Debug(this.type, 'Scanning of ' + directory + ' complete');
+					Log.Debug('FileCollection.scanDirectory/' + this.type, 'Scanning of ' + directory + ' complete');
 					resolve(directories);
 				});
 		});
@@ -413,7 +415,7 @@ class FileCollection {
 	 * @returns {File[]} Set of filtered files
 	 */
 	filterSearch(search) {
-		Log.Debug(this.type, 'Performing text search for files', search);
+		Log.Debug('FileCollection.filterSearch/' + this.type, 'Performing text search for files', search);
 
 		this[this.type] = this[this.type].filter((file) => {
 			return file.matchesSearch(search);
@@ -433,7 +435,7 @@ class FileCollection {
 	filterAttributeSearch(search, mode) {
 		mode = mode || 'AND';
 
-		Log.Debug(this.type, 'Performing "' + mode + '" attribute search for files', search);
+		Log.Debug('FileCollection.filterAttributeSearch/' + this.type, 'Performing "' + mode + '" attribute search for files', search);
 
 		this[this.type] = this[this.type].filter((file) => {
 			return file.matchesAttributeSearch(search, mode);
@@ -523,7 +525,7 @@ class FileCollection {
 	 */
 	getFileByPermalink(permalink) {
 
-		Log.Debug(this.type, 'Retrieving file by permalink', permalink);
+		Log.Debug('FileCollection.getFileByPermalink/' + this.type, 'Retrieving file by permalink', permalink);
 
 		let foundFiles = this.files.filter((file) => {
 			return file.permalink === permalink ||

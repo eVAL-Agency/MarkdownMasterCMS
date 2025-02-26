@@ -56,14 +56,14 @@ export async function loadTemplate(url, data) {
 export async function fetchLayout(layout, data) {
 	return new Promise((resolve, reject) => {
 		let url = pathJoin(layout_path, layout + '.html');
-		Log.Debug('Fetching layout template', url);
+		Log.Debug('fetchLayout', url);
 		loadTemplate(url, data)
 			.then(html => {
-				Log.Debug('Template', 'Fetched templated layout', url);
+				Log.Debug('fetchLayout', 'Fetched templated layout', url);
 				resolve(html);
 			})
 			.catch(e => {
-				Log.Error('Template', 'Error while rendered layout', url, e.message);
+				Log.Error('fetchLayout', 'Error while rendered layout', url, e.message);
 				reject(e);
 			});
 	});
@@ -74,7 +74,7 @@ export async function fetchLayout(layout, data) {
  *
  * @async
  * @param {string} layout - Filename of layout.
- * @param {object} data - Data passed to template.
+ * @param {TemplateObject} data - Data passed to template.
  * @returns {Promise}
  * @throws {CMSError}
  */
