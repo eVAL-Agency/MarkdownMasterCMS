@@ -352,19 +352,26 @@ class FileCollection extends TemplateObject {
 	 * @param {function|string|null} [param=null] A function, string, or empty value to sort by
 	 */
 	filterSort(param) {
+		// Provide some useful defaults and shortcut values
 		if (typeof (param) === 'undefined' || param === null) {
 			param = this.layout.sort || 'title';
 		}
+		else if (param === 'random') {
+			// Allow convenience method for randomizing results
+			param = () => {
+				return 0.5 - Math.random();
+			};
+		}
+		else if (param === 'recent') {
+			param = 'datetime-r';
+		}
+
 
 		if (typeof (param) === 'function') {
 			// Allow user to define their own function for sorting
 			this[this.type].sort(param);
-		} else if (param === 'random') {
-			// Allow convenience method for randomizing results
-			this[this.type].sort(() => {
-				return 0.5 - Math.random();
-			});
-		} else {
+		}
+		else {
 			let params = [];
 
 			// Allow multiple comma-separated parameters to be requested
@@ -469,13 +476,13 @@ class FileCollection extends TemplateObject {
 	}
 
 	/**
-	 * Get all tags located form this collection
+	 * Get all tags located from this collection
 	 *
-	 * Each set will contain the properties `name`, `count`, and `url`
+	 * Each set will contain the properties `name`, `count`, `url`, and `weight`.
 	 *
-	 * @param {null|string} sort Key ['name', 'count', 'url'] to sort results
-	 * @param {number} weightMax Max weight
-	 * @returns {Object} {{name: string, count: number, url: string}[]}
+	 * @param {string|null} [sort=null] Key ['name', 'count', 'url'] to sort results
+	 * @param {number} [weightMax=10] Max weight
+	 * @returns {Object} {{name: string, count: number, url: string, weight: int}[]}
 	 */
 	getTags(sort = null, weightMax = 10) {
 		let tags = [],
