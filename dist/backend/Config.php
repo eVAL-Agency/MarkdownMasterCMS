@@ -44,6 +44,12 @@ class Config {
 				throw new Exception('Configuration file must return an array', 500);
 			}
 
+			// Allow the theme to set defaults
+			if (isset($config['theme'])) {
+				$themeConfig = require dirname(__DIR__) . '/themes/' . $config['theme'] . '/settings.php';
+				$config = array_merge($themeConfig, $config);
+			}
+
 			if (!isset($config['host']) || $config['host'] === '') {
 				throw new Exception('Configuration setting "host" is required', 500);
 			}
@@ -52,6 +58,9 @@ class Config {
 			}
 			if (!isset($config['defaultView']) || $config['defaultView'] === '') {
 				throw new Exception('Configuration setting "defaultView" is required', 500);
+			}
+			if (!isset($config['theme']) || $config['theme'] === '') {
+				throw new Exception('Configuration setting "theme" is required', 500);
 			}
 			if (!isset($config['types']) || $config['types'] === '') {
 				throw new Exception('Configuration setting "types" is required', 500);
@@ -162,6 +171,10 @@ class Config {
 
 	public static function GetDebug(): bool {
 		return self::_Get('debug') ?? false;
+	}
+
+	public static function GetTheme(): string {
+		return self::_Get('theme');
 	}
 
 	public static function IsReady(): bool {

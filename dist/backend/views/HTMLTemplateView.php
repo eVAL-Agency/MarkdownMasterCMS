@@ -35,13 +35,22 @@ class HTMLTemplateView extends View {
 	public array $classes = [];
 
     public function render() {
-		if (!file_exists('index.html')) {
-			throw new Exception('Please copy index.example.html to index.html', 500);
+		$templateFile = 'themes/' . Config::GetTheme() . '/index.html';
+		if (!file_exists($templateFile)) {
+			throw new Exception('No theme index template found', 500);
 		}
+
+		$contents = file_get_contents($templateFile);
+		// Do a basic find/replace for common variables
+		$replacements = [
+			'{{theme_dir}}' => Config::GetWebPath() . 'themes/' . Config::GetTheme() . '/',
+			'{{webpath}}' => Config::GetWebPath(),
+		];
+		$contents = str_replace(array_keys($replacements), array_values($replacements), $contents);
 
 		libxml_use_internal_errors(true);
 		$dom = new DOMDocument();
-		$dom->loadHTMLFile('index.html');
+		$dom->loadHTML($contents);
 		$xpath = new DOMXPath($dom);
 
 		if (count($this->classes)) {
