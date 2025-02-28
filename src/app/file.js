@@ -205,6 +205,35 @@ class File extends TemplateObject {
 	}
 
 	/**
+	 * Get all tags located in this file
+	 *
+	 * Each set will contain the properties `name`, `count`, `url`, and `weight`.
+	 *
+	 * @param {null|string} sort Key ['name', 'count', 'url'] to sort results
+	 * @returns {Object} {{name: string, count: number, url: string, weight: int}[]}
+	 */
+	getTags(sort = null) {
+		let tags = [];
+
+		if (this.tags && Array.isArray(this.tags)) {
+			this.tags.forEach(tag => {
+				tags.push({
+					name: tag,
+					count: 1,
+					weight: 1,
+					url: this.config.webpath + this.type + '.html?tag=' + encodeURIComponent(tag.toLowerCase())
+				});
+			});
+		}
+
+		if (sort) {
+			tags.sort((a, b) => { return a[sort] > b[sort]; });
+		}
+
+		return tags;
+	}
+
+	/**
 	 * Parse front matter, the content in the header of the file.
 	 *
 	 * Will scan through and retrieve any key:value pair within `---` tags
