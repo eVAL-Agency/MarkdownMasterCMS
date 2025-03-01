@@ -45,17 +45,68 @@ class CMS {
 	 *
 	 * @param {string} extra Plugin name to load
 	 * @param {Object|null} [options=null] Configuration options for the plugin
+	 * @returns {Promise<string>} Resolves with the plugin name if loaded successfully
 	 */
-	loadExtra(extra, options) {
+	async loadExtra(extra, options) {
 		options = options || {};
-		if (this.extras.indexOf(extra) === -1) {
-			// Only load this plugin if not already included.
-			this.log.Debug('CMS', 'Loading extra plugin:', extra);
-			this.config.extras[extra] = options;
-			this.extras.push(extra);
-			let script = document.createElement('script');
-			script.src = this.config.webpath + 'extras/' + extra + '/init.js';
-			document.body.appendChild(script);
+
+		return new Promise((resolve, reject) => {
+
+			if (Object.hasOwn(this.extras, extra)) {
+				// This extra plugin is already loaded, check if it's loaded in full or pending
+				if (this.extras[extra].status === 'loaded') {
+					// immediate resolve if already loaded
+					resolve(extra);
+				}
+				else if(this.extras[extra].status === 'error') {
+					// immediate reject if already errored
+					reject(extra);
+				}
+				else {
+					// Wait for the plugin to finish loading
+					this.extras[extra].onload.push(resolve);
+					this.extras[extra].onerror.push(reject);
+				}
+			}
+			else {
+				// Not loaded yet
+				this.extras[extra] = {
+					status: 'pending',
+					onload: [resolve],
+					onerror: [reject]
+				};
+
+				this.log.Debug('CMS.loadExtra', 'Loading extra plugin:', extra);
+				this.config.extras[extra] = options;
+				let script = document.createElement('script');
+				script.src = this.config.webpath + 'extras/' + extra + '/init.js';
+				script.onload = () => {
+					this.log.Debug('CMS.loadExtra', 'Plugin successfully loaded:', extra);
+					this.extras[extra].status = 'loaded';
+					this.extras[extra].onload.forEach(fn => fn(extra));
+				};
+				script.onerror = () => {
+					this.log.Debug('CMS.loadExtra', 'Plugin failed to load:', extra);
+					this.extras[extra].status = 'error';
+					this.extras[extra].onerror.forEach(fn => fn(extra));
+				};
+				document.body.appendChild(script);
+			}
+		});
+	}
+
+	/**
+	 * Check if the requested extra is loaded
+	 *
+	 * @param {string} extra
+	 * @returns {boolean}
+	 */
+	isExtraLoaded(extra) {
+		if (Object.hasOwn(this.extras, extra)) {
+			return this.extras[extra].status === 'loaded';
+		}
+		else {
+			return false;
 		}
 	}
 
