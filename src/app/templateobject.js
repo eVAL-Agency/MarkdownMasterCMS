@@ -1,3 +1,13 @@
+/**
+ * Template object for CMS
+ *
+ * @module CMS
+ * @license The MIT License (MIT)
+ * @copyright (c) 2025 eVAL Agency
+ * @author Charlie Powell
+ * @see https://github.com/eVAL-Agency/MarkdownMasterCMS
+ */
+
 class TemplateObject {
 	/**
 	 * Get a value from the object using a key lookup

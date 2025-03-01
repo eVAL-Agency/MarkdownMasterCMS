@@ -1,3 +1,14 @@
+/**
+ * Handler for collection of files for CMS
+ *
+ * @module CMS
+ * @license The MIT License (MIT)
+ * @copyright (c) 2021 Chris Diana | https://chrisdiana.github.io/cms.js
+ * @copyright (c) 2025 eVAL Agency
+ * @author Charlie Powell
+ * @see https://github.com/eVAL-Agency/MarkdownMasterCMS
+ */
+
 import {renderLayout} from './templater';
 import {pathJoin} from './utils';
 import File from './file';

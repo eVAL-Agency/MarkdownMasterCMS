@@ -1,5 +1,15 @@
 /**
  * Configuration handler for the CMS
+ *
+ * @module CMS
+ * @license The MIT License (MIT)
+ * @copyright (c) 2025 eVAL Agency
+ * @author Charlie Powell
+ * @see https://github.com/eVAL-Agency/MarkdownMasterCMS
+ */
+
+/**
+ * Configuration handler for the CMS
  * @constructor
  * @param {Object} [options=null] Pass an Object to autoload site-specific options
  */

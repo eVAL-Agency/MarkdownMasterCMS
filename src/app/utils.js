@@ -1,4 +1,15 @@
 /**
+ * Utilities for the CMS
+ *
+ * @module CMS
+ * @license The MIT License (MIT)
+ * @copyright (c) 2021 Chris Diana | https://chrisdiana.github.io/cms.js
+ * @copyright (c) 2025 eVAL Agency
+ * @author Charlie Powell
+ * @see https://github.com/eVAL-Agency/MarkdownMasterCMS
+ */
+
+/**
  * Formats date string to a Date object converted to the user's local timezone
  *
  * Accepts dashes or slashes between characters, (to support YYYY/MM/DD URL directories)

@@ -1,6 +1,15 @@
+/**
+ * Primary handler for the CMS
+ *
+ * @module CMS
+ * @license The MIT License (MIT)
+ * @copyright (c) 2021 Chris Diana | https://chrisdiana.github.io/cms.js
+ * @copyright (c) 2025 eVAL Agency
+ * @author Charlie Powell
+ * @see https://github.com/eVAL-Agency/MarkdownMasterCMS
+ */
 
 import FileCollection from './filecollection';
-import {messages as msg, createMessageContainer, handleMessage} from './messages';
 import {
 	renderLayout,
 	setSystemLayoutPath,
@@ -149,10 +158,6 @@ class CMS {
 	init() {
 		Log.Debug('CMS.init', 'Initializing MarkdownMaster CMS');
 
-		// create message container element if debug mode is enabled
-		if (this.config.debug) {
-			createMessageContainer(this.config.messageClassName);
-		}
 		if (this.config.elementId) {
 			// setup container
 			this.config.container = document.getElementById(this.config.elementId);
@@ -196,10 +201,10 @@ class CMS {
 					document.dispatchEvent(new CustomEvent('cms:load', {detail: {cms: this}}));
 				});
 			} else {
-				handleMessage(this.config.debug, msg['ELEMENT_ID_ERROR']);
+				Log.Error('CMS.init', 'Element ID not found:', this.config.elementId);
 			}
 		} else {
-			handleMessage(this.config.debug, msg['ELEMENT_ID_ERROR']);
+			Log.Error('CMS.init', 'Element ID not set in config');
 		}
 	}
 
@@ -423,7 +428,7 @@ class CMS {
 			this.collections[type].filterSort(sort);
 			this.collections[type].render();
 		} else {
-			handleMessage(msg['NOT_READY_WARNING']);
+			Log.Error('CMS.sort', 'CMS not ready');
 		}
 	}
 
