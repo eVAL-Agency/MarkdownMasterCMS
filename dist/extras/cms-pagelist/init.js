@@ -1,26 +1,52 @@
 /**
- * MarkdownMaster CMS
+ * Extra - CMS Pagelist
  *
- * Copyright (c) 2025 eVAL Agency
- * https://github.com/eVAL-Agency/MarkdownMasterCMS
+ * Provide a block of content from a collection, eg: a list of blog posts or a list of authors.
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
- * associated documentation files (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge, publish, distribute,
- * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software
- * is furnished to do so, subject to the following conditions:
+ * **Initialization**
  *
- * The above copyright notice and this permission notice shall be included in all copies
- * or substantial portions of the Software.
+ * To load this functionality from HTML:
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
- * INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE
- * AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ * ```html
+ * <script>
+ * CMS.loadExtra('cms-pagelist');
+ * </script>
+ * ```
+ *
+ * or from within `config.js`
+ *
+ * ```js
+ * extras: {
+ *   'cms-pagelist': {}
+ * }
+ * ```
+ *
+ * **Quick Usage**
+ *
+ * ```html
+ * <cms-pagelist type="posts" layout="pages"></cms-pagelist>
+ * ```
+ *
+ * **Attributes**
+ *
+ * - `type` - The type of collection to render
+ * - `layout` - The layout template to use for rendering the collection
+ * - `sort` - The sort order to use for the collection
+ * - `limit` - The maximum number of items to display
+ * - `filter-...` - Filter the collection by a specific attribute
+ *
+ * @module Extras/CMS-Pagelist
+ * @license The MIT License (MIT)
+ * @copyright (c) 2025 eVAL Agency
+ * @author Charlie Powell
+ * @see https://github.com/eVAL-Agency/MarkdownMasterCMS
+ * @since 3.0.0
  */
 
-export default class PagelistElement extends HTMLElement {
+/**
+ * Provides `<cms-pagelist>` tag functionality.
+ */
+class CMSPagelistElement extends HTMLElement {
 	constructor() {
 		// Always call super first in constructor
 		super();
@@ -80,19 +106,19 @@ export default class PagelistElement extends HTMLElement {
 			if (ak.indexOf('filter-') === 0) {
 				// Starts with "filter-..., denotes a filter to add to the query"
 				// Trim the prefix, so we have just the field the user is filtering
-				// Numbers at the beginning of the filter key are only present to
-				// allow duplicate keys in the HTML node, so we can skip filter-123 too.
-				ak = ak.replace(/^filter-([0-9]+)?/, '');
+				ak = ak.replace(/^filter-/, '');
 				has_filters = true;
 
-				if (Object.hasOwn(filters, ak) && !Array.isArray(filters[ak])) {
-					// Key already set, ensure it's an array
-					filters[ak] = [filters[ak]];
+				if (av.indexOf(',') !== -1) {
+					// Value contains a comma, split into an array
+					filters[ak] = [];
+					av.split(',').forEach(v => {
+						if (v.trim() !== '') {
+							filters[ak].push(v.trim());
+						}
+					});
 				}
-
-				if (Object.hasOwn(filters, ak)) {
-					filters[ak].push(av);
-				} else {
+				else {
 					filters[ak] = av;
 				}
 			}
@@ -127,4 +153,4 @@ export default class PagelistElement extends HTMLElement {
 	}
 }
 
-customElements.define('pagelist', PagelistElement);
+customElements.define('cms-pagelist', CMSPagelistElement);
