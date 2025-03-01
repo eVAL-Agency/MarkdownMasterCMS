@@ -25,7 +25,7 @@ class CMS {
 		this.view = view;
 		this.config = new Config();
 		this.lastPage = null;
-		this.extras = [];
+		this.extras = {};
 		// Set up the logger and a local link for external scripts to tap into easily
 		this.log = Log;
 
