@@ -310,6 +310,10 @@ class CMS {
 	 */
 	route() {
 		Log.Debug('CMS.route', 'Running routing');
+
+		// Users expect the viewport to start at the top of the page on navigation events.
+		window.scrollTo({ top: 0, behavior: 'smooth' });
+
 		this.lastPage = window.location.pathname;
 
 		let paths = this.getPathsFromURL(),
