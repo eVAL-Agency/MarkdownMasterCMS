@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: dist/extras/fontawesome/init.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: dist/extras/fontawesome/init.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Extra - FontAwesome
+ *
+ * Provide icons from fontawesome.
+ *
+ * **Initialization**
+ *
+ * To load this functionality from HTML:
+ *
+ * ```html
+ * &lt;script>
+ * CMS.loadExtra('fontawesome');
+ * &lt;/script>
+ * ```
+ *
+ * or from within `config.js`
+ *
+ * ```js
+ * extras: {
+ *   'fontawesome': {}
+ * }
+ * ```
+ *
+ * Refer to https://fontawesome.com/ for documentation and icons.
+ * This module does nothing other than just load the official icons from a local file.
+ *
+ * Not affiliated with Fonticons, Inc. nor Font Awesome.
+ *
+ *
+ * @module Extras/FontAwesome
+ * @license The MIT License (MIT)
+ * @copyright (c) 2025 eVAL Agency
+ * @author Charlie Powell
+ * @see https://github.com/eVAL-Agency/MarkdownMasterCMS
+ * @see https://fontawesome.com/
+ * @since 4.0.0
+ */
+
+/**
+ * Ensure fontawesome stylesheets are loaded in the DOM
+ *
+ * @name Run
+ * @function
+ */
+{
+	let loaded = false;
+
+	// Check if fontawesome needs to be loaded.
+	document.querySelectorAll('link').forEach(el => {
+		if (el.href.indexOf('fontawesome.') !== -1) {
+			loaded = true;
+			return false;
+		}
+	});
+
+	if (!loaded) {
+		let link = document.createElement('link');
+		link.href = CMS.config.webpath + 'extras/fontawesome/css/fontawesome.min.css';
+		link.rel = 'stylesheet';
+		document.head.appendChild(link);
+	}
+}
+
+/**
+ * Add necessary prefixes and class names to a given icon based on its icon name.
+ *
+ * @param {HTMLElement} icon
+ * @param {string} name
+ */
+function fontawesome_icon(icon, name) {
+	let prefix = '',
+		identifier = '',
+		brands = [
+			'42-group', '500px',
+			'accessible-icon', 'accusoft', 'address-book', 'adn', 'adversal', 'affiliatetheme', 'airbnb', 'algolia', 'alipay', 'amazon', 'amazon-pay', 'amilia', 'android', 'angellist', 'angrycreative', 'angular', 'app-store', 'app-store-ios', 'apper', 'apple', 'apple-pay', 'artstation', 'asymmetrik', 'atlassian', 'audible', 'autoprefixer', 'avianex', 'aviato', 'aws',
+			'bandcamp', 'battle-net', 'behance', 'bilibili', 'bimobject', 'bitbucket', 'bitcoin', 'bity', 'black-tie', 'blackberry', 'blogger', 'blogger-b', 'bluetooth', 'bluetooth-b', 'bootstrap', 'bots', 'btc', 'buffer', 'buromobelexperte', 'buy-n-large', 'buysellads',
+			'canadian-maple-leaf', 'cc-amazon-pay', 'cc-amex', 'cc-apple-pay', 'cc-diners-club', 'cc-discover', 'cc-jcb', 'cc-mastercard', 'cc-paypal', 'cc-stripe', 'cc-visa', 'centercode', 'centos', 'chrome', 'chromecast', 'cloudflare', 'cloudscale', 'cloudsmith', 'cloudversify', 'cmplid', 'codepen', 'codiepie', 'confluence', 'connectdevelop', 'contao', 'cotton-bureau', 'cpanel', 'creative-commons', 'creative-commons-by', 'creative-commons-nc', 'creative-commons-nc-eu', 'creative-commons-nc-jp', 'creative-commons-nd', 'creative-commons-pd', 'creative-commons-pd-alt', 'creative-commons-remix', 'creative-commons-sa', 'creative-commons-sampling', 'creative-commons-sampling-plus', 'creative-commons-share', 'creative-commons-zero', 'critical-role', 'css3', 'css3-alt', 'cuttlefish',
+			'd-and-d', 'd-and-d-beyond', 'dailymotion', 'dashcube', 'deezer', 'delicious', 'deploydog', 'dev', 'deviantart', 'dhl', 'diaspora', 'digg', 'digital-ocean', 'discord', 'discourse', 'dochub', 'docker', 'draft2digital', 'dribbble', 'dropbox', 'drupal', 'dyalog',
+			'earlybirds', 'ebay', 'edge', 'edge-legacy', 'elementor', 'ello', 'ember', 'empire', 'envira', 'erlang', 'ethereum', 'etsy', 'evernote', 'expeditedssl',
+			'facebook', 'facebook-f', 'facebook-messenger', 'fantasy-flight-games', 'fedex', 'fedora', 'figma', 'firefox', 'firefox-browser', 'first-order', 'first-order-alt', 'firstdraft', 'flickr', 'flipboard', 'fly', 'font-awesome', 'fonticons', 'fonticons-fi', 'fort-awesome', 'fort-awesome-alt', 'forumbee', 'foursquare', 'free-code-camp', 'freebsd', 'fulcrum',
+			'galactic-republic', 'galactic-senate', 'get-pocket', 'gg', 'gg-circle', 'git', 'git-alt', 'github', 'github-alt', 'gitkraken', 'gitlab', 'gitter', 'glide', 'glide-g', 'gofore', 'golang', 'goodreads', 'goodreads-g', 'google', 'google-drive', 'google-pay', 'google-play', 'google-plus', 'google-plus-g', 'google-wallet', '  gratipay', 'grav', 'gripfire', 'grunt', 'guilded', 'gulp',
+			'hacker-news', 'hackerrank', 'hashnode', 'hips', 'hire-a-helper', 'hive', 'hooli', 'hornbill', 'hotjar', 'houzz', 'html5', 'hubspot',
+			'ideal', 'imdb', 'instagram', 'instalod', 'intercom', 'internet-explorer', 'invision', 'ioxhost', 'itch-io', 'itunes', 'itunes-note',
+			'java', 'jedi-order', 'jenkins', 'jira', 'joget', 'joomla', 'js', 'jsfiddle',
+			'kaggle', 'keybase', 'keycdn', 'kickstarter', 'kickstarter-k', 'korvue',
+			'laravel', 'lastfm', 'leanpub', 'less', 'line', 'linkedin', 'linkedin-in', 'linode', 'linux', 'locust', 'lungs', 'lungs-virus', 'lyft',
+			'magento', 'mailchimp', 'mandalorian', 'markdown', 'mastodon', 'maxcdn', 'mdb', 'medapps', 'medium', 'medrt', 'meetup', 'megaport', 'mendeley', 'meta', 'microblog', 'microsoft', 'mix', 'mixcloud', 'mixer', 'mizuni', 'modx', 'monero',
+			'napster', 'neos', 'nfc-directional', 'nfc-symbol', 'nimblr', 'node', 'node-js', 'npm', 'ns8', 'nutritionix',
+			'octopus-deploy', 'odnoklassniki', 'odysee', 'old-republic', 'opencart', 'openid', 'opera', 'optin-monster', 'orcid', 'osi',
+			'padlet', 'page4', 'pagelines', 'palfed', 'patreon', 'paypal', 'perbyte', 'periscope', 'phabricator', 'phoenix-framework', 'phoenix-squadron', 'php', 'pied-piper', 'pied-piper-alt', 'pied-piper-hat', 'pied-piper-pp', 'pinterest', 'pinterest-p', 'pix', 'playstation', 'product-hunt', 'pushed', 'python',
+			'qq', 'quinscape', 'quora',
+			'r-project', 'raspberry-pi', 'ravelry', 'react', 'reacteurope', 'readme', 'rebel', 'red-river', 'reddit', 'reddit-alien', 'redhat', 'renren', 'replyd', 'researchgate', 'resolving', 'rev', 'rocketchat', 'rockrms', 'rust',
+			'safari', 'salesforce', 'sass', 'schlix', 'screenpal', 'scribd', 'searchengin', 'sellcast', 'sellsy', 'servicestack', 'shirtsinbulk', 'shopify', 'shopware', 'simplybuilt', 'sistrix', 'sith', 'sitrox', 'sketch', 'skyatlas', 'skype', 'slack', 'slideshare', 'snapchat', 'soundcloud', 'sourcetree', 'space-awesome', 'speakap', 'speaker-deck', 'spotify', 'square-behance', 'square-dribbble', 'square-facebook', 'square-font-awesome', 'square-font-awesome-stroke', 'square-git', 'square-github', 'square-gitlab', 'square-google-plus', 'square-hacker-news', 'square-instagram', 'square-js', 'square-lastfm', 'square-odnoklassniki', 'square-pied-piper', 'square-pinterest', 'square-reddit', 'square-snapchat', 'square-steam', 'square-tumblr', 'square-twitter', 'square-viadeo', 'square-vimeo', 'square-whatsapp', 'square-xing', 'square-youtube', 'squarespace', 'stack-exchange', 'stack-overflow', 'stackpath', 'staylinked', 'steam', 'steam-symbol', 'sticker-mule', 'strava', 'stripe', 'stripe-s', 'stubber', 'studiovinari', 'stumbleupon', 'stumbleupon-circle', 'superpowers', 'supple', 'suse', 'swift', 'symfony',
+			'teamspeak', 'telegram', 'tencent-weibo', 'the-red-yeti', 'themeco', 'themeisle', 'think-peaks', 'tiktok', 'trade-federation', 'trello', 'tumblr', 'twitch', 'twitter', 'typo3',
+			'uber', 'ubuntu', 'uikit', 'umbraco', 'uncharted', 'uniregistry', 'unity', 'unsplash', 'untappd', 'ups', 'usb', 'usps', 'ussunnah',
+			'vaadin', 'viacoin', 'viadeo', 'viber', 'vimeo', 'vimeo-v', 'vine', 'vk', 'vnv', 'vuejs',
+			'watchman-monitoring', 'waze', 'weebly', 'weibo', 'weixin', 'whatsapp', 'whmcs', 'wikipedia-w', 'windows', 'wirsindhandwerk', 'wix', 'wizards-of-the-coast', 'wodu', 'wolf-pack-battalion', 'wordpress', 'wordpress-simple', 'wpbeginner', 'wpexplorer', 'wpforms', 'wpressr',
+			'xbox', 'xing',
+			'y-combinator', 'yahoo', 'yammer', 'yandex', 'yandex-international', 'yarn', 'yelp', 'yoast', 'youtube',
+			'zhihu' ];
+
+	if (brands.indexOf(name) !== -1) {
+		identifier = 'fab';
+		prefix = 'fa-';
+	} else {
+		identifier = 'fa';
+		prefix = 'fa-';
+	}
+
+	// Add the necessary classes to the icon element.
+	icon.classList.add(identifier, prefix + name);
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-CMS.html">CMS</a></li><li><a href="module-Extras_ActiveNav.html">Extras/ActiveNav</a></li><li><a href="module-Extras_CMS-Author.html">Extras/CMS-Author</a></li><li><a href="module-Extras_CMS-Icon.html">Extras/CMS-Icon</a></li><li><a href="module-Extras_CMS-Pagelist.html">Extras/CMS-Pagelist</a></li><li><a href="module-Extras_CMS-Search.html">Extras/CMS-Search</a></li><li><a href="module-Extras_CMS-Tags.html">Extras/CMS-Tags</a></li><li><a href="module-Extras_FontAwesome.html">Extras/FontAwesome</a></li></ul><h3>Namespaces</h3><ul><li><a href="Prism.html">Prism</a></li><li><a href="Prism.hooks.html">hooks</a></li><li><a href="Prism.languages.html">languages</a></li><li><a href="Prism.util.html">util</a></li></ul><h3>Classes</h3><ul><li><a href="ButtonElement.html">ButtonElement</a></li><li><a href="MastodonShareElement.html">MastodonShareElement</a></li><li><a href="Token.html">Token</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module-CMS.AttributeBuilder.html">AttributeBuilder</a></li><li><a href="module-CMS.Config.html">Config</a></li><li><a href="module-CMS.ConfigType.html">ConfigType</a></li><li><a href="module-CMS-CMS.html">CMS</a></li><li><a href="module-CMS-CMSError.html">CMSError</a></li><li><a href="module-CMS-File.html">File</a></li><li><a href="module-CMS-FileCollection.html">FileCollection</a></li><li><a href="module-CMS-Log.html">Log</a></li><li><a href="module-Extras_CMS-Author-CMSAuthorElement.html">CMSAuthorElement</a></li><li><a href="module-Extras_CMS-Icon-CMSIconElement.html">CMSIconElement</a></li><li><a href="module-Extras_CMS-Pagelist-CMSPagelistElement.html">CMSPagelistElement</a></li><li><a href="module-Extras_CMS-Search-CMSSearchElement.html">CMSSearchElement</a></li><li><a href="module-Extras_CMS-Tags-CMSTagsElement.html">CMSTagsElement</a></li></ul><h3>Global</h3><ul><li><a href="global.html#parseExtendedAttributes">parseExtendedAttributes</a></li><li><a href="global.html#parseLinkDestination">parseLinkDestination</a></li><li><a href="global.html#parseLinkLabel">parseLinkLabel</a></li><li><a href="global.html#parseLinkTitle">parseLinkTitle</a></li><li><a href="global.html#value">value</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Mar 02 2025 02:00:50 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,6 +1,6 @@
 <?php
 /**
- * Example configuration for server-side backend
+ * Configuration for server-side backend
  *
  * @version 5.0.0-alpha.1
  * @copyright 2025 eVAL Agency
@@ -10,10 +10,25 @@
  */
 
 return [
+	// Set to the fully resolved URL of the site root
+	// Include "https://" or "http://" as necessary.
+	// Trailing slash is not required here.
 	'host' => 'http://localhost',
+
+	// Set to the path to the CMS directory from the site root
+	// Include both leading and trailing slashes.
+	// eg: if your site is located in public_html/cms, then set this to `/cms/`
 	'webpath' => '/',
+
+	// Default view to show for "home".
+	// This should be TYPE / SLUG of the page.
+	// No leading or trailing slashes.
 	'defaultView' => 'pages/home',
-	'types' => 'pages, posts',
+
+	// Set the theme to use for the frontend
+	'theme' => 'basic-blog',
+
+	// Set to true to enable DEBUG mode on backend and frontend.
 	'debug' => false,
 
 	// Uncomment and configure to enable email sending

@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/app/templater.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: src/app/templater.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Template engine for CMS
+ *
+ * @module CMS
+ * @license The MIT License (MIT)
+ * @copyright (c) 2021 Chris Diana | https://chrisdiana.github.io/cms.js
+ * @copyright (c) 2025 eVAL Agency
+ * @author Charlie Powell
+ * @see https://github.com/eVAL-Agency/MarkdownMasterCMS
+ */
+
+import {pathJoin} from './utils';
+import CMSError from './cmserror';
+import Log from './log';
+
+let layout_path = '',
+	system_container = null;
+
+/**
+ * Load template from URL.
+ * @function
+ * @async
+ * @param {string} url - URL of template to load.
+ * @param {object} data - Data to load into template.
+ * @returns {Promise&lt;string>}
+ * @throws {CMSError}
+ */
+export async function loadTemplate(url, data) {
+	return new Promise((resolve, reject) => {
+		fetch(url)
+			.then(response => {
+				if (!response.ok) {
+					reject(new CMSError(response.status, response.statusText));
+				}
+				return response.text();
+			})
+			.then(tmpl => {
+				let fn = new Function(
+						'data',
+						'var output=' +
+						JSON.stringify(tmpl)
+							.replace(/&lt;%=(.+?)%>/g, '"+($1)+"')
+							.replace(/&lt;%(.+?)%>/g, '";$1\noutput+="') +
+						';return output;'
+					),
+					html = '';
+
+				try {
+					html = fn.call(this, data); //renderer(data);
+					resolve(html);
+				} catch (e) {
+					reject(new CMSError(500, e));
+				}
+			});
+	});
+}
+
+/**
+ * Fetch the layout and return in the resolve
+ *
+ * @async
+ * @param {string} layout - Filename of layout.
+ * @param {object} data - Data passed to template.
+ * @returns {Promise&lt;string>}
+ * @throws {CMSError}
+ */
+export async function fetchLayout(layout, data) {
+	return new Promise((resolve, reject) => {
+		let url = pathJoin(layout_path, layout + '.html');
+		Log.Debug('fetchLayout', url);
+		loadTemplate(url, data)
+			.then(html => {
+				Log.Debug('fetchLayout', 'Fetched templated layout', url);
+				resolve(html);
+			})
+			.catch(e => {
+				Log.Error('fetchLayout', 'Error while rendered layout', url, e.message);
+				reject(e);
+			});
+	});
+}
+
+/**
+ * Renders the layout into the main container.
+ *
+ * @async
+ * @param {string} layout - Filename of layout.
+ * @param {TemplateObject} data - Data passed to template.
+ * @returns {Promise}
+ * @throws {CMSError}
+ */
+export async function renderLayout(layout, data) {
+	return new Promise((resolve, reject) => {
+		fetchLayout(layout, data).then(html => {
+			system_container.innerHTML = html;
+			resolve();
+		}).catch(e => {
+			reject(e);
+		});
+	});
+}
+
+/**
+ * Render an error to the browser
+ *
+ * @param {CMSError} error
+ * @returns {Promise}
+ */
+export async function renderError(error) {
+	return renderLayout('error' + error.code, {});
+}
+
+/**
+ * Set the system layout directory (generally only called from the CMS)
+ *
+ * @param {string} args
+ */
+export function setSystemLayoutPath(...args) {
+	layout_path = pathJoin(...args);
+}
+
+/**
+ * Set the system layout directory (generally only called from the CMS)
+ *
+ * @param {HTMLElement} container
+ */
+export function setSystemContainer(container) {
+	system_container = container;
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-CMS.html">CMS</a></li><li><a href="module-Extras_ActiveNav.html">Extras/ActiveNav</a></li><li><a href="module-Extras_CMS-Author.html">Extras/CMS-Author</a></li><li><a href="module-Extras_CMS-Icon.html">Extras/CMS-Icon</a></li><li><a href="module-Extras_CMS-Pagelist.html">Extras/CMS-Pagelist</a></li><li><a href="module-Extras_CMS-Search.html">Extras/CMS-Search</a></li><li><a href="module-Extras_CMS-Tags.html">Extras/CMS-Tags</a></li><li><a href="module-Extras_FontAwesome.html">Extras/FontAwesome</a></li></ul><h3>Namespaces</h3><ul><li><a href="Prism.html">Prism</a></li><li><a href="Prism.hooks.html">hooks</a></li><li><a href="Prism.languages.html">languages</a></li><li><a href="Prism.util.html">util</a></li></ul><h3>Classes</h3><ul><li><a href="ButtonElement.html">ButtonElement</a></li><li><a href="MastodonShareElement.html">MastodonShareElement</a></li><li><a href="Token.html">Token</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module-CMS.AttributeBuilder.html">AttributeBuilder</a></li><li><a href="module-CMS.Config.html">Config</a></li><li><a href="module-CMS.ConfigType.html">ConfigType</a></li><li><a href="module-CMS-CMS.html">CMS</a></li><li><a href="module-CMS-CMSError.html">CMSError</a></li><li><a href="module-CMS-File.html">File</a></li><li><a href="module-CMS-FileCollection.html">FileCollection</a></li><li><a href="module-CMS-Log.html">Log</a></li><li><a href="module-Extras_CMS-Author-CMSAuthorElement.html">CMSAuthorElement</a></li><li><a href="module-Extras_CMS-Icon-CMSIconElement.html">CMSIconElement</a></li><li><a href="module-Extras_CMS-Pagelist-CMSPagelistElement.html">CMSPagelistElement</a></li><li><a href="module-Extras_CMS-Search-CMSSearchElement.html">CMSSearchElement</a></li><li><a href="module-Extras_CMS-Tags-CMSTagsElement.html">CMSTagsElement</a></li></ul><h3>Global</h3><ul><li><a href="global.html#parseExtendedAttributes">parseExtendedAttributes</a></li><li><a href="global.html#parseLinkDestination">parseLinkDestination</a></li><li><a href="global.html#parseLinkLabel">parseLinkLabel</a></li><li><a href="global.html#parseLinkTitle">parseLinkTitle</a></li><li><a href="global.html#value">value</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Mar 02 2025 02:00:50 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

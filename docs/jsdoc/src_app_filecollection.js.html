@@ -1,4 +1,32 @@
-/**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: src/app/filecollection.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: src/app/filecollection.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
  * Handler for collection of files for CMS
  *
  * @module CMS
@@ -139,7 +167,7 @@ class FileCollection extends TemplateObject {
 	getPreviousPageUrl() {
 		let url = this.getFileListUrl() + '.html',
 			u = new URLSearchParams(window.location.search);
-		if (this.page !== null && this.page > 1) {
+		if (this.page !== null &amp;&amp; this.page > 1) {
 			u.set('page', (this.page - 1).toString());
 		}
 		return url + '?' + u.toString();
@@ -153,7 +181,7 @@ class FileCollection extends TemplateObject {
 	getNextPageUrl() {
 		let url = this.getFileListUrl() + '.html',
 			u = new URLSearchParams(window.location.search);
-		if (this.page !== null && this.page < this.totalPages) {
+		if (this.page !== null &amp;&amp; this.page &lt; this.totalPages) {
 			u.set('page', (this.page + 1).toString());
 		}
 		return url + '?' + u.toString();
@@ -168,7 +196,7 @@ class FileCollection extends TemplateObject {
 	getPageUrl(page) {
 		let url = this.getFileListUrl() + '.html',
 			u = new URLSearchParams(window.location.search);
-		if (page >= 1 && page <= this.totalPages) {
+		if (page >= 1 &amp;&amp; page &lt;= this.totalPages) {
 			u.set('page', (page).toString());
 		}
 		return url + '?' + u.toString();
@@ -189,7 +217,7 @@ class FileCollection extends TemplateObject {
 		// get the valid links in the directory listing
 		listElement.querySelectorAll('a').forEach(el => {
 			let href = el.getAttribute('href');
-			if (href !== '../' && (href.endsWith(this.config.extension) || href.endsWith('/'))) {
+			if (href !== '../' &amp;&amp; (href.endsWith(this.config.extension) || href.endsWith('/'))) {
 				fileElements.push(href);
 			}
 		});
@@ -273,7 +301,7 @@ class FileCollection extends TemplateObject {
 	 * @method
 	 * @async
 	 * @param {string} directory   Directory URL to scan
-	 * @returns {Promise<string[]>} Array of subdirectories found
+	 * @returns {Promise&lt;string[]>} Array of subdirectories found
 	 */
 	async scanDirectory(directory) {
 		Log.Debug('FileCollection.scanDirectory/' + this.type, 'Scanning directory', directory);
@@ -291,9 +319,9 @@ class FileCollection extends TemplateObject {
 
 						if (
 							// Skip top-level path
-							fileUrl !== this.config.webpath &&
+							fileUrl !== this.config.webpath &amp;&amp;
 							// Must be a file on this site
-							fileUrl.indexOf(this.config.webpath) === 0 &&
+							fileUrl.indexOf(this.config.webpath) === 0 &amp;&amp;
 							// Must end with the extension configured
 							fileUrl.endsWith(this.config.extension)
 						) {
@@ -302,9 +330,9 @@ class FileCollection extends TemplateObject {
 							this.files.push(new File(fileUrl, this.type, this.layout.single, this.config));
 						} else if (
 							// skip checking '?...' sort option links
-							fileUrl[fileUrl.length - 1] === '/' &&
+							fileUrl[fileUrl.length - 1] === '/' &amp;&amp;
 							// skip top-level path
-							fileUrl !== this.config.webpath &&
+							fileUrl !== this.config.webpath &amp;&amp;
 							// skip parent directory links, we're going DOWN, not UP
 							fileUrl.indexOf('/../') === -1
 						) {
@@ -399,7 +427,7 @@ class FileCollection extends TemplateObject {
 			}
 
 			// Detect if the reverse order is requested ("-r" suffix) and inverse the directionality if so
-			for (let i = 0; i < params.length; i++) {
+			for (let i = 0; i &lt; params.length; i++) {
 				if (params[i].match(/-r$/)) {
 					params[i] = {
 						direction: -1,
@@ -415,13 +443,13 @@ class FileCollection extends TemplateObject {
 
 			this[this.type].sort((a, b) => {
 				// Loop through each key requested (in order) and check if one of them differ.
-				for(let i = 0; i < params.length; i++) {
+				for(let i = 0; i &lt; params.length; i++) {
 					if ((a[params[i].key] || null) > (b[params[i].key] || null)) {
 						// A > B, this is 1 in normal and -1 in reversed
 						return params[i].direction;
 					}
-					if ((a[params[i].key] || null) < (b[params[i].key] || null)) {
-						// A < B, this is -1 (1 * -1) in normal and 1 (-1 * -1) in reversed
+					if ((a[params[i].key] || null) &lt; (b[params[i].key] || null)) {
+						// A &lt; B, this is -1 (1 * -1) in normal and 1 (-1 * -1) in reversed
 						return params[i].direction * -1;
 					}
 				}
@@ -507,7 +535,7 @@ class FileCollection extends TemplateObject {
 			maxPages = 1;
 
 		this.files.forEach(file => {
-			if (!file.draft && file.tags && Array.isArray(file.tags)) {
+			if (!file.draft &amp;&amp; file.tags &amp;&amp; Array.isArray(file.tags)) {
 				file.tags.forEach(tag => {
 					let tag_lower = tag.toLowerCase(),
 						pos = tagNames.indexOf(tag_lower);
@@ -529,7 +557,7 @@ class FileCollection extends TemplateObject {
 		});
 
 		// To assist with CSS, assign a relative weight to each entry based on the count and total count discovered
-		for(let i = 0; i < tags.length; i++) {
+		for(let i = 0; i &lt; tags.length; i++) {
 			tags[i]['weight'] = Math.ceil(tags[i].count / maxPages * weightMax);
 		}
 
@@ -611,3 +639,26 @@ class FileCollection extends TemplateObject {
 }
 
 export default FileCollection;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-CMS.html">CMS</a></li><li><a href="module-Extras_ActiveNav.html">Extras/ActiveNav</a></li><li><a href="module-Extras_CMS-Author.html">Extras/CMS-Author</a></li><li><a href="module-Extras_CMS-Icon.html">Extras/CMS-Icon</a></li><li><a href="module-Extras_CMS-Pagelist.html">Extras/CMS-Pagelist</a></li><li><a href="module-Extras_CMS-Search.html">Extras/CMS-Search</a></li><li><a href="module-Extras_CMS-Tags.html">Extras/CMS-Tags</a></li><li><a href="module-Extras_FontAwesome.html">Extras/FontAwesome</a></li></ul><h3>Namespaces</h3><ul><li><a href="Prism.html">Prism</a></li><li><a href="Prism.hooks.html">hooks</a></li><li><a href="Prism.languages.html">languages</a></li><li><a href="Prism.util.html">util</a></li></ul><h3>Classes</h3><ul><li><a href="ButtonElement.html">ButtonElement</a></li><li><a href="MastodonShareElement.html">MastodonShareElement</a></li><li><a href="Token.html">Token</a></li><li><a href="module.exports.html">exports</a></li><li><a href="module-CMS.AttributeBuilder.html">AttributeBuilder</a></li><li><a href="module-CMS.Config.html">Config</a></li><li><a href="module-CMS.ConfigType.html">ConfigType</a></li><li><a href="module-CMS-CMS.html">CMS</a></li><li><a href="module-CMS-CMSError.html">CMSError</a></li><li><a href="module-CMS-File.html">File</a></li><li><a href="module-CMS-FileCollection.html">FileCollection</a></li><li><a href="module-CMS-Log.html">Log</a></li><li><a href="module-Extras_CMS-Author-CMSAuthorElement.html">CMSAuthorElement</a></li><li><a href="module-Extras_CMS-Icon-CMSIconElement.html">CMSIconElement</a></li><li><a href="module-Extras_CMS-Pagelist-CMSPagelistElement.html">CMSPagelistElement</a></li><li><a href="module-Extras_CMS-Search-CMSSearchElement.html">CMSSearchElement</a></li><li><a href="module-Extras_CMS-Tags-CMSTagsElement.html">CMSTagsElement</a></li></ul><h3>Global</h3><ul><li><a href="global.html#parseExtendedAttributes">parseExtendedAttributes</a></li><li><a href="global.html#parseLinkDestination">parseLinkDestination</a></li><li><a href="global.html#parseLinkLabel">parseLinkLabel</a></li><li><a href="global.html#parseLinkTitle">parseLinkTitle</a></li><li><a href="global.html#value">value</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Sun Mar 02 2025 02:00:50 GMT-0500 (Eastern Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

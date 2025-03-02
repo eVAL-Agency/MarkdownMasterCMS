@@ -2,7 +2,6 @@ node_modules/*
 release/
 npm-debug.log
 dist/app/*.js
-docs/jsdoc/
 dist/backend/vendor/
 dist/.htaccess
 dist/config.js

@@ -31,9 +31,9 @@
  *
  * - `type` - The type of collection to render
  * - `layout` - The layout template to use for rendering the collection
- * - `sort` - The sort order to use for the collection
+ * - `sort` - The sort order to use for the collection - see {@link module:CMS~FileCollection#filterSort sort options}
  * - `limit` - The maximum number of items to display
- * - `filter-...` - Filter the collection by a specific attribute
+ * - `filter-...` - Filter the collection by a specific attribute - see {@link module:CMS~File#matchesAttributeSearch filter options}
  *
  * @module Extras/CMS-Pagelist
  * @license The MIT License (MIT)
