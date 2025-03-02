@@ -125,10 +125,13 @@
 
 <!-- CMS.js -->
 <script src="{{webpath}}app/cms.js"></script>
-<!-- Defaults from theme/server -->
+
+<!-- Defaults from theme/server (only available when running in server+client mode) -->
 <script>
-	CMS.config.webpath = '{{webpath}}';
-	CMS.config.layoutDirectory = '{{theme_dir}}layouts/';
+	// Setup config from server
+	CMS.config.load({{config}});
+
+	// Setup all page types supported by this theme
 	CMS.config.addType('pages', {
 		list: 'pages',
 		single: 'page',
@@ -147,14 +150,44 @@
 		sort: 'title',
 		title: 'Author Pages'
 	});
+
+	// Load extra components
 	CMS.loadExtra('cms-pagelist');
 	CMS.loadExtra('cms-icon');
 	CMS.loadExtra('cms-search');
 	CMS.loadExtra('cms-author');
 	CMS.loadExtra('cms-tags');
+
+	/**
+	 * Called immediately upon successful initialization of the CMS
+	 *
+	 * @param {CMS} event.detail.cms The CMS object passed for reference
+	 */
+	document.addEventListener('cms:load', event => {
+		// Add any code required to run after the CMS has loaded here
+	});
+
+	/**
+	 * Called after any page load operation
+	 *
+	 * @param {CMS} event.detail.cms CMS object for reference if needed
+	 * @param {FileCollection[]|null} event.detail.collection Collection of files to view for listing pages
+	 * @param {File|null} event.detail.file Single file to view when available
+	 * @param {string} event.detail.mode Type of view, usually either "list", "single", or error.
+	 * @param {string} event.detail.search Any search query
+	 * @param {string} event.detail.tag Any tag selected to view
+	 * @param {string} event.detail.type Content type selected
+	 */
+	document.addEventListener('cms:route', event => {
+		// Add any code required to run after a page has loaded here
+	});
+
+	// Inform the CMS that the configuration is ready.
+	CMS.load();
 </script>
-<!-- Config -->
-<script src="{{webpath}}config.js"></script>
+
+<!-- Config (only necessary when in client-only mode) -->
+<!-- <script src="{{webpath}}config.js"></script> -->
 
 <script>
 	(() => {

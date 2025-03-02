@@ -45,7 +45,7 @@ class CMS {
 
 		// Wait until the config is ready before doing anything else.
 		document.addEventListener('cms:config', event => {
-			this.setOptions(event.detail);
+			this.load(event.detail);
 		});
 	}
 
@@ -122,9 +122,11 @@ class CMS {
 	/**
 	 * Set the options for the CMS and initialize the system
 	 *
-	 * @param {Object} options List of config options
+	 * @param {Object} [options={}] List of config options
 	 */
-	setOptions(options) {
+	load(options) {
+		options = options || {};
+
 		this.config.load(options);
 
 		if (this.config.debug) {

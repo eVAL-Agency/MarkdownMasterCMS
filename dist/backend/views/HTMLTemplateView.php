@@ -46,6 +46,7 @@ class HTMLTemplateView extends View {
 			'{{theme_dir}}' => Config::GetWebPath() . 'themes/' . Config::GetTheme() . '/',
 			'{{webpath}}' => Config::GetWebPath(),
 			'{{year}}' => date('Y'),
+			'{{config}}' => Config::GetClientConfig(),
 		];
 		$contents = str_replace(array_keys($replacements), array_values($replacements), $contents);
 

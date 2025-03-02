@@ -12,9 +12,9 @@
 return [
 	'host' => 'http://localhost',
 	'webpath' => '/',
-	'defaultView' => 'landings/home',
-	'types' => 'pages, casestudies, landings',
-	'debug' => true,
+	'defaultView' => 'pages/home',
+	'types' => 'pages, posts',
+	'debug' => false,
 
 	// Uncomment and configure to enable email sending
 	/*

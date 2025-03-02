@@ -181,6 +181,29 @@ class Config {
 		return self::$_config !== null;
 	}
 
+	public static function GetElementId(): string {
+		return self::_Get('elementId') ?? 'cms';
+	}
+
+	/**
+	 * Get the configuration for client setup
+	 *
+	 * Mimics config.js to let the owner not have to worry about two config files.
+	 *
+	 * @return string
+	 */
+	public static function GetClientConfig(): string {
+		$config = [
+			'defaultView' => self::GetDefaultView(),
+			'elementId' => self::GetElementId(),
+			'debug' => self::GetDebug(),
+			'webpath' => self::GetWebPath(),
+			'layoutDirectory' => self::GetWebPath() . 'themes/' . self::GetTheme() . '/layouts/',
+		];
+
+		return json_encode($config);
+	}
+
 	/**
 	 * Override system configuration, useful in tests
 	 * @param array $config
