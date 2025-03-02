@@ -1,0 +1,34 @@
+<!-- Post Template -->
+<section class="post-container">
+	<h1 class="post-title">
+		<%= data.title %>
+	</h1>
+
+	<article class="post">
+		<% if(data.date || data.author || data.tags) { %>
+			<div class="post-subheading">
+				<% if(data.author) { %>
+					<cms-author author="<%= data.author %>" layout="author-link-embed"></cms-author>
+				<% } %>
+
+				<% if(data.date) { %>
+					<time><%= data.date %></time>
+				<% } %>
+
+				<% if(data.tags) { %>
+					<cms-tags type="posts" file="<%= data.permalink %>"></cms-tags>
+				<% } %>
+			</div>
+		<% } %>
+
+		<div class="post-content">
+			<%= data.body %>
+		</div>
+	</article>
+
+	<aside>
+		<% if(data.author) { %>
+			<cms-author author="<%= data.author %>" layout="author-embed">Author: <%= data.author %></cms-author>
+		<% } %>
+	</aside>
+</section>

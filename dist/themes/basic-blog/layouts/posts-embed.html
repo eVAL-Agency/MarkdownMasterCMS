@@ -1,0 +1,22 @@
+<% data.posts.forEach(function(post) { %>
+	<% if(!post.draft) { %>
+		<a class="post" href="<%= post.permalink %>">
+			<div class="post-title">
+				<%= post.title %>
+			</div>
+			<time class="post-date"><%= post.date %></time>
+
+			<% if(post.image) { %>
+				<img src="<%= post.image.src %>" alt="<%= post.title %>">
+			<% } %>
+
+			<div class="post-content">
+				<% if(post.excerpt) { %>
+					<p><%= post.excerpt %></p>
+				<% } %>
+			</div>
+
+			<div class="post-overlay"><!-- Intentionally empty, but useful in styling --></div>
+		</a>
+	<% } %>
+<% }) %>

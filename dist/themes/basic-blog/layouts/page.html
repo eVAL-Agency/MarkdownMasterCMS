@@ -1,0 +1,44 @@
+<!-- Page Template -->
+<% if (data.get('heading', null)) { %>
+	<section class="page-heading">
+		<% data.heading.forEach(config => { %>
+			<% if (config.widget === 'pagelist') { %>
+				<cms-pagelist
+					type="<%= config.type ?? 'posts' %>"
+					layout="<%= config.layout ?? 'posts-embed' %>"
+					limit="<%= config.limit ?? 3 %>"
+					sort="<%= config.sort ?? 'random' %>">Loading Content...</cms-pagelist>
+			<% } %>
+		<% }); %>
+	</section>
+<% } %>
+
+<main class="page-container<% if (data.get('sidebar', null)) { %> has-sidebar<% } %>">
+	<article class="page">
+		<h1 class="page-title">
+			<%= data.title %>
+		</h1>
+
+		<div class="page-content">
+			<%= data.body %>
+		</div>
+	</article>
+
+	<% if (data.get('sidebar', null)) { %>
+		<aside>
+			<% data.sidebar.forEach(config => { %>
+				<% if (config.widget === 'pagelist') { %>
+					<% if (config.type ?? 'posts' === 'authors') { %>
+						<h2>Meet our Authors</h2>
+					<% } %>
+
+					<cms-pagelist
+						type="<%= config.type ?? 'posts' %>"
+						layout="<%= config.layout ?? 'posts-embed' %>"
+						limit="<%= config.limit ?? 3 %>"
+						sort="<%= config.sort ?? 'random' %>">Loading Content...</cms-pagelist>
+				<% } %>
+			<% }); %>
+		</aside>
+	<% } %>
+</main>

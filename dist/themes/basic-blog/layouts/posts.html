@@ -1,0 +1,54 @@
+<!-- Post List Template -->
+<main class="posts-list">
+	<h1 class="page-title">
+		Posts
+	</h1>
+
+	<section class="posts">
+		<% data.paginate(10) %>
+		<% data.posts.forEach(function(post) { %>
+			<% if(!post.draft) { %>
+				<article class="post">
+					<h2 class="post-title">
+						<a href="<%= post.permalink %>"><%= post.title %></a>
+					</h2>
+
+					<% if(post.date) { %>
+						<div class="post-subheading">
+							<time class="post-date"><%= post.date %></time>
+						</div>
+					<% } %>
+
+					<% if(post.image) { %>
+						<div class="post-image">
+							<img src="<%= post.image.src %>" alt="<%= post.title %>">
+						</div>
+					<% } %>
+
+					<% if(post.excerpt) { %>
+						<div class="post-content">
+							<p><%= post.excerpt %></p>
+						</div>
+					<% } %>
+				</article>
+			<% } %>
+		<% }) %>
+
+		<% if (data.totalPages > 1) { %>
+		<% if (data.page > 1) { %>
+		<a href="<%= data.getPreviousPageUrl() %>" title="Previous Page">
+			&laquo;
+		</a>
+		<% } %>
+		Page <%= data.page %> of <%= data.totalPages %>
+		<% if (data.page < data.totalPages) { %>
+		<a href="<%= data.getNextPageUrl() %>" title="Next Page">
+			&raquo;
+		</a>
+		<% } %>
+		<% } %>
+	</section>
+	<aside>
+		<cms-tags type="posts" as="cloud"></cms-tags>
+	</aside>
+</main>

@@ -1,0 +1,25 @@
+<!-- Use https://schema.org/Person for more options here -->
+<div itemscope itemtype="https://schema.org/Person">
+	<% if(data.image) { %>
+		<a href="<%= data.permalink %>" class="image-link">
+			<img itemprop="image" src="<%= data.image.src %>" alt="<%= data.image.title %>"/>
+		</a>
+	<% } %>
+
+	<a href="<%= data.permalink %>" class="title-link">
+		<span itemprop="name"><%= data.title %></span>
+	</a>
+
+	<% if(data.get('social', null)) { %>
+		<ul class="social-links">
+			<% Object.keys(data.social).forEach(function(key) { %>
+			<li>
+				<a itemprop="url" href="<%= data.social[key] %>" title="<%= data.title %> on <%= key %>" target="_blank">
+					<i is="cms-icon" icon="<%= key %>"></i>
+				</a>
+			</li>
+			<% }) %>
+		</ul>
+	<% } %>
+
+</div>

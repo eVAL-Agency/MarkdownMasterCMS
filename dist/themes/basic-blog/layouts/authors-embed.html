@@ -1,0 +1,18 @@
+<!-- Page List Template -->
+<% data.authors.forEach(function(author) { %>
+	<div class="author" itemscope itemtype="https://schema.org/Person">
+		<% if(author.image) { %>
+			<a href="<%= author.permalink %>" class="image-link">
+				<img itemprop="image" src="<%= author.image.src %>" alt="<%= author.title %>"/>
+			</a>
+		<% } %>
+
+		<a href="<%= author.permalink %>" class="title-link">
+			<span itemprop="name"><%= author.title %></span>
+		</a>
+
+		<% if(author.excerpt) { %>
+			<p><%= author.excerpt %></p>
+		<% } %>
+	</div>
+<% }) %>

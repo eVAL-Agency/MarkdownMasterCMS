@@ -1,0 +1,41 @@
+<!-- Author Template -->
+<article class="author" itemscope itemtype="https://schema.org/Person">
+
+	<h1 class="post-title">
+		<span itemprop="name"><%= data.title %></span>
+	</h1>
+
+	<% if(data.image) { %>
+		<img class="post-image" itemprop="image" src="<%= data.image.src %>"/>
+	<% } %>
+
+	<div class="post-content">
+		<%= data.body %>
+	</div>
+
+	<% if(data.get('social', null)) { %>
+		<ul class="social-links">
+			<% Object.keys(data.social).forEach(function(key) { %>
+				<li>
+					<a itemprop="url" href="<%= data.social[key] %>" title="<%= data.title %> on <%= key %>" target="_blank">
+						<i is="cms-icon" icon="<%= key %>"></i>
+					</a>
+				</li>
+			<% }) %>
+		</ul>
+	<% } %>
+</article>
+
+<section class="author-posts">
+	<h2>Recent Posts</h2>
+
+	<cms-pagelist
+		type="posts"
+		layout="posts-embed"
+		sort="recent"
+		filter-author="<%= data.title %>, <%= data.alias %>"
+		limit="9"
+	>
+		Loading Content...
+	</cms-pagelist>
+</section>
