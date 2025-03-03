@@ -46,6 +46,7 @@ class CMS {
 		// Wait until the config is ready before doing anything else.
 		document.addEventListener('cms:config', event => {
 			this.load(event.detail);
+			this.init();
 		});
 	}
 
@@ -147,8 +148,6 @@ class CMS {
 		else {
 			setSystemLayoutPath(this.config.webpath, this.config.layoutDirectory);
 		}
-
-		this.init();
 	}
 
 	/**

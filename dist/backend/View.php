@@ -27,6 +27,8 @@
  */
 
 class View {
+	public int $status = 200;
+
 	public function render() {
 		throw new Exception('render() method must be extended');
 	}

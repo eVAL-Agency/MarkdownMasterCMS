@@ -509,6 +509,50 @@ cms-tags .tag-weight-10 {
 	font-size: 140%;
 }
 
+cms-form {
+	position: relative;
+}
+cms-form label {
+	display: block;
+	margin: 1rem 0 0.25rem;
+}
+cms-form input[type="text"],
+cms-form input[type="email"],
+cms-form input[type="password"],
+cms-form textarea {
+	width: calc(100% - 1em);
+	padding: 0.5em;
+	border: 1px solid #ccc;
+	border-radius: 0.25em;
+}
+cms-form input[type="submit"] {
+	background-color: var(--color-accent1);
+	color: white;
+	border: none;
+	padding: 0.5em 1em;
+	border-radius: 0.25em;
+	cursor: pointer;
+}
+cms-form .required-note {
+	font-size: 0.75rem;
+	color: #fd4545;
+}
+cms-form input.error,
+cms-form textarea.error {
+	border-color: #fd4545;
+	background-color: #ffdbdb;
+}
+cms-form .error-message {
+	color: #a20202;
+	transition: transform 0.5s ease;
+	transform: scaleY(1);
+	transform-origin: top;
+	padding-top: 0.5em;
+}
+cms-form .error-message.hidden {
+	transform: scaleY(0);
+}
+
 .landing-heading-posts cms-pagelist {
 	display: flex;
 	margin: 1rem 3rem;

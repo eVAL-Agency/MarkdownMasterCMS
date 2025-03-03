@@ -8,4 +8,12 @@ return [
 
 	// ID of element to attach CMS.js to
 	'elementId' => 'cms',
+
+	'extras' => [
+		'cms-pagelist' => [],
+		'cms-icon' => [],
+		'cms-search' => [],
+		'cms-author' => [],
+		'cms-tags' => [],
+	],
 ];

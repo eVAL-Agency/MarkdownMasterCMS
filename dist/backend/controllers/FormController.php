@@ -110,22 +110,23 @@ class FormController extends Controller {
 		];
 
 		// Validate the form data and assign all keys to the form data
+		$errors = [];
 		foreach($formConfig['fields'] as $field => $fieldSettings) {
 			$required = $fieldSettings['required'] ?? false;
 			$type = $fieldSettings['type'] ?? 'text';
 			$value = trim($data[$field] ?? '');
 
 			if ($required && $value === '') {
-				throw new Exception('Invalid request - missing required field: ' . $field, 400);
+				$errors[$field] = 'Field is required';
 			}
 
 			if ($type === 'email') {
 				$validator = new EmailValidator();
 				if (!$validator->isValid($value, new RFCValidation())) {
-					throw new Exception('Invalid request - invalid email address: ' . $field, 400);
+					$errors[$field] = 'Invalid email address';
 				}
 				if (!$validator->isValid($value, new DNSCheckValidation())) {
-					throw new Exception('Invalid request - invalid email address: ' . $field, 400);
+					$errors[$field] = 'Invalid or nonexistent email address domain';
 				}
 			}
 
@@ -133,6 +134,13 @@ class FormController extends Controller {
 		}
 
 		$view = new JSONView();
+		if (count($errors)) {
+			$view->status = 400;
+			$view->data['success'] = false;
+			$view->data['message'] = 'Invalid form data';
+			$view->data['errors'] = $errors;
+			return $view;
+		}
 
 		foreach($formConfig['actions'] as $actionSettings) {
 			switch($actionSettings['action']) {
@@ -172,12 +180,11 @@ class FormController extends Controller {
 
 		$template = null;
 		if (isset($settings['template'])) {
-			$tplName = $settings['action'] . '-' . $settings['template'] . '.tpl';
-			if (file_exists('layouts/' . $tplName)) {
-				$template = file_get_contents('layouts/' . $tplName);
-				foreach($data as $key => $value) {
-					$template = str_replace('{' . $key . '}', $value, $template);
-				}
+			$tplName = Config::GetRootPath() . 'themes/' . Config::GetTheme() .
+				'/layouts/' . $settings['action'] . '-' . $settings['template'] . '.tpl';
+			if (file_exists($tplName)) {
+				$template = file_get_contents($tplName);
+				$template = str_replace(array_values($data), array_keys($data), $template);
 
 				$email->text($template);
 			}

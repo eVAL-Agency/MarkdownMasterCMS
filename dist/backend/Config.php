@@ -169,6 +169,10 @@ class Config {
 		return $forms[$formName];
 	}
 
+	public static function GetForms(): array {
+		return self::_Get('forms') ?? [];
+	}
+
 	public static function GetDebug(): bool {
 		return self::_Get('debug') ?? false;
 	}
@@ -185,6 +189,10 @@ class Config {
 		return self::_Get('elementId') ?? 'cms';
 	}
 
+	public static function GetExtras(): array {
+		return self::_Get('extras') ?? [];
+	}
+
 	/**
 	 * Get the configuration for client setup
 	 *
@@ -193,12 +201,30 @@ class Config {
 	 * @return string
 	 */
 	public static function GetClientConfig(): string {
+		$extras = Config::GetExtras();
+
+		// Transpose form configuration into the client
+		$forms = Config::GetForms();
+		if (count($forms)) {
+			$formClientConfig = [];
+			foreach ($forms as $name => $form) {
+				$formClientConfig[$name] = [
+					'fields' => [],
+				];
+				foreach($form['fields'] as $fieldName => $field) {
+					$formClientConfig[$name]['fields'][$fieldName] = $field;
+				}
+			}
+			$extras['cms-form'] = $formClientConfig;
+		}
+
 		$config = [
 			'defaultView' => self::GetDefaultView(),
 			'elementId' => self::GetElementId(),
 			'debug' => self::GetDebug(),
 			'webpath' => self::GetWebPath(),
 			'layoutDirectory' => self::GetWebPath() . 'themes/' . self::GetTheme() . '/layouts/',
+			'extras' => $extras,
 		];
 
 		return json_encode($config);

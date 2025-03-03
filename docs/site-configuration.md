@@ -23,7 +23,7 @@ within the `config.js` file, then load that file in your index.html.
 
 ---
 
-**Host** (Server and Client)
+#### Host (Server and Client)
 
 Set this to the host of the site, this is used to generate URLs for the site.
 
@@ -33,7 +33,7 @@ Set this to the host of the site, this is used to generate URLs for the site.
 
 ---
 
-**webpath** (Server and Client)
+#### webpath (Server and Client)
 
 Set this to the web path to use for the URL,
 for example, if your site is located in https://domain.tld/cms/
@@ -46,7 +46,7 @@ NOTE, a trailing slash is REQUIRED.
 
 ---
 
-**defaultView** (Server and Client)
+#### defaultView (Server and Client)
 
 The URL that will be the default view that will initially load
 
@@ -59,7 +59,7 @@ The URL that will be the default view that will initially load
 
 ---
 
-**Theme** (Server only)
+#### Theme (Server only)
 
 Set the theme to use for the site, this is the name of the directory within the `themes` directory.
 
@@ -69,7 +69,7 @@ Set the theme to use for the site, this is the name of the directory within the 
 
 ---
 
-**Debug Mode** (Server and Client)
+#### Debug Mode (Server and Client)
 
 Set to true to enable debug logging, (will enable logging events to the console)
 
@@ -79,7 +79,7 @@ Set to true to enable debug logging, (will enable logging events to the console)
 
 ---
 
-**Email** (Server only)
+#### Email (Server only)
 
 Set the email configuration for the site, this is used for sending emails from the site.
 
@@ -97,8 +97,65 @@ Syntax of the DNS must be: `smtp://username:password@host`
 
 ---
 
-**Forms** (Server only)
+#### Forms (Server and partially client)
 
 Set the forms configuration for the site, this is used for processing forms on the site.
 
-(@todo finish)
+The `actions` key in each form configuration is utilized by the backend
+and never transmitted to the client, but field definitions are shared between
+server and client configuration.
+
+```php
+'forms' => [
+    'contact' => [
+        'fields' => [
+            'name' => [
+                'type' => 'text',
+                'required' => true,
+            ],
+            'email' => [
+                'type' => 'email',
+                'required' => true,
+            ],
+            'message' => [
+                'type' => 'textarea',
+                'required' => true,
+            ],
+        ],
+        'actions' => [
+            'email' => [
+                'to' => 'you@yourdomain.com',
+            ],
+        ],
+    ],
+],
+```
+
+In this example, a form named `contact` is defined
+with the fields `name`, `email`, and `message` with an action to email the form data.
+
+**All field properties** (shared with client):
+
+* `type` -- The type of field, can be `text`, `email`, `textarea`
+* `required` -- Set to true if the field is required
+* `label` -- The label to display for the field
+* `placeholder` -- The placeholder text for the field
+
+
+**Supported actions** (only used on server):
+
+* `email` -- Send an email with the form data
+* `test` -- Test handler to return the form data as a JSON object
+
+**Email options:**
+
+* `to` -- The email address to send the form data to
+* `subject` -- The subject of the email
+* `template` -- The template to use for the email
+
+If a template is requested, it uses `layouts/email-{templatename}.tpl` to render the data.
+Else, (or if the template is not found) it will render the data as plain text.
+
+**Test options:**
+
+No options; just useful for debugging
