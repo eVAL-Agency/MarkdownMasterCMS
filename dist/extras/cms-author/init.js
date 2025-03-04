@@ -47,52 +47,46 @@
  * Provides `<cms-author>` tag functionality.
  */
 class CMSAuthorElement extends HTMLElement {
-	static get observedAttributes() {
-		return ['author', 'layout'];
-	}
-
 	constructor() {
 		// Always call super first in constructor
 		super();
-		this._render();
-
-		// Initially when loaded, ignore any attribute change requests
-		this.settled = false;
-		setTimeout(() => {
-			this.settled = true;
-		}, 200);
+		// Element is not connected to the DOM
+		this.connected = false;
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
-		if (!this.settled) {
-			// The CMS will sometimes load the DOM, then reload when adding to the page.
-			// Prevent double-loading on pageload
-			return;
-		}
-		if (['author', 'layout'].indexOf(name) !== -1 && oldValue !== newValue) {
-			// Only re-render if an actionable attribute is modified
-			this._render();
-		}
+	/**
+	 * Called when the element is added to the DOM.
+	 */
+	connectedCallback() {
+		// Element is now connected to the DOM
+		this.connected = true;
+		document.addEventListener('cms:route', this.render.bind(this), {once: true});
 	}
 
-	_render() {
+	/**
+	 * Called when the element is removed from the DOM.
+	 */
+	disconnectedCallback() {
+		// Element is no longer connected to the DOM
+		this.connected = false;
+	}
+
+	render() {
+		// If not connected to the DOM anymore, don't render
+		if (!this.connected)  return;
+
 		let author = this.getAttribute('author'),
 			layout = this.getAttribute('layout'),
 			collection,
 			results;
 
 		// This module requires both an author and the authors component to be loaded.
-		// Since this is a live component which watches attributes, this should be done
-		// before any CMS work is checked to save cycles
 		if (!author) {
+			this.innerHTML = 'ERROR: No author specified';
 			return;
 		}
 		if (!layout) {
-			return;
-		}
-
-		if (!(Object.hasOwn(window, 'CMS') && window.CMS != null)) {
-			// Only run once the CMS is loaded
+			this.innerHTML = 'ERROR: No layout specified';
 			return;
 		}
 

@@ -50,32 +50,34 @@ class CMSPagelistElement extends HTMLElement {
 	constructor() {
 		// Always call super first in constructor
 		super();
-		this._render();
-
-		// Initially when loaded, ignore any attribute change requests
-		this.settled = false;
-		setTimeout(() => {
-			this.settled = true;
-		}, 200);
+		// Element is not connected to the DOM
+		this.connected = false;
 	}
 
-	attributeChangedCallback(name, oldValue, newValue) {
-		if (!this.settled) {
-			// The CMS will sometimes load the DOM, then reload when adding to the page.
-			// Prevent double-loading on pageload
-			return;
-		}
+	/**
+	 * Called when the element is added to the DOM.
+	 */
+	connectedCallback() {
+		// Element is now connected to the DOM
+		this.connected = true;
+		document.addEventListener('cms:route', this.render.bind(this), {once: true});
+	}
 
-		if (['layout', 'link', 'sort', 'type'].indexOf(name) !== -1 && oldValue !== newValue) {
-			// Only re-render if an actionable attribute is modified
-			this._render();
-		}
+	/**
+	 * Called when the element is removed from the DOM.
+	 */
+	disconnectedCallback() {
+		// Element is no longer connected to the DOM
+		this.connected = false;
 	}
 
 	/**
 	 * Execute the plugin on a given node to render the requested content inside it
 	 */
-	_render() {
+	render() {
+		// If not connected to the DOM anymore, don't render
+		if (!this.connected)  return;
+
 		let type = this.getAttribute('type'),
 			layout = this.getAttribute('layout'),
 			sort = this.getAttribute('sort'),
@@ -85,17 +87,13 @@ class CMSPagelistElement extends HTMLElement {
 			collection;
 
 		if (type === null) {
-			return;
-		}
-
-		if (!(Object.hasOwn(window, 'CMS') && window.CMS != null)) {
-			// Only run once the CMS is loaded
+			this.innerHTML = 'ERROR: No type specified';
 			return;
 		}
 
 		collection = window.CMS.getCollection(type);
 		if (collection === null) {
-			// Collection not found
+			CMS.log.Warn('cms-pagelist', 'Collection ' + collection + ' not located in CMS');
 			return;
 		}
 

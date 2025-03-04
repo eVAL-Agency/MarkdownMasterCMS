@@ -46,16 +46,34 @@
  * Provides `<cms-tags>` tag functionality.
  */
 class CMSTagsElement extends HTMLElement {
-	static get observedAttributes() {
-		return ['type', 'as', 'file', 'sort'];
-	}
-
 	constructor() {
 		// Always call super first in constructor
 		super();
+		// Element is not connected to the DOM
+		this.connected = false;
 	}
 
+	/**
+	 * Called when the element is added to the DOM.
+	 */
 	connectedCallback() {
+		// Element is now connected to the DOM
+		this.connected = true;
+		document.addEventListener('cms:route', this.render.bind(this), {once: true});
+	}
+
+	/**
+	 * Called when the element is removed from the DOM.
+	 */
+	disconnectedCallback() {
+		// Element is no longer connected to the DOM
+		this.connected = false;
+	}
+
+	render() {
+		// If not connected to the DOM anymore, don't render
+		if (!this.connected)  return;
+
 		let type = this.getAttribute('type'),
 			file = this.getAttribute('file'),
 			as = this.getAttribute('as') ?? 'default',
