@@ -34,3 +34,17 @@ jobs:
       - run: npm run build
       # Run all test suites
       - run: npm run test
+      # Generate docs (to be uploaded)
+      - run: npm run docs
+      - name: Set SSH Key
+        shell: bash
+        run: |
+            mkdir -p ~/.ssh/
+            echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+            chmod 600 ~/.ssh/id_rsa
+            ssh-keyscan -t rsa markdownmaster.com >> ~/.ssh/known_hosts
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.PROD_DEPLOYMENT_KEY}}
+      - name: Upload docs to Production
+        run: |
+          rsync -avz --delete build/jsdoc/ markdownmaster@markdownmaster.com:/home/markdownmaster/public_html/docs/latest
