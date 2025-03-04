@@ -1031,6 +1031,10 @@ cms-form .error-message.hidden {
 	text-decoration: none;
 }
 
+.error-page {
+	margin: 1rem 3rem;
+}
+
 
 footer .container {
 	display: flex;
