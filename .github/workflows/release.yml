@@ -1,0 +1,81 @@
+name: Release Artifacts
+
+on:
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+
+jobs:
+  build_release:
+    name: build_release
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [22.x]
+        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
+    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          fetch-depth: 0
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      # Install dependencies in a ci mode
+      - run: npm ci
+      # Run a lint test to verify the syntax
+      - run: npm run lint
+      # Check for issues and compile the base code
+      - run: npm run build
+      # Run all test suites
+      - run: npm run test
+      # Generate docs (to be uploaded)
+      - run: npm run docs
+
+      - name: Set SSH Key
+        shell: bash
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -t rsa markdownmaster.com >> ~/.ssh/known_hosts
+        env:
+          SSH_PRIVATE_KEY: ${{secrets.PROD_DEPLOYMENT_KEY}}
+
+      - name: Upload docs to Production
+        run: |
+          # Trim "v1.2.3" down to just "v1.2"
+          TAG="$(echo "$TAG_NAME" | sed 's:\(v[0-9]*\.[0-9]*\).*:\1:')"
+          rsync -avz --delete build/jsdoc/ markdownmaster@markdownmaster.com:/home/markdownmaster/public_html/docs/$TAG
+        env:
+          TAG_NAME: ${{ github.ref }}
+
+      # Build the deployable tarball
+      # will set variable steps.archive.outputs.filename
+      - name: Generate Archive
+        id: archive
+        run: npm run pack
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          draft: false
+          prerelease: false
+          release_name: MarkdownMaster CMS ${{ github.ref }}
+          tag_name: ${{ github.ref }}
+          body_path: RELEASE.md
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+      
+      - name: Upload Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release/${{ steps.archive.outputs.filename }}
+          asset_name: ${{ steps.archive.outputs.filename }}
+          asset_content_type: application/gzip
