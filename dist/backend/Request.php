@@ -81,11 +81,25 @@ class Request {
 				echo '<trace><![CDATA[' . $trace . ']]></trace>';
 			}
 		} elseif ($this->prefersHTML()) {
-			header('Content-Type: text/html');
-			echo '<h1>Error ' . $code . '</h1>';
-			echo '<p>' . $message . '</p>';
+			// Use the templater to try to render meaningful links and content, despite the error.
+			$view = new HTMLTemplateView();
+			$view->status = $code;
+			$view->body = '<h1>Error ' . $code . '</h1>' . '<p>' . $message . '</p>';
 			if ($trace) {
-				echo '<pre>' . $trace . '</pre>';
+				$view->body .= '<pre>' . $trace . '</pre>';
+			}
+
+			try {
+				$view->render();
+			}
+			catch (Exception $e) {
+				// If the templater fails, just output the error message.
+				header('Content-Type: text/html');
+				echo '<h1>Error ' . $code . '</h1>';
+				echo '<p>' . $message . '</p>';
+				if ($trace) {
+					echo '<pre>' . $trace . '</pre>';
+				}
 			}
 		} else {
 			header('Content-Type: text/plain');
