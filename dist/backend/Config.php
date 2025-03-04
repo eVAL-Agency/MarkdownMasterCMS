@@ -59,9 +59,6 @@ class Config {
 			if (!isset($config['defaultView']) || $config['defaultView'] === '') {
 				throw new Exception('Configuration setting "defaultView" is required', 500);
 			}
-			if (!isset($config['theme']) || $config['theme'] === '') {
-				throw new Exception('Configuration setting "theme" is required', 500);
-			}
 			if (!isset($config['types']) || $config['types'] === '') {
 				throw new Exception('Configuration setting "types" is required', 500);
 			}
@@ -178,7 +175,7 @@ class Config {
 	}
 
 	public static function GetTheme(): string {
-		return self::_Get('theme');
+		return self::_Get('theme') ?? '';
 	}
 
 	public static function IsReady(): bool {

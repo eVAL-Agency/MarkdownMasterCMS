@@ -37,6 +37,10 @@ class HTMLTemplateView extends View {
     public function render() {
 		$templateFile = 'themes/' . Config::GetTheme() . '/index.html';
 		if (!file_exists($templateFile)) {
+			// Try the default (legacy) index.html in the root directory.
+			$templateFile = 'index.html';
+		}
+		if (!file_exists($templateFile)) {
 			throw new Exception('No theme index template found', 500);
 		}
 
