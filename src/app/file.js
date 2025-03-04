@@ -334,7 +334,7 @@ class File extends TemplateObject {
 	 * Parse file body from the markdown content
 	 */
 	async parseBody() {
-		return new Promise(resolve => {
+		return new Promise((resolve, reject) => {
 			if (this.bodyLoaded) {
 				// Only render content if it hasn't been loaded yet, (allows for repeated calls)
 				resolve(this.body);
@@ -363,6 +363,9 @@ class File extends TemplateObject {
 
 					this.bodyLoaded = true;
 					resolve(this.body);
+				})
+				.catch(e => {
+					reject(e);
 				});
 		});
 	}
@@ -496,6 +499,8 @@ class File extends TemplateObject {
 				}).catch(e => {
 					reject(e);
 				});
+			}).catch(e => {
+				reject(e);
 			});
 		});
 	}

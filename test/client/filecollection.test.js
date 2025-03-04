@@ -234,6 +234,9 @@ describe('FileCollection', () => {
 		});
 	});
 	describe('getFileByPermalink', () => {
+		/**
+		 * Test a basic lookup by permalink
+		 */
 		it('basic', () => {
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
 			collection.files = good_files;
@@ -242,14 +245,19 @@ describe('FileCollection', () => {
 			let file = collection.getFileByPermalink('/tests/test2.html');
 			expect(file.url).toEqual('/tests/test2.md');
 		});
+
+		/**
+		 * Test a lookup by permalink that doesn't exist
+		 *
+		 * To support draft pages, this should still return a file handle.
+		 */
 		it('not found', () => {
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
 			collection.files = good_files;
 
 			collection.resetFilters();
-			expect(() => {
-				collection.getFileByPermalink('/tests/test-invalid.html')
-			}).toThrow(CMSError);
+			let file = collection.getFileByPermalink('/tests/test-invalid.html');
+			expect(file.url).toEqual('/tests/test-invalid.md');
 		});
 
 	});

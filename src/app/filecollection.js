@@ -557,7 +557,27 @@ class FileCollection extends TemplateObject {
 		});
 
 		if (foundFiles.length === 0) {
-			throw new CMSError(404, 'Requested file could not be located');
+			// The page may still exist, just not have been loaded by the server scan.
+			// This occurs when the page is flagged as draft mode,
+			// (but draft pages should still be visible if you know the URL).
+			let url = permalink.replace('.html', '.md');
+			if (!url.startsWith(this.config.webpath)) {
+				url = this.config.webpath + url;
+			}
+			let f = new File(
+				url,
+				this.type,
+				this.layout.single,
+				this.config
+			);
+
+			try {
+				f.parseFilename();
+				f.parsePermalink();
+				return f;
+			} catch (e) {
+				throw new CMSError(404, 'Requested file could not be located');
+			}
 		}
 
 		return foundFiles[0];
