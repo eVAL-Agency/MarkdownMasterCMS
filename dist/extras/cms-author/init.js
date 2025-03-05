@@ -50,31 +50,16 @@ class CMSAuthorElement extends HTMLElement {
 	constructor() {
 		// Always call super first in constructor
 		super();
-		// Element is not connected to the DOM
-		this.connected = false;
 	}
 
 	/**
 	 * Called when the element is added to the DOM.
 	 */
 	connectedCallback() {
-		// Element is now connected to the DOM
-		this.connected = true;
-		document.addEventListener('cms:route', this.render.bind(this), {once: true});
-	}
-
-	/**
-	 * Called when the element is removed from the DOM.
-	 */
-	disconnectedCallback() {
-		// Element is no longer connected to the DOM
-		this.connected = false;
+		this.render();
 	}
 
 	render() {
-		// If not connected to the DOM anymore, don't render
-		if (!this.connected)  return;
-
 		let author = this.getAttribute('author'),
 			layout = this.getAttribute('layout'),
 			collection,
@@ -91,9 +76,10 @@ class CMSAuthorElement extends HTMLElement {
 		}
 
 		// Load the collection from the CMS
-		collection = window.CMS.getCollection('authors');
+		collection = CMS.getCollection('authors');
 		if (!collection) {
-			window.CMS.log.Warn('cms-author', '<cms-author> tag requires an "authors" collection to be available');
+			CMS.log.Error('Extras/cms-author', '<cms-author> tag requires an "authors" collection to be available');
+			this.parentElement.removeChild(this);
 			return;
 		}
 
@@ -103,14 +89,14 @@ class CMSAuthorElement extends HTMLElement {
 
 		// Only render if at least one found, (just pick the first)
 		if (results.length >= 1) {
-			window.CMS.fetchLayout(layout, results[0])
+			CMS.fetchLayout(layout, results[0])
 				.then(html => {
 					this.innerHTML = html;
 				}).catch(error => {
-					window.CMS.log.Error('cms-author', 'Unable to render <cms-author> template [' + layout + ']', error);
+					CMS.log.Error('Extras/cms-author', 'Unable to render <cms-author> template [' + layout + ']', error);
 				});
 		} else {
-			window.CMS.log.Warn('cms-author', 'No author could be found matching [' + author + ']');
+			CMS.log.Error('Extras/cms-author', 'No author could be found matching [' + author + ']');
 		}
 	}
 }

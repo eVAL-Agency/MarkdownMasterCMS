@@ -53,7 +53,7 @@ document.addEventListener('cms:route', () => {
 		navActiveClass = CMS.config.extra('active-nav', 'navActiveClass', 'active');
 
 	if (!navSelector) {
-		console.warn('No "navSelector" defined for the "active-nav" plugin.');
+		CMS.log.Error('Extras/active-nav', 'No configuration setting "navSelector" defined.');
 		return;
 	}
 

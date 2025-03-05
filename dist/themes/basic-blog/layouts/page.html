@@ -3,6 +3,7 @@
 	<section class="page-heading">
 		<% data.heading.forEach(config => { %>
 			<% if (config.widget === 'pagelist') { %>
+				<% CMS.loadExtra('cms-pagelist') %>
 				<cms-pagelist
 					type="<%= config.type ?? 'posts' %>"
 					layout="<%= config.layout ?? 'posts-embed' %>"
@@ -28,6 +29,8 @@
 		<aside>
 			<% data.sidebar.forEach(config => { %>
 				<% if (config.widget === 'pagelist') { %>
+					<% CMS.loadExtra('cms-pagelist') %>
+
 					<% if (config.type ?? 'posts' === 'authors') { %>
 						<h2>Meet our Authors</h2>
 					<% } %>

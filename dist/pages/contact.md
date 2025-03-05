@@ -1,6 +1,8 @@
 ---
 title: Contact us
 description: Contact us to learn more
+extras:
+  - cms-form
 ---
 
 To edit the fields on this contact form, edit the fields and actions within `config.php`.

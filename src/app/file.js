@@ -205,7 +205,7 @@ class File extends TemplateObject {
 					this.content = content;
 					this.parseContent();
 
-					Log.Debug('File.loadContent/' + this.type, 'Loaded file ' + this.url);
+					Log.Debug('File.loadContent/' + this.type, 'Loaded file ', this);
 					resolve(content);
 				})
 				.catch(e => {

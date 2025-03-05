@@ -8,6 +8,7 @@
 		<% if(data.date || data.author || data.tags) { %>
 			<div class="post-subheading">
 				<% if(data.author) { %>
+					<% CMS.loadExtra('cms-author') %>
 					<cms-author author="<%= data.author %>" layout="author-link-embed"></cms-author>
 				<% } %>
 
@@ -16,6 +17,7 @@
 				<% } %>
 
 				<% if(data.tags) { %>
+					<% CMS.loadExtra('cms-tags') %>
 					<cms-tags type="posts" file="<%= data.permalink %>"></cms-tags>
 				<% } %>
 			</div>

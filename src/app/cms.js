@@ -58,7 +58,7 @@ class CMS {
 	 * @returns {Promise<string>} Resolves with the plugin name if loaded successfully
 	 */
 	async loadExtra(extra, options) {
-		options = options || {};
+		options = options || null;
 
 		return new Promise((resolve, reject) => {
 
@@ -87,7 +87,9 @@ class CMS {
 				};
 
 				this.log.Debug('CMS.loadExtra', 'Loading extra plugin:', extra);
-				this.config.extras[extra] = options;
+				if (options) {
+					this.config.extras[extra] = options;
+				}
 				let script = document.createElement('script');
 				script.src = this.config.webpath + 'extras/' + extra + '/init.js';
 				script.onload = () => {
@@ -132,13 +134,6 @@ class CMS {
 
 		if (this.config.debug) {
 			Log.EnableDebug();
-		}
-
-		// Load any plugins requested
-		if (options.extras) {
-			for (let [extra] of Object.entries(options.extras)) {
-				this.loadExtra(extra, options.extras[extra]);
-			}
 		}
 
 		// Set up the layout system
@@ -374,6 +369,13 @@ class CMS {
 
 			if (renderer) {
 				renderer.then(() => {
+					if (file && Object.hasOwn(file, 'extras') && typeof file.extras === 'object') {
+						// Allow extra plugins to be loaded from the content
+						file.extras.forEach(extra => {
+							this.loadExtra(extra);
+						});
+					}
+
 					Log.Debug('CMS.route', 'Page render complete, dispatching user-attachable event cms:route');
 					document.dispatchEvent(
 						new CustomEvent(

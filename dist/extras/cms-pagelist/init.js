@@ -50,34 +50,19 @@ class CMSPagelistElement extends HTMLElement {
 	constructor() {
 		// Always call super first in constructor
 		super();
-		// Element is not connected to the DOM
-		this.connected = false;
 	}
 
 	/**
 	 * Called when the element is added to the DOM.
 	 */
 	connectedCallback() {
-		// Element is now connected to the DOM
-		this.connected = true;
-		document.addEventListener('cms:route', this.render.bind(this), {once: true});
-	}
-
-	/**
-	 * Called when the element is removed from the DOM.
-	 */
-	disconnectedCallback() {
-		// Element is no longer connected to the DOM
-		this.connected = false;
+		this.render();
 	}
 
 	/**
 	 * Execute the plugin on a given node to render the requested content inside it
 	 */
 	render() {
-		// If not connected to the DOM anymore, don't render
-		if (!this.connected)  return;
-
 		let type = this.getAttribute('type'),
 			layout = this.getAttribute('layout'),
 			sort = this.getAttribute('sort'),
@@ -93,7 +78,8 @@ class CMSPagelistElement extends HTMLElement {
 
 		collection = window.CMS.getCollection(type);
 		if (collection === null) {
-			CMS.log.Warn('cms-pagelist', 'Collection ' + collection + ' not located in CMS');
+			CMS.log.Error('cms-pagelist', 'Collection ' + collection + ' not located in CMS');
+			this.parentElement.removeChild(this);
 			return;
 		}
 

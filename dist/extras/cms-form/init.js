@@ -76,8 +76,6 @@ class CMSFormElement extends HTMLElement {
 	constructor() {
 		// Always call super first in constructor
 		super();
-		// Element is not connected to the DOM
-		this.connected = false;
 		this.form = null;
 		this.submitBtn = null;
 		this.emailValidation = /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
@@ -88,24 +86,13 @@ class CMSFormElement extends HTMLElement {
 	 */
 	connectedCallback() {
 		// Element is now connected to the DOM
-		this.connected = true;
-		document.addEventListener('cms:route', this.render.bind(this), {once: true});
-	}
-
-	/**
-	 * Called when the element is removed from the DOM.
-	 */
-	disconnectedCallback() {
-		// Element is no longer connected to the DOM
-		this.connected = false;
+		this.render();
 	}
 
 	/**
 	 * Render this element into the DOM
 	 */
 	render() {
-		// If not connected to the DOM anymore, don't render
-		if (!this.connected)  return;
 
 		let name = this.getAttribute('name'),
 			successPage = this.getAttribute('success'),
