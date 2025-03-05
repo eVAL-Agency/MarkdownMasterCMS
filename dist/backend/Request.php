@@ -28,6 +28,7 @@
 
 
 use JetBrains\PhpStorm\NoReturn;
+require_once 'views/HTMLTemplateView.php';
 
 class Request {
 	public string $method;
