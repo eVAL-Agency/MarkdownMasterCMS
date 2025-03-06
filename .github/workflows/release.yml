@@ -56,7 +56,7 @@ jobs:
       # will set variable steps.archive.outputs.filename
       - name: Generate Archive
         id: archive
-        run: npm run pack
+        run: bash build_release.sh
 
       - name: Create Release
         id: create_release
@@ -70,12 +70,22 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
       
-      - name: Upload Release
+      - name: Upload Release (App)
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./release/${{ steps.archive.outputs.filename }}
-          asset_name: ${{ steps.archive.outputs.filename }}
+          asset_path: ./release/${{ steps.archive.outputs.app }}
+          asset_name: ${{ steps.archive.outputs.app }}
+          asset_content_type: application/gzip
+
+      - name: Upload Release (Full)
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./release/${{ steps.archive.outputs.full }}
+          asset_name: ${{ steps.archive.outputs.full }}
           asset_content_type: application/gzip

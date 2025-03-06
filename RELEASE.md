@@ -26,6 +26,10 @@ Just drop in the files into your web root and configure a couple files.
 To troubleshoot issues, try setting `debug => true` in `config.php`
 to get more verbose errors.
 
+For new installs, the **full** version includes themes and example content.
+
+For upgrades, the **app** version just contains the backend, application, and plugins.
+
 ## Upgrade Notes
 
 * [2.x to 3.0](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/docs/upgrade-notes/upgrade-2.x-to-3.0.md)
