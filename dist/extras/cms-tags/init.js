@@ -38,7 +38,7 @@
  * @license The MIT License (MIT)
  * @copyright (c) 2025 eVAL Agency
  * @author Charlie Powell
- * @see https://github.com/eVAL-Agency/MarkdownMasterCMS
+ * @see https://markdownmaster.com/docs/extras/cms-tags.html
  * @since 5.0.0
  */
 

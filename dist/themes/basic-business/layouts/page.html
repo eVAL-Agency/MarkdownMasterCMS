@@ -1,0 +1,93 @@
+<!-- Page Template -->
+<% let renderedTitle = false; %>
+
+<% if (data.get('heading', null)) { %>
+	<section class="page-heading">
+		<% for (let [key, config] of Object.entries(data.heading)) { %>
+			<% if (config.widget === 'pagelist') { %>
+				<% CMS.loadExtra('cms-pagelist') %>
+				<cms-pagelist
+					type="<%= config.type ?? 'posts' %>"
+					layout="<%= config.layout ?? 'posts-embed' %>"
+					limit="<%= config.limit ?? 3 %>"
+					sort="<%= config.sort ?? 'random' %>">Loading Content...</cms-pagelist>
+			<% } %>
+
+			<% if (config.widget === 'cover') { %>
+				<div class="page-cover">
+					<div class="page-cover-content">
+						<% if (config.title) { %>
+							<% if (config.title === 'TITLE') { %>
+								<h1 class="page-cover-title">
+									<%= data.title %>
+								</h1>
+								<% renderedTitle = true; %>
+							<% } else { %>
+								<div class="page-cover-title">
+									<%= config.title %>
+								</div>
+							<% } %>
+						<% } %>
+
+						<% if (config.subtitle) { %>
+							<div class="page-cover-subtitle">
+								<%= config.subtitle %>
+							</div>
+						<% } %>
+
+						<% if (config.cta) { %>
+							<a href="<%= config.cta.href %>" class="page-cover-cta">
+								<% if (config.cta.icon) { %>
+									<% CMS.loadExtra('cms-icon') %>
+									<i is="cms-icon" icon="<%= config.cta.icon %>"></i>
+								<% } %>
+								<span><%= config.cta.text %></span>
+							</a>
+						<% } %>
+					</div>
+
+					<% if (config.backgrounds) { %>
+						<% CMS.loadExtra('background-slider'); %>
+						<background-slider
+							class="page-cover-background"
+							type="<%= data.type %>"
+							file="<%= data.permalink %>"
+							tag="heading.<%= key %>.backgrounds">
+						</background-slider>
+					<% } %>
+
+					<div class="page-cover-overlay"></div>
+				</div>
+			<% } %>
+		<% }; %>
+	</section>
+<% } %>
+
+<main class="page-container<% if (data.get('sidebar', null)) { %> has-sidebar<% } %>">
+	<article class="page">
+		<% if (!renderedTitle) { %>
+			<h1 class="page-title">
+				<%= data.title %>
+			</h1>
+		<% } %>
+
+		<div class="page-content">
+			<%= data.body %>
+		</div>
+	</article>
+
+	<% if (data.get('sidebar', null)) { %>
+		<aside>
+			<% data.sidebar.forEach(config => { %>
+				<% if (config.widget === 'pagelist') { %>
+					<% CMS.loadExtra('cms-pagelist') %>
+					<cms-pagelist
+						type="<%= config.type ?? 'posts' %>"
+						layout="<%= config.layout ?? 'posts-embed' %>"
+						limit="<%= config.limit ?? 3 %>"
+						sort="<%= config.sort ?? 'random' %>">Loading Content...</cms-pagelist>
+				<% } %>
+			<% }); %>
+		</aside>
+	<% } %>
+</main>

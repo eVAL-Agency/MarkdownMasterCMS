@@ -3,68 +3,11 @@
  *
  * Render a form using the form configuration
  *
- * **Initialization**
- *
- * To load this functionality from HTML:
- *
- * ```html
- * <script>
- * CMS.loadExtra('cms-form', {...form configuration parameters...});
- * </script>
- * ```
- *
- * or from within `config.js`
- *
- * ```js
- * extras: {
- *   'cms-form': {...form configuration parameters...}
- * }
- * ```
- *
- * **Configuration**
- *
- * When running in server mode, the configuration can be pulled automatically from the server-side configuration.
- *
- * ```json
- * {
- *     "name-of-form": {
- *         "fields": {
- *             "field-name": { ...field-definition... },
- *             ...
- *         },
- *     },
- * }
- * ```
- *
- * Each field definition should be keyed with the field name and can contain the following fields:
- *
- * - `label` - The label to display for the field
- * - `type` - The type of field (text, email, textarea)
- * - `placeholder` - The placeholder text for the field
- * - `required` - True/False Whether the field is required
- *
- * Actions set from server configuration are only used on the backend and are not transmitted to the client.
- *
- *
- * **Quick Usage**
- *
- * ```html
- * <cms-form name="contact" success="pages/contact-thanks"></cms-form>
- * ```
- *
- * Will render the author's profile using the default layout template.
- *
- * **Attributes**
- *
- * - `name` - The key name of the form to render
- * - `success` - The page fragment to redirect to on successful submission
- *
- *
  * @module Extras/CMS-Form
  * @license The MIT License (MIT)
  * @copyright (c) 2025 eVAL Agency
  * @author Charlie Powell
- * @see https://github.com/eVAL-Agency/MarkdownMasterCMS
+ * @see https://markdownmaster.com/docs/extras/cms-form.html
  * @since 5.0.0
  */
 

@@ -1,41 +1,11 @@
 /**
  * Extra - CMS Icon
  *
- * Simple icon renderer
- *
- * **Initialization**
- *
- * To load this functionality from HTML:
- *
- * ```html
- * <script>
- * CMS.loadExtra('cms-icon');
- * </script>
- * ```
- *
- * or from within `config.js`
- *
- * ```js
- * extras: {
- *   'cms-icon': {}
- * }
- * ```
- *
- * **Quick Usage**
- *
- * ```html
- * <i icon="camera" is="cms-icon"></i>
- * ```
- *
- * Will use the loaded icon library for rendering the actual icons.
- * (Currently only FontAwesome is supported.)
- *
- *
  * @module Extras/CMS-Icon
  * @license The MIT License (MIT)
  * @copyright (c) 2025 eVAL Agency
  * @author Charlie Powell
- * @see https://github.com/eVAL-Agency/MarkdownMasterCMS
+ * @see https://markdownmaster.com/docs/extras/cms-icon.html
  * @since 4.0.1
  */
 

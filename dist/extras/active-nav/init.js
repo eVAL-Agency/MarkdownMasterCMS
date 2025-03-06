@@ -3,40 +3,11 @@
  *
  * Adds a class name to navigation elements that match the page URL.
  *
- * **Initialization**
- *
- * To load this functionality from HTML:
- *
- * ```html
- * <script>
- * CMS.loadExtra('active-nav', {
- *     'navSelector': 'nav li',
- *     'navActiveClass': 'active'
- *   });
- * </script>
- * ```
- *
- * or from within `config.js`
- *
- * ```js
- * extras: {
- *   'active-nav': {
- *     'navSelector': 'nav li',
- *     'navActiveClass': 'active'
- *   }
- * }
- * ```
- *
- * **Configuration**
- *
- * - `navSelector` - The selector to use to find navigation elements to check.
- * - `navActiveClass` - The class name to add to the navigation element when active.
- *
  * @module Extras/ActiveNav
  * @license The MIT License (MIT)
  * @copyright (c) 2025 eVAL Agency
  * @author Charlie Powell
- * @see https://github.com/eVAL-Agency/MarkdownMasterCMS
+ * @see https://markdownmaster.com/docs/extras/active-nav.html
  * @since 5.0.0
  */
 

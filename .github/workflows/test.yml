@@ -46,5 +46,4 @@ jobs:
         env:
           SSH_PRIVATE_KEY: ${{secrets.PROD_DEPLOYMENT_KEY}}
       - name: Upload docs to Production
-        run: |
-          rsync -avz --delete build/jsdoc/ markdownmaster@markdownmaster.com:/home/markdownmaster/public_html/docs/latest
+        run: bash upload_docs.sh latest

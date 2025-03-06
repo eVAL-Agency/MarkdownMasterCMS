@@ -3,43 +3,11 @@
  *
  * Render an author as an embedded widget, (using selectable layout template)
  *
- * **Initialization**
- *
- * To load this functionality from HTML:
- *
- * ```html
- * <script>
- * CMS.loadExtra('cms-author');
- * </script>
- * ```
- *
- * or from within `config.js`
- *
- * ```js
- * extras: {
- *   'cms-author': {}
- * }
- * ```
- *
- * **Quick Usage**
- *
- * ```html
- * <cms-author author="<%= data.author %>"></cms-author>
- * ```
- *
- * Will render the author's profile using the default layout template.
- *
- * **Attributes**
- *
- * - `author` - The name or alias of the author to render
- * - `layout` - The layout template to use for rendering the author
- *
- *
  * @module Extras/CMS-Author
  * @license The MIT License (MIT)
  * @copyright (c) 2025 eVAL Agency
  * @author Charlie Powell
- * @see https://github.com/eVAL-Agency/MarkdownMasterCMS
+ * @see https://markdownmaster.com/docs/extras/cms-author.html
  * @since 4.0.0
  */
 

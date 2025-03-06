@@ -478,6 +478,7 @@ header nav a {
 	text-decoration: none;
 }
 
+
 cms-tags .tag-weight-1 {
 	font-size: 50%;
 }
@@ -508,6 +509,38 @@ cms-tags .tag-weight-9 {
 cms-tags .tag-weight-10 {
 	font-size: 140%;
 }
+
+
+.blocks-2, .blocks-3, .blocks-4, .blocks-5, .blocks-6 {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 1rem;
+}
+.blocks-2 .block img,
+.blocks-3 .block img,
+.blocks-4 .block img,
+.blocks-5 .block img,
+.blocks-6 .block img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+.blocks-2 .block {
+	flex: 1 calc(50% - 1rem);
+}
+.blocks-3 .block {
+	flex: 1 calc(33% - 2rem);
+}
+.blocks-4 .block {
+	flex: 1 calc(25% - 3rem);
+}
+.blocks-5 .block {
+	flex: 1 calc(20% - 4rem);
+}
+.blocks-6 .block {
+	flex: 1 calc(16% - 5rem);
+}
+
 
 cms-form {
 	position: relative;
@@ -553,109 +586,6 @@ cms-form .error-message.hidden {
 	transform: scaleY(0);
 }
 
-.landing-heading-posts cms-pagelist {
-	display: flex;
-	margin: 1rem 3rem;
-	gap: 0.25rem;
-}
-.landing-heading-posts cms-pagelist .post {
-	flex: 1;
-}
-.landing-heading-posts cms-pagelist .post:nth-child(odd) .post-overlay {
-	background-color: var(--color-accent1);
-}
-.landing-heading-posts cms-pagelist .post:nth-child(even) .post-overlay {
-	background-color: var(--color-accent2);
-}
-.landing-heading-posts cms-pagelist a {
-	display: block;
-	position: relative;
-	overflow: hidden;
-	height: 20rem;
-}
-.landing-heading-posts cms-pagelist .post-image {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 1;
-}
-.landing-heading-posts cms-pagelist .post-image img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
-}
-.landing-heading-posts cms-pagelist .post-overlay {
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: 2;
-	opacity: 0.5;
-	transition: opacity 0.5s ease;
-}
-.landing-heading-posts cms-pagelist .post-content {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	width: calc(100% - 2em);
-	z-index: 3;
-	padding: 1em;
-	transition: background-color 0.5s ease;
-}
-.landing-heading-posts cms-pagelist .post-title {
-	font-size: 1.5rem;
-	color: white;
-	text-decoration: none;
-	display: block;
-}
-.landing-heading-posts cms-pagelist .post-date {
-	font-size: 0.75rem;
-	color: #bdbdbd;
-}
-.landing-heading-posts cms-pagelist .post-date:before {
-	content: '📅 ';
-}
-.landing-heading-posts cms-pagelist a:hover .post-overlay {
-	opacity: 0;
-}
-.landing-heading-posts cms-pagelist .post:nth-child(odd) a:hover .post-content {
-	background-color: var(--color-accent1);
-}
-.landing-heading-posts cms-pagelist .post:nth-child(even) a:hover .post-content {
-	background-color: var(--color-accent2);
-}
-.landing-container {
-	display: flex;
-	margin: 1rem 3rem;
-}
-.landing-container article {
-	flex: 3;
-	padding-right: 1em;
-}
-.landing-container aside {
-	flex: 1;
-}
-.landing-container aside .author {
-	border-left: 0.5em solid var(--color-accent2);
-	padding: 1em;
-}
-.landing-container aside .author .image-link {
-	display: block;
-	text-align: center;
-}
-.landing-container aside .author img {
-	border-radius: 1em;
-}
-.landing-container aside .author .title-link {
-	display: block;
-	text-align: center;
-	font-size: 1.5rem;
-	text-decoration: none;
-	color: var(--color-accent1);
-}
 
 .authors-list {
 	margin: 1rem 3rem;

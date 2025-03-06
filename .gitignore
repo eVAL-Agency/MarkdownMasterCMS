@@ -6,6 +6,7 @@ dist/backend/vendor/
 dist/.htaccess
 dist/config.js
 dist/config.php
+.phpunit.result.cache
 
 ### NetBeans template
 **/nbproject/private/

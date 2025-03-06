@@ -3,39 +3,11 @@
  *
  * Provides search input functionality that hooks into the site
  *
- * **Initialization**
- *
- * To load this functionality from HTML:
- *
- * ```html
- * <script>
- * CMS.loadExtra('cms-search');
- * </script>
- * ```
- *
- * or from within `config.js`
- *
- * ```js
- * extras: {
- *   'cms-search': {}
- * }
- * ```
- *
- * **Quick Usage**
- *
- * ```html
- * <input is="cms-search" type="posts"/>
- * ```
- *
- * **Attributes**
- *
- * - `type` - The type of collection to search
- *
  * @module Extras/CMS-Search
  * @license The MIT License (MIT)
  * @copyright (c) 2025 eVAL Agency
  * @author Charlie Powell
- * @see https://github.com/eVAL-Agency/MarkdownMasterCMS
+ * @see https://markdownmaster.com/docs/extras/cms-search.html
  * @since 3.0.0
  */
 

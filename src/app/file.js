@@ -245,6 +245,26 @@ class File extends TemplateObject {
 	}
 
 	/**
+	 * Get a specific meta field from this file
+	 *
+	 * @param {string} lookup Key to retrieve, or period-separated lookup for nested values
+	 */
+	getMeta(lookup) {
+		let keys = lookup.indexOf('.') === -1 ? [lookup] : lookup.split('.'),
+			value = this;
+
+		for (let key of keys) {
+			if (Object.hasOwn(value, key)) {
+				value = value[key];
+			} else {
+				return null;
+			}
+		}
+
+		return value;
+	}
+
+	/**
 	 * Parse front matter, the content in the header of the file.
 	 *
 	 * Will scan through and retrieve any key:value pair within `---` tags

@@ -1,0 +1,19 @@
+<!-- Page List Template -->
+<div class="pages-list">
+	<h1 class="page-title">
+		Pages
+	</h1>
+	<% data.pages.forEach(function(page) { %>
+		<% if(!page.draft) { %>
+			<div class="page">
+				<h2>
+					<a href="<%= page.permalink %>"><%= page.title %></a>
+				</h2>
+
+				<% if(page.excerpt) { %>
+					<p><%= page.excerpt %></p>
+				<% } %>
+			</div>
+		<% } %>
+	<% }) %>
+</div>

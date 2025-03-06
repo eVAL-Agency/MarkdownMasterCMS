@@ -76,6 +76,12 @@ Additionally, many plugins will NOT be compatible with the new API.
 If errors are encountered, just switch them to 
 `<script src="/extras/whatever-plugin.js"></script>` in the HTML.
 
+Plugin loading via the initial `load()` no longer **loads** the plugin,
+but only loads the configuration data for that plugin.
+
+This allows plugins like `cms-form` to have the forms configuration loaded at init
+but the plugin file not loaded until a page is viewed which requires that functionality.
+
 
 ## Some Plugins Removed from Core
 
