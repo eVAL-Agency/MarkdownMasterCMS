@@ -154,9 +154,17 @@ class File {
 	}
 
 	private function _parse() {
-		$parsed = YamlFrontMatter::parseFile($this->file);
-		$meta = $parsed->matter();
-		$this->content = $parsed->body();
+		$contents = file_get_contents($this->file);
+		if (str_starts_with($contents, '---')) {
+			$parsed = YamlFrontMatter::parseFile($this->file);
+			$meta = $parsed->matter();
+			$this->content = $parsed->body();
+		}
+		else {
+			$meta = [];
+			$this->content = $contents;
+		}
+
 
 		foreach($meta as $item => $value) {
 			if (is_array($value) && isset($value['href'])) {
