@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="PhpIncludePathManager">
+    <include_path>
+      <path value="$PROJECT_DIR$/test" />
+    </include_path>
+  </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="8.2">
     <option name="suggestChangeDefaultLanguageLevel" value="false" />
+  </component>
+  <component name="PhpUnit">
+    <phpunit_settings>
+      <PhpUnitSettings load_method="PHPUNIT_PHAR" bootstrap_file_path="$PROJECT_DIR$/test/backend/bootstrap.php" configuration_file_path="$PROJECT_DIR$/phpunit.xml" custom_loader_path="" phpunit_phar_path="$PROJECT_DIR$/test/phpunit.phar" use_bootstrap_file="true" use_configuration_file="true" />
+    </phpunit_settings>
   </component>
 </project>

@@ -1,8 +1,13 @@
 <?php
 
-
 use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\UsesClass;
 
+#[UsesClass(Request::class)]
+#[UsesClass(Config::class)]
+#[UsesClass(JSONView::class)]
+#[CoversClass(FormController::class)]
 class FormControllerTest extends TestCase {
 	private function _setupRequest(array $formData): Request {
 		// Spoof the request for a successful form request
@@ -79,7 +84,10 @@ class FormControllerTest extends TestCase {
 
 		$controller = $request->getController();
 
-		$this->expectException(Exception::class);
-		$controller->run();
+		$view = $controller->run();
+		$this->assertInstanceOf(JSONView::class, $view);
+		$this->assertIsArray($view->data);
+		$this->assertEquals(400, $view->status);
+		$this->assertArrayHasKey('email', $view->data['errors']);
 	}
 }

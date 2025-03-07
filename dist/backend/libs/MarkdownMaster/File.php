@@ -135,6 +135,16 @@ class File {
 				continue;
 			}
 
+			if (str_starts_with($line, '* ') || str_starts_with($line, '- ')) {
+				// Skip listings
+				continue;
+			}
+
+			if (preg_match('/^[\d]+\./', $line)) {
+				// Skip numbered lists
+				continue;
+			}
+
 			// Strip {...} HTML attributes from text
 			$line = preg_replace('/\{.*?\}/', '', $line);
 			// Strip ![...](...) images from text
@@ -144,19 +154,22 @@ class File {
 			// Drop italic and bold formatting
 			$line = preg_replace('/\*|_/', '', $line);
 
-			$text .= $line . ' ';
+			if ($line) {
+				$text .= $line . ' ';
+			}
+
 			if (strlen($text) > 300) {
 				break;
 			}
 		}
 
-		return $text;
+		return trim($text);
 	}
 
 	private function _parse() {
 		$contents = file_get_contents($this->file);
 		if (str_starts_with($contents, '---')) {
-			$parsed = YamlFrontMatter::parseFile($this->file);
+			$parsed = YamlFrontMatter::parse($contents);
 			$meta = $parsed->matter();
 			$this->content = $parsed->body();
 		}

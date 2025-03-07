@@ -61,3 +61,4 @@ nbdist/
 .idea/**/gradle.xml
 .idea/**/libraries
 
+/.phpunit.cache/test-results

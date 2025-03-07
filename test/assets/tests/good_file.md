@@ -3,7 +3,7 @@ title: Testing Bug Features
 seotitle: Google Friendly Title
 excerpt: This is a generic test
 date: '2023-03-14'
-Author: Alice
+author: Alice
 rating: 4.5
 banner: 
   src: https://www.http.cat/200.jpg
