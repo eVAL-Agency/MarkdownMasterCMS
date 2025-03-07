@@ -1,4 +1,6 @@
-# Upgrade 4.0 to 5.0
+---
+title: Upgrade 4.0 to 5.0
+---
 
 ## HTAccess and Backend Changes
 

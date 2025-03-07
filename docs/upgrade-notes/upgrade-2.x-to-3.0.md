@@ -1,4 +1,6 @@
-# Upgrade from 2.x to 3.0
+---
+title: Upgrade from 2.x to 3.0
+---
 
 Since this has been a substantial rewrite, some features will require updating,
 (depending on what is used on your specific site).

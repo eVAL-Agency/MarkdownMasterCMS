@@ -1,4 +1,6 @@
-# Development & Contributing Guide
+---
+title: Development & Contributing Guide
+---
 
 ## Getting Started
 

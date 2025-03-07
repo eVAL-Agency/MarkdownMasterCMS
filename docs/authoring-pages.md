@@ -1,9 +1,9 @@
 ---
+title: Authoring Pages
 author: Charlie Powell
 tags: [Howto, Markdown, Authoring]
 ---
 
-# Authoring Pages
 
 All pages in MarkdownMaster CMS are simply Markdown, but they do support a variety of nicities.
 

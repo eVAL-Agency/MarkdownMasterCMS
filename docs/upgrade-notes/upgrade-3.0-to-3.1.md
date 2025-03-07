@@ -1,4 +1,6 @@
-# Upgrade from 3.0 to 3.1
+---
+title: Upgrade from 3.0 to 3.1
+---
 
 1. Configure `cgi-bin/config.ini` with values that mimic `js/config.js`
 2. Upload `cgi-bin` to your server

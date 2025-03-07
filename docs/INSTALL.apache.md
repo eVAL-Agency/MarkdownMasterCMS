@@ -1,3 +1,7 @@
+---
+title: Install Guide - Apache
+---
+
 Apache2 can be used to host your own site, but needs a module to be enabled.
 
 `rewrite` is required as it will allow URLs to be rewritten and resolved via the History API. 
