@@ -1,6 +1,8 @@
 ---
 title: My Website
 description: Some example description of this MarkdownMasterCMS-powered website
+image:
+  src: 'media/pexels-padrinan-255379.webp'
 heading:
   - widget: 'cover'
     title: 'TITLE'
