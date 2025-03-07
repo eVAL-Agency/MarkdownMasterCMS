@@ -52,9 +52,19 @@ class PageController extends Controller {
 		}
 
 		$view = new HTMLTemplateView();
-		$view->title = $page->getMeta(['title', 'seotitle'], '');
+		$view->title = $page->getMeta(['seotitle', 'title'], '');
+		$view->description = $page->getMeta(['seodescription', 'description', 'excerpt'], '');
 		$view->canonical = $page->url;
 		$view->body = (string)$page;
+		if ($page->getMeta('image', null)) {
+			$image = $page->getMeta('image');
+			if (is_array($image) && isset($image['src'])) {
+				$view->meta['image'] = $image['src'];
+			}
+			else {
+				$view->meta['image'] = $image;
+			}
+		}
 
 		// Generate body classes, to mimic the frontend CMS
 		$view->classes = [

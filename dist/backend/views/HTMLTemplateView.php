@@ -98,6 +98,9 @@ class HTMLTemplateView extends View {
 				$tag = $dom->createElement('meta');
 				$tag->setAttribute('name', $key);
 				$tag->setAttribute('content', $value);
+				if ($key === 'image') {
+					$tag->setAttribute('property', 'og:image');
+				}
 				$xpath->query('/html/head')->item(0)->appendChild($tag);
 			}
 			else {
@@ -114,9 +117,11 @@ class HTMLTemplateView extends View {
 		}
 
 		$fragment = new DOMDocument();
-		// Note that we must encode it correctly or strange characters may appear.
-		//$fragment->loadHTML( mb_convert_encoding( '<div>' . $this->body . '</div>', 'HTML-ENTITIES', 'UTF-8') );
-		$fragment->loadHTML( '<div>' . $this->body . '</div>');
+		$body = $this->body;
+		if ($this->title) {
+			$body = '<h1>' . $this->title . '</h1>' . $body;
+		}
+		$fragment->loadHTML( '<div>' . $body . '</div>');
 		$fragment = $dom->importNode( $fragment->documentElement, true );
 		$body = $fragment->getElementsByTagName('body')->item(0);
 		$tag->item(0)->appendChild($body->childNodes[0]);
