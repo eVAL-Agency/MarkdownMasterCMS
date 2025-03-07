@@ -1,4 +1,6 @@
-# Extra - Active Nav
+---
+title: Extra - Active Nav
+---
 
 Adds a class name to navigation elements that match the page URL.
 

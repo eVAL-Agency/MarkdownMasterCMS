@@ -47,22 +47,23 @@ This project is originally based from
 
 ## Demo
 
-Check out a [live working site](https://veraciousnetwork.com)!
-
-(todo - update demo link)
+Check out a [live working site](https://markdownmaster.com)!
 
 
-## ~~Quick Start~~
+## Quick Start
 
-1. ~~Download the [latest release](https://github.
-   com/cdp1337/markdownmaster/releases/latest)~~
-2. ~~Setup environment, refer to specific documentation for 
-   [NextCloud](docs/INSTALL.nextcloud-nginx.md),
-   [Mail-in-a-Box](docs/INSTALL.mailinabox.md),
-   or [Apache](docs/INSTALL.apache.md) for more information.~~
-3. ~~[Configure config.js and config.ini](docs/site-configuration.md) to your liking~~
+1. Setup [Apache](docs/INSTALL.apache.md) or any web environment with PHP 8.2.
+2. Download the **full** 
+   [latest release](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/latest)
+   which includes themes and example content.
+   (Alternatively the **app** package just contains the app, backend, and plugins.)
+3. Upload and extract the tarball to your web root.
+4. Copy / rename `config.example.php` to `config.php` and configure to your liking.
+   * Notably `host` and `theme` are important.
+5. Copy / rename `.htaccess.example` to `.htaccess` and configure if necessary.
+   * Default setup for top-level directory, require SSL, and no `www.` prefix.
+6. Edit theme markup in themes/(themename)/index.html, CSS, and markdown content.
 
-(todo)
 
 
 ## Documentation

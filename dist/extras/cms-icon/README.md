@@ -1,4 +1,6 @@
-# Extra - CMS-Icon
+---
+title: Extra - CMS-Icon
+---
 
 Simple icon renderer
 

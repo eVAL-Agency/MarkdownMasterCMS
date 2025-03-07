@@ -1,4 +1,6 @@
-# Extra - CMS-Pagelist
+---
+title: Extra - CMS-Pagelist
+---
 
 Provide a block of content from a collection, eg: a list of blog posts or a list of authors.
 

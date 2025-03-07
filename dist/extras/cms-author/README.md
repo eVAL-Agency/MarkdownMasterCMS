@@ -1,4 +1,6 @@
-# Extra - CMS-Author
+---
+title: Extra - CMS-Author
+---
 
 Render an author as an embedded widget, (using selectable layout template)
 

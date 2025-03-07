@@ -1,4 +1,6 @@
-# Extra - CMS-Search
+---
+title: Extra - CMS-Search
+---
 
 Provides search input functionality that hooks into the site
 

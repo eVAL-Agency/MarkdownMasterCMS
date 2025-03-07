@@ -1,4 +1,6 @@
-# Extra - Fontawesome
+---
+title: Extra - Fontawesome
+---
 
 Provides FontAwesome icons for your site.
 

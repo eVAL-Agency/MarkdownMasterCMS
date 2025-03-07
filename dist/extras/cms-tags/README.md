@@ -1,4 +1,6 @@
-# Extra - CMS Tags
+---
+title: Extra - CMS Tags
+---
 
 Provides tag lists and tag clouds for collections.
 

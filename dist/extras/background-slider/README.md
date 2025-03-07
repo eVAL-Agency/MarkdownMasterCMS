@@ -1,4 +1,7 @@
-# Extra - Background Slider
+---
+title: Extra - Background Slider
+---
+
 
 Render child elements with the `.item` class inside the container as slider components.
 Works by cycling through the children of the element, marking as `.active` one at a time.
