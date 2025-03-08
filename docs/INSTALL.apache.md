@@ -1,5 +1,6 @@
 ---
 title: Install Guide - Apache
+seotitle: Install MarkdownMaster CMS on Apache
 ---
 
 Apache2 can be used to host your own site, but needs a module to be enabled.
@@ -29,8 +30,9 @@ sudo systemctl restart apache2
 
 ## Install Files
 
-Extract the application to your webroot 
-(/var/www/html, public_html, or where ever your site is located).
+Download the **full**
+[latest release](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/latest) and
+extract to your web root, (/var/www/html, public_html, or where ever your site is located).
 
 
 ## Configure Application

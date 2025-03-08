@@ -1,5 +1,6 @@
 ---
 title: Layouts & Templates
+seotitle: Layouts & Templates in MarkdownMaster CMS
 author: Charlie Powell
 tags: [Howto, HTML, Authoring]
 ---
@@ -40,8 +41,21 @@ To connect a layout to a file, two options can be done.
 
 ### Default Type Layout
 
-Each `type` can support a default layout as defined in `config.js`.  The two types of 
-template uses are `list` and `single`.
+Each `type` can support a default layout as defined in `config.js` or your `index.html`.  
+The two types of template uses are `list` and `single`.
+
+Example of defining a new layout:
+
+```html
+<script>
+	CMS.config.addType('pages', {
+		list: 'pages', // Default layout for listing a group of files
+		single: 'page', // Default layout for rendering a single file
+		sort: 'title', // Default sort order when listing multiple files
+		title: 'Pages' // Title to of this type of content
+	});
+</script>
+```
 
 ### One-Off Layout
 

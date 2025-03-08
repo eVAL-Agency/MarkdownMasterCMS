@@ -1,5 +1,6 @@
 ---
 title: Site Configuration
+seotitle: Configuring Markdown Master CMS
 author: Charlie Powell
 tags: [Howto, Configuration]
 ---

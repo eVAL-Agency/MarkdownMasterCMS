@@ -1,5 +1,6 @@
 ---
 title: Upgrade from 2.x to 3.0
+seotitle: Upgrade notes for Markdownmaster CMS 2.x
 ---
 
 Since this has been a substantial rewrite, some features will require updating,

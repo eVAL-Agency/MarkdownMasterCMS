@@ -1,5 +1,6 @@
 ---
 title: Upgrade 4.0 to 5.0
+seotitle: Upgrade notes for Markdownmaster CMS 4.0
 ---
 
 ## HTAccess and Backend Changes

@@ -1,5 +1,6 @@
 ---
 title: Development & Contributing Guide
+seotitle: Developing Markdown Master CMS and Contribution Guide
 ---
 
 ## Getting Started

@@ -1,5 +1,6 @@
 ---
 title: CMS Document-level Events
+seotitle: Native Javascript Document Events in MarkdownMaster CMS
 author: Charlie Powell
 tags: [Howto, Configuration]
 ---

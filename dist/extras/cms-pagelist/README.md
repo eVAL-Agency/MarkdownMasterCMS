@@ -42,12 +42,19 @@ N/A
 
 **Attributes**
 
-- `type` - The type of collection to render
-- `layout` - The layout template to use for rendering the collection
-- `sort` - The sort order to use for the collection - see {@link module:CMS~FileCollection#filterSort sort options}
-- `limit` - The maximum number of items to display
-- `filter-...` - Filter the collection by a specific attribute - see {@link module:CMS~File#matchesAttributeSearch filter options}
 
+| Parameter | Required | Example                | Description                                                         |
+|-----------|----------|------------------------|---------------------------------------------------------------------|
+| type      | yes      | "posts,pages,etc"      | Any valid content type defined on your site                         |
+| layout    | no       | "post-list"            | Layout to use for rendering content, useful for controlling UX      |
+| link      | no       | "^posts/subproject/.+" | Regex or regular string to match, will only include matchings files |
+| sort      | no       | "datetime-r"           | Sort results by a specific key                                      |
+| limit     | no       | 5                      | Limit the number of results returned                                |
+| filter-*  | no       | "filter-tag"           | Filter results by a specific key                                    |
+
+{@link module:CMS~FileCollection#filterSort sort options}
+
+{@link module:CMS~File#matchesAttributeSearch Filter options}
 
 ## Example Styles
 

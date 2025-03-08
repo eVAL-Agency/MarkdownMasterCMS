@@ -1,19 +1,30 @@
 ---
 title: Authoring Pages
+seotitle: Writing page content with MarkdownMaster CMS
 author: Charlie Powell
 tags: [Howto, Markdown, Authoring]
+description: Authoring page content in MarkdownMaster CMS is easy and flexible.  This 
+  guide will help you get started.
 ---
 
+Since all pages in MarkdownMaster CMS are simply plain text markdown files,
+writing content is as easy as writing a text file.
+In addition to all the 
+[basic syntaxes available in Markdown](https://daringfireball.net/projects/markdown/basics){target=_blank},
+there are a number of additional format options provided to simplify web authoring.
 
-All pages in MarkdownMaster CMS are simply Markdown, but they do support a variety of nicities.
 
+## Content Locations
 
-## Page Location
+Different themes will support different content types, but `pages` are pretty
+ubiquitous, and those content files are stored in the `pages` directory of the site root.
 
-By default, the CMS ships with `pages` and `posts` as content types. 
-Just create `.md` pages within those directories. 
-Other types of content can be added should you need to. 
-Subdirectories **ARE** supported, (but only a single level down).
+Blog themes will often use `posts` and `authors` as well,
+for publishing blog articles (differentiated from just content pages), and author information.
+
+To create a new page or post, just create a new `.md` text file within the desired
+directory or copy an existing file or template.  Nested directories ARE supported,
+but common practices advise against nesting too deeply.
 
 A common usage (especially for posts), is to group files by date published
 to better organize them, otherwise you will end up with a mess of files and assets.
@@ -21,44 +32,56 @@ to better organize them, otherwise you will end up with a mess of files and asse
 The following directory structure examples will all provide the same automatic date string parsing from the URL.
 
 ```
+# All posts are just in the root directory
  - posts/
     |- 2021-01-02-something.md
 ```
 
 ```
+# Group posts by year, include month and day in the filename
  - posts/
     |- 2021/
        |- 01-02-something.md
 ```
 
 ```
+# Group posts by year, month, then day (probably excessive)
+ - posts/
+    |- 2021/
+       |- 01
+          |- 02
+             |- something.md
+```
+
+```
+# Group posts by year and month, include day in filename
  - posts/
     |- 2021-01/
        |- 02-something.md
 ```
 
-```
- - posts/
-    |- 2021-01-02/
-       |- something.md
-```
 
 ## Page Meta Data
 
-Article metadata is provided via 
-[YAML](https://yaml.org/spec/1.2.2/#chapter-2-language-overview) 
+HTML pages have a number of meta attributes that are used to describe the page to search engines and other tools.
+This goes outside the scope of basic markdown, but is supported in MarkdownMaster CMS
+via YAML front matter.
+
+This metadata conforms to the 
+[standard YAML specification](https://yaml.org/spec/1.2.2/#chapter-2-language-overview){target=_blank} 
 markup at the beginning of each file inside `---` blocks.
 
-It's important that the **very first line** is `---` and the section is closed by 
-another `---` line to denote the end of the tags.
-
-```.md
+```yaml
 ---
 title: Authoring Pages
 author: Charlie Powell
 tags: [Howto, Markdown, Authoring]
 ---
 ```
+
+_Note, it's important that the **very first line** is `---`._
+If the first line in the file is not `---`, the YAML front matter will not be parsed
+and this metadata will be considered part of the body.
 
 ### Tags and Lists of Values
 
@@ -91,23 +114,35 @@ call_to_action:
   title: Check Out My Cool Thing!
 ```
 
+**IMPORTANT**, when tags are defined with a `src` or `href` key,
+the value is auto-mapped based on the location of the file.
+
+Example: if `image.src` is set to `media/some_image.jpg` in a file located at `pages/some-page.md`
+on `https://mysite.tld`, that value will get auto-resolved to `https://mysite.tld/pages/media/some_image.jpg`.
+
+If the value is fully resolved already, it will not be modified.
+
+If the value starts with `/`, it is assumed to be at the root of the website, and just the URL is prepended.
+
 
 ### Common Meta Attributes
 
-| Attribute | Description                                                           |
-|-----------|-----------------------------------------------------------------------|
-| layout    | An alternative layout template for rendering this file                |
-| title     | Title to use for H1 and on listing pages                              |
-| seotitle  | Browser title to set when viewing the page                            |
-| excerpt   | Short excerpt or description of this page to display on listing pages |
-| date      | Date this article was published                                       |
-| author    | Name of the author of this page                                       |
-| tags      | Comma-separated list of tags for the content on this page             |
-| image     | Fully resolve or relative path to preview image of this page          |
+| Attribute   | Description                                                           |
+|-------------|-----------------------------------------------------------------------|
+| layout      | An alternative layout template for rendering this file                |
+| title       | Title to use for H1 and on listing pages                              |
+| seotitle    | Browser title to set when viewing the page                            |
+| excerpt     | Short excerpt or description of this page to display on listing pages |
+| description | Description of this page to use for SEO purposes                      | 
+| date        | Date this article was published                                       |
+| author      | Name or alias of the author of this page                              |
+| tags        | Comma-separated list of tags for the content on this page             |
+| image       | Fully resolve or relative path to preview image of this page          |
+
 
 ### Protected Attributes
 
-DO NOT USE THESE! 
+**DO NOT USE THESE!** 
 These are reserved for internal use only, but are available for use in your templates.
 
 | Attribute   | Description                                                           |
@@ -122,7 +157,10 @@ These are reserved for internal use only, but are available for use in your temp
 | url         | The URL of this page                                                  |
 
 
-Other attributes can be used, but will need to be added within your layout templates to make use of them.
+### Other Attributes
+
+Themes will support additional parameters; consult the documentation for the installed theme
+for more information about specific attributes that may be supported.
 
 
 ## Page Headers
@@ -150,10 +188,13 @@ This example will produce the following result because the page title is effecti
 
 ## Page Content and Markdown
 
-Since this is a _markdown_ content system, markdown syntax is used for writing the articles.  Refer to the [official markdown syntax](https://daringfireball.net/projects/markdown/syntax) for a refresher on details.
+Since this is a _markdown_ content system, markdown syntax is used for writing the articles.  
+Refer to the 
+[official markdown syntax guide](https://daringfireball.net/projects/markdown/syntax){target=_blank} 
+for a refresher on details.
 
 
-## Images
+### Images
 
 Images are supported within both the `image:...` metadata and from within article content.  These images can either be fully resolved or relatively resolved (relative to the file you are editing).
 
@@ -165,4 +206,56 @@ Referencing images relative to the base file works because the browser will make
 relative to that file.  Top-level paths (starting with `/`) and absolute requests 
 (`https://...`) paths are also supported.
 
+
+### HTML Attributes
+
+As part of the extended Markdown syntax supported in this platform, 
+custom attributes can be added to various elements.
+
+* paragraphs
+* links
+* images
+
+To use HTML attributes, append `{...}` to the end of the line with the HTML tags inside.
+As some examples:
+
+Short paragraph with `class="center"` added
+
+```markdown
+This is a short example paragraph {.center}
+```
+
+```markdown
+Longer and multi-line paragraphs also support custom attributes.
+These can be added _after_ the last line, without a blank space between.
+{.center}
+```
+
+This link will have a `title` and `target` set.
+Since both paragraphs and links support extended attributes, try to ensure
+no space between the link and curly brace.
+
+```md
+[Go Search](https://www.duckduckgo.com){title="Search for something" target=_blank}
+```
+
+This image will have a border
+
+```markdown
+![test image](test.png){style="border:5px solid pink;"}
+```
+
+#### Valid Attributes and Shorthand
+
+Below is a list of attributes and shorthand versions,
+but ANY HTML ATTRIBUTE is supported.
+
+| Attribute  | Description             | Example                            |
+|------------|-------------------------|------------------------------------|
+| "." prefix | Shorthand for class=... | `{.center}`                        |
+| "#" prefix | Shorthand for id=...    | `{#myid}`                          |
+| style      | CSS style attributes    | `{style="border:5px solid pink;"}` |
+| title      | Title attribute         | `{title="My Title"}`               |
+| target     | Target attribute        | `{target=_blank}`                  |
+| data-*     | Data attributes         | `{data-foo="bar"}`                 |
 

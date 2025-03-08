@@ -1,4 +1,6 @@
-# Building & Packaging MarkdownMaster CMS
+---
+title: Building & Packaging MarkdownMaster CMS
+---
 
 Steps to follow for packaging a new version of MarkdownMaster CMS.
 

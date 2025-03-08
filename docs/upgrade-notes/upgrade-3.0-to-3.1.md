@@ -1,5 +1,6 @@
 ---
 title: Upgrade from 3.0 to 3.1
+seotitle: Upgrade notes for Markdownmaster CMS 3.0
 ---
 
 1. Configure `cgi-bin/config.ini` with values that mimic `js/config.js`

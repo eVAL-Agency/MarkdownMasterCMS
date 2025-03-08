@@ -1,5 +1,6 @@
 ---
 title: Upgrade from 3.1 to 4.0
+seotitle: Upgrade notes for Markdownmaster CMS 3.1
 ---
 
 ---
