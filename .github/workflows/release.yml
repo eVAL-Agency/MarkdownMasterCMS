@@ -48,9 +48,9 @@ jobs:
         run: |
           # Trim "v1.2.3" down to just "v1.2"
           TAG="$(echo "$TAG_NAME" | sed 's:\(v[0-9]*\.[0-9]*\).*:\1:')"
-          rsync -avz --delete build/jsdoc/ markdownmaster@markdownmaster.com:/home/markdownmaster/public_html/docs/$TAG
+          bash upload_docs.sh "$TAG"
         env:
-          TAG_NAME: ${{ github.ref }}
+          TAG_NAME: ${{ github.ref_name }}
 
       # Build the deployable tarball
       # will set variable steps.archive.outputs.filename
@@ -64,8 +64,8 @@ jobs:
         with:
           draft: false
           prerelease: false
-          release_name: MarkdownMaster CMS ${{ github.ref }}
-          tag_name: ${{ github.ref }}
+          release_name: MarkdownMaster CMS ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
           body_path: RELEASE.md
         env:
           GITHUB_TOKEN: ${{ github.token }}
