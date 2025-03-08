@@ -3,37 +3,6 @@
  *
  * Provides tag lists and tag clouds for collections.
  *
- * **Initialization**
- *
- * To load this functionality from HTML:
- *
- * ```html
- * <script>
- * CMS.loadExtra('cms-tags');
- * </script>
- * ```
- *
- * or from within `config.js`
- *
- * ```js
- * extras: {
- *   'cms-tags': {}
- * }
- * ```
- *
- * **Quick Usage**
- *
- * ```html
- * <cms-tags type="posts" file="<%= data.permalink %>"></cms-tags>
- * ```
- *
- * **Attributes**
- *
- * - `type` - The type of collection to pull tags from
- * - `file` - The specific file to pull tags from (permalink of the file)
- * - `as` - The style of tag list to render (default, cloud)
- * - `sort` - The sort order to use for the tags
- *
  * @module Extras/CMS-Tags
  * @license The MIT License (MIT)
  * @copyright (c) 2025 eVAL Agency
