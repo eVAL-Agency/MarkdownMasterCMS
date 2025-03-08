@@ -52,8 +52,9 @@ class PageController extends Controller {
 		}
 
 		$view = new HTMLTemplateView();
-		$view->title = $page->getMeta(['seotitle', 'title'], '');
-		$view->description = $page->getMeta(['seodescription', 'description', 'excerpt'], '');
+		$view->seoTitle = $page->getMeta(['seotitle', 'title'], '');
+		$view->title = $page->getMeta(['title', 'seotitle'], '');
+		$view->description = $page->getMeta(['description', 'excerpt'], '');
 		$view->canonical = $page->url;
 		$view->body = (string)$page;
 		if ($page->getMeta('image', null)) {

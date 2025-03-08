@@ -27,6 +27,7 @@
  */
 
 class HTMLTemplateView extends View {
+	public string $seoTitle = '';
     public string $title = '';
     public string $description = '';
     public string $body = '';
@@ -64,8 +65,8 @@ class HTMLTemplateView extends View {
 			$tag->setAttribute('class', implode(' ', $this->classes));
 		}
 
-		if ($this->title) {
-			$xpath->query('//title')->item(0)->nodeValue = $this->title;
+		if ($this->seoTitle) {
+			$xpath->query('//title')->item(0)->nodeValue = $this->seoTitle;
 		}
 		if ($this->description) {
 			$tag = $xpath->query('/html/head/meta[@name="description"]');
