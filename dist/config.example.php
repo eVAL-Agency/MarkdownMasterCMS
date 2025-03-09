@@ -2,6 +2,8 @@
 /**
  * Configuration for server-side backend
  *
+ * Refer to https://markdownmaster.com/docs/site-configuration.html for full details
+ *
  * @version 5.0.0-alpha.1
  * @copyright 2025 eVAL Agency
  * @license MIT
@@ -46,13 +48,19 @@ return [
 		'contact' => [
 			'fields' => [
 				'name' => [
+					'label' => 'Your Name',
+					'type' => 'text',
 					'required' => true
 				],
 				'email' => [
+					'label' => 'Email Address',
 					'type' => 'email',
 					'required' => true
 				],
 				'message' => [
+					'label' => 'Message',
+					'type' => 'textarea',
+					'placeholder' => 'I am contacting you in regards to...',
 					'required' => true
 				]
 			],
