@@ -19,7 +19,7 @@ deploying new pages is as simple as just uploading Markdown files to your server
 This can be done via automated sync applications such as NextCloud or just uploading
 via SFTP or your web hosting interface.  _No building or scripts needed for deployment!_
 
-This project is originally based from
+The client-side javascript rendering in this project is originally based from
 [Chris Diana's CMS.js](https://github.com/chrisdiana/cms.js).
 
 
@@ -31,6 +31,12 @@ This project is originally based from
 [![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/eVAL-Agency/MarkdownMasterCMS/test.yml?branch=main)](https://github.com/eVAL-Agency/MarkdownMasterCMS/actions)
 [![License](https://img.shields.io/github/license/eVAL-Agency/MarkdownMasterCMS.svg)](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/LICENSE.md)
 
+
+First-party professional support for this code, along with server hosting and technology consultation 
+is available from [Ohio-local eVAL Agency](https://eval.agency).
+
+Aside from business support, you can also help support this project by donating to me directly.
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/Q5Q013RM9Q)
 
 ## Features
 
@@ -47,7 +53,7 @@ This project is originally based from
 
 ## Demo
 
-Check out a [live working site](https://markdownmaster.com)!
+Check out a [live working site](https://markdownmaster.com?mtm_campaign=github)!
 
 
 ## Quick Start
@@ -68,14 +74,12 @@ Check out a [live working site](https://markdownmaster.com)!
 
 ## Documentation
 
-For advanced usage of this framework, 
-take a look through the other [post examples](dist/posts/) and the various
-[documentation available](docs/).
+Documentation is available on the 
+[official MarkdownMaster CMS website](https://markdownmaster.com/docs.html?mtm_campaign=github),
+compiled from [docs/](docs/) and other various sources within this project.
 
-* [Hooking into native events](docs/document-events.md)
-* [Authoring content](docs/authoring-pages.md)
-* [Extended attributes](docs/markdown-extended-attributes.md)
-* [Development guide & build instructions](docs/development.md)
+[Javascript API documentation](https://markdownmaster.com/jsdocs/latest/) is also available
+for interfacing with low-level functions within this framework.
 
 
 ## How it works
