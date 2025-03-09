@@ -2,7 +2,7 @@
 /**
  * MarkdownMaster CMS
  *
- * @version 5.0.0-alpha.1
+ * @version 5.0.0
  * @copyright 2025 eVAL Agency
  * @license MIT
  * @link https://github.com/eVAL-Agency/MarkdownMasterCMS
@@ -28,14 +28,14 @@
 
 class HTMLTemplateView extends View {
 	public string $seoTitle = '';
-    public string $title = '';
-    public string $description = '';
-    public string $body = '';
-    public string $canonical = '';
-    public array $meta = [];
+	public string $title = '';
+	public string $description = '';
+	public string $body = '';
+	public string $canonical = '';
+	public array $meta = [];
 	public array $classes = [];
 
-    public function render() {
+	public function render() {
 		$templateFile = 'themes/' . Config::GetTheme() . '/index.html';
 		if (!file_exists($templateFile)) {
 			// Try the default (legacy) index.html in the root directory.
@@ -127,7 +127,68 @@ class HTMLTemplateView extends View {
 		$body = $fragment->getElementsByTagName('body')->item(0);
 		$tag->item(0)->appendChild($body->childNodes[0]);
 
-        header('Content-Type: text/html');
-        echo $dom->saveHTML();
-    }
+		// Render out any cms-pagelist elements to provide better SEO value to those sub pages
+		$pageLists = $xpath->query('//cms-pagelist');
+		foreach ($pageLists as $pageList) {
+			$this->_renderPagelist($dom, $pageList);
+		}
+
+		header('Content-Type: text/html');
+		echo $dom->saveHTML();
+	}
+
+	/**
+	 * Render a `cms-pagelist` element into the DOM
+	 *
+	 * This will not have the styling expected, but is required for SEO purposes.
+	 *
+	 * @param DOMDocument $dom
+	 * @param DOMElement $element
+	 * @return void
+	 * @throws Exception
+	 */
+	private function _renderPagelist(DOMDocument $dom, DOMElement $element) {
+
+		// Defaults
+		$limit = 5;
+		$type = null;
+		$sort = null;
+		$filters = [];
+
+		foreach($element->attributes as $attr) {
+			$key = $attr->name;
+			$val = $attr->value;
+			if ($key === 'limit') {
+				$limit = (int)$val;
+			}
+			elseif ($key === 'type') {
+				$type = $val;
+			}
+			elseif ($key === 'sort') {
+				$sort = $val;
+			}
+			elseif (str_starts_with($key, 'filter-')) {
+				$filters[substr($key, 7)] = $val;
+			}
+		}
+
+		if (!in_array($type, Config::GetTypes())) {
+			// The requested type is not within the defined types, simply skip.
+			return;
+		}
+
+		$collection = new \MarkdownMaster\FileCollection($type);
+		$files = $collection->getFiles($filters, $sort, $limit);
+		$html = '';
+		foreach($files as $file) {
+			$html .= $file->getListing();
+		}
+
+		$fragment = new DOMDocument();
+		$fragment->loadHTML( '<div>' . $html . '</div>');
+		$fragment = $dom->importNode( $fragment->documentElement, true );
+		$body = $fragment->getElementsByTagName('body')->item(0);
+		$element->nodeValue = '';
+		$element->appendChild($body->childNodes[0]);
+	}
 }

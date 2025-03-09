@@ -2,7 +2,7 @@
 /**
  * MarkdownMaster CMS
  *
- * @version 5.0.0-alpha.1
+ * @version 5.0.0
  * @copyright 2025 eVAL Agency
  * @license MIT
  * @link https://github.com/eVAL-Agency/MarkdownMasterCMS
@@ -94,5 +94,30 @@ class FileCollection {
 			}
 		}
 		return null;
+	}
+
+	public function getFiles($filter = [], string $sort = null, int $limit = 50) {
+		$files = $this->files;
+		if (count($filter) > 0) {
+			$files = array_filter($files, function($file) use ($filter) {
+				foreach ($filter as $key => $value) {
+					if ($file->getMeta($key) !== $value) {
+						return false;
+					}
+				}
+				return true;
+			});
+		}
+
+		if ($sort) {
+			usort($files, function($a, $b) use ($sort) {
+				if ($a->getMeta($sort) === $b->getMeta($sort)) {
+					return 0;
+				}
+				return ($a->getMeta($sort) < $b->getMeta($sort)) ? -1 : 1;
+			});
+		}
+
+		return array_slice($files, 0, $limit);
 	}
 }
