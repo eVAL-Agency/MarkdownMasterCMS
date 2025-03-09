@@ -46,8 +46,11 @@ class Config {
 
 			// Allow the theme to set defaults
 			if (isset($config['theme'])) {
-				$themeConfig = require dirname(__DIR__) . '/themes/' . $config['theme'] . '/settings.php';
-				$config = array_merge($themeConfig, $config);
+				$themeSettingsFile = dirname(__DIR__) . '/themes/' . $config['theme'] . '/settings.php';
+				if (file_exists($themeSettingsFile)) {
+					$themeConfig = require dirname(__DIR__) . '/themes/' . $config['theme'] . '/settings.php';
+					$config = array_merge($themeConfig, $config);
+				}
 			}
 
 			if (!isset($config['host']) || $config['host'] === '') {
