@@ -34,6 +34,9 @@ jobs:
       # Generate docs (to be uploaded)
       - run: npm run docs
 
+      - name: Set file headers
+        run: bash update_file_headers.sh
+
       - name: Set SSH Key
         shell: bash
         run: |

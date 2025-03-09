@@ -2,7 +2,7 @@
 /**
  * MarkdownMaster CMS
  *
- * @version 5.0.0
+ * @version dev
  * @copyright 2025 eVAL Agency
  * @license MIT
  * @link https://github.com/eVAL-Agency/MarkdownMasterCMS
