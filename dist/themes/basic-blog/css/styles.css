@@ -477,6 +477,10 @@ header nav a {
 	color: var(--color-accent1);
 	text-decoration: none;
 }
+header .logo img {
+	max-width: 18em;
+	max-height: 6em;
+}
 
 
 cms-tags .tag-weight-1 {
