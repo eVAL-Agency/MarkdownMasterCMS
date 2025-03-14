@@ -41,7 +41,7 @@ class FileCollection {
 		$this->type = $type;
 		$this->url = Config::GetHost() . Config::GetWebPath() . $type . '.html';
 		$pDir = Config::GetRootPath();
-		$files = $this->glob_recursive($pDir . '/' . $type, '*.md');
+		$files = $this->glob_recursive($pDir . $type, '*.md');
 		foreach ($files as $file) {
 			$this->files[] = new File($file);
 		}
