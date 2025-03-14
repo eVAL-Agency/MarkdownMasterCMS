@@ -174,6 +174,13 @@ class FormController extends Controller {
 			$from = $emailConfig['from'];
 		}
 
+		if (str_starts_with($settings['to'], 'field:')) {
+			// Allow the "to" field for emails to start with "field:" to specify
+			// this should be sent to the address in the form data.
+			$field = substr($settings['to'], 6);
+			$settings['to'] = $data[$field];
+		}
+
 		$email->subject($settings['subject'] ?? 'Form submission')
 			->from($from)
 			->to($settings['to']);
@@ -184,7 +191,9 @@ class FormController extends Controller {
 				'/layouts/' . $settings['action'] . '-' . $settings['template'] . '.tpl';
 			if (file_exists($tplName)) {
 				$template = file_get_contents($tplName);
-				$template = str_replace(array_values($data), array_keys($data), $template);
+				foreach($data as $key => $val) {
+					$template = str_replace('{{' . $key . '}}', $val, $template);
+				}
 
 				$email->text($template);
 			}
