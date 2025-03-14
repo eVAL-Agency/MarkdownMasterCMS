@@ -109,7 +109,7 @@ class Config {
 	}
 
 	public static function GetRootPath(): string {
-		return dirname(__DIR__);
+		return self::_Get('rootpath') ?? dirname(__DIR__) . '/';
 	}
 
 	/**
