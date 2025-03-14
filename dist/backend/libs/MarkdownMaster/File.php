@@ -43,13 +43,44 @@ class File {
 	protected array $meta;
 	protected ?string $content = null;
 
+	/**
+	 * Construct a new File to refer to a markdown page
+	 *
+	 * @param string $path Full filesystem path to file
+	 */
 	public function __construct(string $path) {
-		$this->file = $path;
+		$real_path = realpath($path);
+		if (!$real_path) {
+			throw new \Exception('File not found: ' . print_r(['path' => $path], true));
+		}
 		$pDir = Config::GetRootPath();
-		$path = substr($path, strlen($pDir) + 1);
-		$this->rel = Config::GetWebPath() . $path;
-		$this->url = Config::GetHost() . Config::GetWebPath() . substr($path, 0, -3) . '.html';
-		$this->path = Config::GetHost() . Config::GetWebPath() . dirname($path) . '/';
+		if (!str_starts_with($real_path, $pDir)) {
+			// Require any file to be contained within the site root path
+			throw new \Exception(
+				'Invalid file path, does not start with root path: ' .
+				print_r(['root' => $pDir, 'path' => $real_path], true)
+			);
+		}
+		$relative_path = substr($real_path, strlen($pDir));
+		$type = null;
+		foreach(Config::GetTypes() as $t) {
+			if (str_starts_with($relative_path, $t)) {
+				$type = $t;
+				break;
+			}
+		}
+		if ($type === null) {
+			// Require any file to be contained within a known type
+			throw new \Exception(
+				'Invalid file path, does not start with a known type: ' .
+				print_r(['path' => $path], true)
+			);
+		}
+
+		$this->file = $real_path;
+		$this->rel = Config::GetWebPath() . $relative_path;
+		$this->url = Config::GetHost() . Config::GetWebPath() . substr($relative_path, 0, -3) . '.html';
+		$this->path = Config::GetHost() . Config::GetWebPath() . dirname($relative_path) . '/';
 	}
 
 	public function getMeta(string|array $key, $default = null): mixed {
@@ -142,6 +173,11 @@ class File {
 
 			if (preg_match('/^[\d]+\./', $line)) {
 				// Skip numbered lists
+				continue;
+			}
+
+			if (trim($line) === '---') {
+				// Skip HRs
 				continue;
 			}
 

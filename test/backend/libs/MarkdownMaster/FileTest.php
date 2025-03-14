@@ -14,7 +14,18 @@ class FileTest extends TestCase {
 			'types' => ['tests'],
 			'host' => 'http://localhost',
 			'webpath' => '/',
+			'rootpath' => dirname(__DIR__, 3) . '/assets/',
 		]);
+	}
+
+	public function testSecurityInvalidFilePath1() {
+		$this->expectException(\Exception::class);
+		new File('/etc/passwd');
+	}
+
+	public function testSecurityInvalidFilePath2() {
+		$this->expectException(\Exception::class);
+		new File(Config::GetRootPath() . 'tests/../../../../../../../etc/passwd');
 	}
 
 	/**
@@ -22,14 +33,11 @@ class FileTest extends TestCase {
 	 * @return void
 	 */
 	public function testBasicFile() {
-		$file = new File(dirname(__DIR__, 3) . '/tests/test.md');
+		$file = new File(Config::GetRootPath() . 'tests/good_file.md');
 		$this->assertEquals('http://localhost/tests/', $file->path);
-		$this->assertEquals(dirname(__DIR__, 3) . '/tests/test.md', $file->file);
-		$this->assertEquals('http://localhost/tests/test.html', $file->url);
-		$this->assertEquals('/tests/test.md', $file->rel);
-
-		// Remap the file to an actual test file
-		$file->file = dirname(__DIR__, 3) . '/assets/tests/good_file.md';
+		$this->assertEquals(dirname(__DIR__, 3) . '/assets/tests/good_file.md', $file->file);
+		$this->assertEquals('http://localhost/tests/good_file.html', $file->url);
+		$this->assertEquals('/tests/good_file.md', $file->rel);
 		$this->assertEquals('Testing Bug Features', $file->getMeta('title'));
 		$this->assertEquals('Google Friendly Title', $file->getMeta('seotitle'));
 		$this->assertEquals('This is a generic test', $file->getMeta('excerpt'));
@@ -44,18 +52,40 @@ class FileTest extends TestCase {
 	}
 
 	/**
-	 * Test rendering a file which does not contain frontmatter
+	 * Test rendering a file which does not contain frontmatter,
+	 * all files should have them, but is not strictly required.
 	 *
-	 * All files should have them, but is not strictly required.
+	 * This will test that even if a file does not contain any frontmatter, it still renders as expected.
 	 *
 	 * @return void
 	 */
 	public function testNoFrontmatter() {
-		$file = new File(dirname(__DIR__, 3) . '/tests/test.md');
-		// Remap the file to an actual test file
-		$file->file = dirname(__DIR__, 3) . '/assets/tests/no_frontmatter.md';
-		//var_dump($file);
-		$this->assertIsArray($file->getMetas());
+		$file = new File(Config::GetRootPath() . 'tests/no_frontmatter.md');
+		$data = $file->getMetas();
+		$this->assertIsArray($data);
+		// Even with no frontmatter, some fields should still be present.
+		$this->assertArrayHasKey('date', $data);
+		$this->assertArrayHasKey('draft', $data);
+		$this->assertArrayHasKey('excerpt', $data);
+
+		$this->assertEquals('This file is missing frontmatter, but it should still render.', $data['excerpt']);
+
+		$content = "<h1>Missing Frontmatter!</h1>
+
+<hr />
+
+<ul>
+<li><code>tags: blah, foo</code> => <code>tags: [blah, foo]</code></li>
+</ul>
+
+<p>This file is missing frontmatter,
+but it should still render.</p>
+
+<hr />
+
+<p>It DOES contain horizontal rules however.</p>
+";
+		$this->assertEquals($content, $file->__toString());
 	}
 
 	/**
@@ -64,9 +94,7 @@ class FileTest extends TestCase {
 	 * @return void
 	 */
 	public function testAutoExcerpt() {
-		$file = new File(dirname(__DIR__, 3) . '/tests/test.md');
-		// Remap the file to an actual test file
-		$file->file = dirname(__DIR__, 3) . '/assets/tests/auto_excerpt.md';
+		$file = new File(Config::GetRootPath() . 'tests/auto_excerpt.md');
 		$excerpt = 'This sentence should come through as the excerpt since it does not have one assigned.' .
 			' However, links, italics, and other formatting should not be included.';
 		$this->assertEquals($excerpt, $file->getMeta('excerpt'));
