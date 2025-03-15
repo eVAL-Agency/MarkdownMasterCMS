@@ -51,11 +51,22 @@ class PageController extends Controller {
 			throw new Exception('Page not found', 404);
 		}
 
+		$default_url = Config::GetHost() . Config::GetWebPath() . Config::GetDefaultView() . '.html';
+
 		$view = new HTMLTemplateView();
 		$view->seoTitle = $page->getMeta(['seotitle', 'title'], '');
 		$view->title = $page->getMeta(['title', 'seotitle'], '');
 		$view->description = $page->getMeta(['description', 'excerpt'], '');
-		$view->canonical = $page->url;
+
+		// Google doesn't like non-top-level canonical pages for the site,
+		// so remap the canonical default page back to / as opposed to the actual page.
+		if ($page->url === $default_url) {
+			$view->canonical = Config::GetHost() . Config::GetWebPath();
+		}
+		else {
+			$view->canonical = $page->url;
+		}
+
 		$view->body = (string)$page;
 		if ($page->getMeta('image', null)) {
 			$image = $page->getMeta('image');
