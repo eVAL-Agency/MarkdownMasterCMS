@@ -7,6 +7,7 @@ dist/.htaccess
 dist/config.js
 dist/config.php
 .phpunit.result.cache
+.phpunit.cache/
 
 ### NetBeans template
 **/nbproject/private/
@@ -62,3 +63,4 @@ nbdist/
 .idea/**/libraries
 
 /.phpunit.cache/test-results
+/.idea/developer-tools.xml

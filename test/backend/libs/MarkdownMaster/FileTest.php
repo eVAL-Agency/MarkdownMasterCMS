@@ -6,6 +6,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 
 #[CoversClass(File::class)]
+#[UsesClass(Config::class)]
 class FileTest extends TestCase {
 
 	public static function setUpBeforeClass(): void {
@@ -29,6 +30,26 @@ class FileTest extends TestCase {
 	}
 
 	/**
+	 * Test for a file that does not exist
+	 *
+	 * @return void
+	 */
+	public function testNotFoundFile() {
+		$this->expectException(\Exception::class);
+		new File(Config::GetRootPath() . 'tests/i-do-not-exist.md');
+	}
+
+	/**
+	 * Test for a file that is an invalid (or uninstalled) type of file
+	 *
+	 * @return void
+	 */
+	public function testBadTypeFile() {
+		$this->expectException(\Exception::class);
+		new File(Config::GetRootPath() . 'fails/exists_but_empty.md');
+	}
+
+	/**
 	 * Test loading a basic file
 	 * @return void
 	 */
@@ -40,6 +61,8 @@ class FileTest extends TestCase {
 		$this->assertEquals('/tests/good_file.md', $file->rel);
 		$this->assertEquals('Testing Bug Features', $file->getMeta('title'));
 		$this->assertEquals('Google Friendly Title', $file->getMeta('seotitle'));
+		$this->assertEquals('Google Friendly Title', $file->getMeta(['seotitle', 'title'], null));
+		$this->assertNull($file->getMeta(['invalid1'], null));
 		$this->assertEquals('This is a generic test', $file->getMeta('excerpt'));
 		$this->assertEquals('2023-03-14', $file->getMeta('date'));
 		$this->assertEquals('Alice', $file->getMeta('author'));
@@ -49,6 +72,14 @@ class FileTest extends TestCase {
 		$this->assertEquals(false, $file->getMeta('falsy'));
 		$this->assertEquals(true, $file->getMeta('truth'));
 		$this->assertEquals('', $file->getMeta('iamempty'));
+
+		$listingContent = '<article>' .
+			'<h2><a href="http://localhost/tests/good_file.html">Testing Bug Features</a></h2>' .
+			'<p>This is a generic test</p><img src="https://www.http.cat/200.jpg" alt="Success Cat"/>' .
+			'</article>';
+		$this->assertEquals($listingContent, $file->getListing());
+
+		$this->assertGreaterThan(0, $file->getTimestamp());
 	}
 
 	/**
@@ -98,5 +129,39 @@ but it should still render.</p>
 		$excerpt = 'This sentence should come through as the excerpt since it does not have one assigned.' .
 			' However, links, italics, and other formatting should not be included.';
 		$this->assertEquals($excerpt, $file->getMeta('excerpt'));
+	}
+
+	/**
+	 * Test generating an automatic excerpt from a file
+	 *
+	 * @return void
+	 */
+	public function testAutoExcerptLongParagraph() {
+		$file = new File(Config::GetRootPath() . 'tests/really_long_paragraph.md');
+		$excerpt = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ' .
+			'Esse nonumy laborum dolore vel qui minim proident eros aute quis magna ipsum nisl iusto, ' .
+			'veniam rebum obcaecat molestie elitr aliquid nulla option et doming eos. ' .
+			'Eros qui laoreet molestie cum nobis minim imperdiet. Aliqua elit hendrerit id volutpat dolore clita.';
+		$this->assertEquals($excerpt, $file->getMeta('excerpt'));
+	}
+
+	/**
+	 * Test retriving a date string from the filename / directory path
+	 *
+	 * @return void
+	 */
+	public function testDateInFilename() {
+		$file = new File(Config::GetRootPath() . 'tests/2025-02-05-date-in-filename.md');
+		$this->assertEquals('2025-02-05', $file->getMeta('date'));
+	}
+
+	/**
+	 * Test retriving a date string from the filename / directory path
+	 *
+	 * @return void
+	 */
+	public function testDateIsTimestamp() {
+		$file = new File(Config::GetRootPath() . 'tests/date_is_timestamp.md');
+		$this->assertEquals('2025-03-15', $file->getMeta('date'));
 	}
 }

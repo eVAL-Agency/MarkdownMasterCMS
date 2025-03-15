@@ -47,6 +47,7 @@ class File {
 	 * Construct a new File to refer to a markdown page
 	 *
 	 * @param string $path Full filesystem path to file
+	 * @throws \Exception
 	 */
 	public function __construct(string $path) {
 		$real_path = realpath($path);
@@ -83,10 +84,19 @@ class File {
 		$this->path = Config::GetHost() . Config::GetWebPath() . dirname($relative_path) . '/';
 	}
 
-	public function getMeta(string|array $key, $default = null): mixed {
-		if ($this->content === null) {
-			$this->_parse();
-		}
+	/**
+	 * Get a meta value
+	 *
+	 * If multiple keys are applicable for the requested value,
+	 * requesting an array of keys will return the first located one or
+	 * DEFAULT if not found.
+	 *
+	 * @param string|array $key
+	 * @param mixed|null $default=null
+	 * @return mixed
+	 */
+	public function getMeta(string|array $key, mixed $default = null): mixed {
+		$this->_ensureParsed();
 
 		if (is_array($key)) {
 			// Lookup multiple keys and return the first one found
@@ -103,6 +113,11 @@ class File {
 		}
 	}
 
+	/**
+	 * Get all meta keys / values as an associative array
+	 *
+	 * @return array
+	 */
 	public function getMetas(): array {
 		if ($this->content === null) {
 			$this->_parse();
@@ -117,9 +132,7 @@ class File {
 	 * @return string
 	 */
 	public function __toString(): string {
-		if ($this->content === null) {
-			$this->_parse();
-		}
+		$this->_ensureParsed();
 
 		$parser = new \Michelf\MarkdownExtra();
 		return $parser->transform($this->content);
@@ -147,10 +160,31 @@ class File {
 		return $html;
 	}
 
+	/**
+	 * Get the last modified timestamp of this file
+	 *
+	 * @return int
+	 */
 	public function getTimestamp(): int {
 		return filemtime($this->file);
 	}
 
+	/**
+	 * Ensure the file has been parsed
+	 *
+	 * @return void
+	 */
+	private function _ensureParsed() {
+		if ($this->content === null) {
+			$this->_parse();
+		}
+	}
+
+	/**
+	 * Generate an excerpt from the content
+	 *
+	 * @return string
+	 */
 	private function _generateExcerpt() {
 		$text = '';
 		$lines = explode("\n", $this->content);
@@ -202,18 +236,24 @@ class File {
 		return trim($text);
 	}
 
+	/**
+	 * Parse the file for frontmatter and content
+	 *
+	 * @return void
+	 */
 	private function _parse() {
 		$contents = file_get_contents($this->file);
 		if (str_starts_with($contents, '---')) {
+			// Frontmatter requires the first line of the file to be a frontmatter termination string, by default "---".
 			$parsed = YamlFrontMatter::parse($contents);
 			$meta = $parsed->matter();
 			$this->content = $parsed->body();
 		}
 		else {
+			// If the first line is NOT this termination string, then this file is assumed to not contain any.
 			$meta = [];
 			$this->content = $contents;
 		}
-
 
 		foreach($meta as $item => $value) {
 			if (is_array($value) && isset($value['href'])) {
@@ -227,7 +267,7 @@ class File {
 			}
 
 			if (is_array($value) && isset($value['src'])) {
-				// Ensure href links are fully resolved
+				// Ensure src image links are fully resolved
 				if (
 					!str_contains($value['src'], '://') &&
 					!str_starts_with($value['src'], '/')
@@ -242,6 +282,7 @@ class File {
 		}
 
 		if (!isset($meta['date'])) {
+			// Ensure at least some date is available
 			if (preg_match('#(\d{4})[/-](\d{2})[/-](\d{2})#', $this->file, $matches)) {
 				$meta['date'] = $matches[1] . '-' . $matches[2] . '-' . $matches[3];
 			}
@@ -255,10 +296,12 @@ class File {
         }
 
 		if (!isset($meta['draft'])) {
+			// Files are NOT draft by default
 			$meta['draft'] = false;
 		}
 
 		if (!isset($meta['excerpt'])) {
+			// Ensure each file has an excerpt available
 			$meta['excerpt'] = $this->_generateExcerpt();
 		}
 

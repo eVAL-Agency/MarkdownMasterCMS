@@ -22,7 +22,7 @@
     "action_app_coverage": "rm -fr docs/coverage && cp -r build/coverage/lcov-report/ docs/coverage",
     "action_backend_composer": "composer -d dist/backend install",
     "action_backend_headers": "./update_file_headers.sh",
-    "action_backend_test": "php test/phpunit.phar -c phpunit.xml",
+    "action_backend_test": "XDEBUG_MODE=coverage php test/phpunit.phar -c phpunit.xml",
     "dev": "npm-run-all --parallel serve watch",
     "serve": "serve ./dist/",
     "prepare": "husky",

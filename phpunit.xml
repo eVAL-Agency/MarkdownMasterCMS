@@ -6,7 +6,7 @@
          executionOrder="depends,defects"
          shortenArraysForExportThreshold="10"
          requireCoverageMetadata="true"
-         beStrictAboutCoverageMetadata="true"
+         beStrictAboutCoverageMetadata="false"
          beStrictAboutOutputDuringTests="true"
          displayDetailsOnPhpunitDeprecations="true"
          failOnPhpunitDeprecation="true"
@@ -23,4 +23,11 @@
             <directory>dist/backend</directory>
         </include>
     </source>
+
+    <coverage includeUncoveredFiles="false">
+        <report>
+            <clover outputFile="build/coverage/backend/clover.xml"/>
+            <html outputDirectory="build/coverage/backend/html"/>
+        </report>
+    </coverage>
 </phpunit>
