@@ -20,3 +20,5 @@ if [ "$VERSION" == "latest" ]; then
 		rsync --mkpath "$README" markdownmaster@markdownmaster.com:/home/markdownmaster/public_html/docs/extras/$EXTRA.md
 	done
 fi
+
+rsync CHANGELOG.md markdownmaster@markdownmaster.com:/home/markdownmaster/public_html/pages/change-history.md

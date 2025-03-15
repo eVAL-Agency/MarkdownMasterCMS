@@ -1,9 +1,34 @@
-## 5.0.0 - 2025-03-xx
+---
+title: Change History
+seotitle: MarkdownMaster CMS Change History
+description: Compiled list of changes to the MarkdownMaster CMS application and archived download links.
+---
+
+## MarkdownMaster CMS 5.0.1 - 2025-03-xx
+
+### New Features
+
+* Add support for `field:...` on form email action for the `to` field
+
+### Changes
+
+* Change default canonical to /
+* Add default favicons and logo
+* Theme is optional, (to support legacy sites)
+
+### Fixes
+
+* Fix GetRootPath to return a trailing slash
+* Additional sanity checks for File paths
+* `cms-pagelist` now renders server-side (SEO Fix)
+
+
+## [MarkdownMaster CMS 5.0.0 - 2025-03-08](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.0)
 
 New architecture, new features, new plugins, new everything!
 
 
-## 4.1.0 - (UNRELEASED)
+## MarkdownMaster CMS 4.1.0 - (UNRELEASED)
 
 ### New Features
 
@@ -24,7 +49,7 @@ New architecture, new features, new plugins, new everything!
 * Switch to `is=...` for all custom elements
 
 
-## 4.0.2 - 2023-10-23
+## [MarkdownMaster CMS 4.0.2 - 2023-10-23](https://github.com/cdp1337/markdownmaster/releases/tag/v4.0.2)
 
 ### New Features
 
@@ -36,7 +61,7 @@ New architecture, new features, new plugins, new everything!
 * Fix support for Apache web servers
 
 
-## 4.0.1 - 2023-06-03
+## [MarkdownMaster CMS 4.0.1 - 2023-06-03](https://github.com/cdp1337/markdownmaster/releases/tag/v4.0.1)
 
 ### New Features
 
@@ -49,7 +74,7 @@ New architecture, new features, new plugins, new everything!
 * #21 hash URLs were taking over route events
 
 
-## 4.0.0 - 2023-06-03
+## [MarkdownMaster CMS 4.0.0 - 2023-06-03](https://github.com/cdp1337/markdownmaster/releases/tag/v4.0.0)
 
 ### New Features
 
@@ -101,7 +126,7 @@ New architecture, new features, new plugins, new everything!
 * Switched default markdown renderer from marked to remarkable
 
 
-## 3.1.0 - 2022-11-24
+## [CMS.js 3.1.0 - 2022-11-24](https://github.com/cdp1337/markdownmaster/releases/tag/v3.1.0)
 
 author: cdp1337
 
@@ -122,11 +147,11 @@ The two included server scripts are sitemap generator and a crawler-friendly sit
 * Refactor internal method names to be more consistent to their actions
 
 
-## 3.0.0 - 2022-11-22
+## [CMS.js 3.0.0 - 2022-11-22](https://github.com/cdp1337/markdownmaster/releases/tag/v3.0.0)
 
 author: cdp1337
 
-Version 3.x features a nearly completely rewrite of all core concepts of this utilty and a large number of features and bugfixes implemented.
+Version 3.x features a nearly completely rewrite of all core concepts of this utility and a large number of features and bugfixes implemented.
 
 ### New Features
 
