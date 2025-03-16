@@ -1,5 +1,5 @@
 ---
-title: Authoring Pages
+title: Authoring Pages and Markdown Reference
 seotitle: Writing page content with MarkdownMaster CMS
 author: Charlie Powell
 tags: [Howto, Markdown, Authoring]
@@ -14,15 +14,29 @@ In addition to all the
 there are a number of additional format options provided to simplify web authoring.
 
 
-## Content Locations
+## Content Types
 
-Different themes will support different content types, but `pages` are pretty
+Different themes will support different content types, but the `pages` type is pretty
 ubiquitous, and those content files are stored in the `pages` directory of the site root.
 
-Blog themes will often use `posts` and `authors` as well,
+Blog-oriented themes will often use `posts` and `authors` as well,
 for publishing blog articles (differentiated from just content pages), and author information.
 
-To create a new page or post, just create a new `.md` text file within the desired
+Each different type is meant to contain different type of data, but it is up to your discretion
+as to how granular to take this approach.
+For example, a blog site may have blog posts and reviews.
+
+Option 1: you have object type `posts` all listed within `/posts.html` and a separate
+`reviews` all listed within `/reviews.html` or
+
+Option 2: you have `posts` which support both blog post content and review content,
+all shared within the posts listing section.
+
+Either are acceptable solutions, and it depends on site admin preference.
+
+---
+
+To create a new page, post, author, etc, create a new `.md` text file within the desired
 directory or copy an existing file or template.  Nested directories ARE supported,
 but common practices advise against nesting too deeply.
 
@@ -99,6 +113,8 @@ tags:
   - Authoring
 ```
 
+By default, tags are used to provide tag clouds and cross links for blog content.
+
 ### Images and URLs
 
 For images and URLs where extra information may be needed, 
@@ -117,8 +133,17 @@ call_to_action:
 **IMPORTANT**, when tags are defined with a `src` or `href` key,
 the value is auto-mapped based on the location of the file.
 
-Example: if `image.src` is set to `media/some_image.jpg` in a file located at `pages/some-page.md`
-on `https://mysite.tld`, that value will get auto-resolved to `https://mysite.tld/pages/media/some_image.jpg`.
+Example: 
+
+```markdown
+// File /pages/some-page.md on https://mysite.tld contents:
+---
+image:
+  src: media/some_image.jpg
+---
+```
+
+This will resolve `image.src` to `https://mysite.tld/pages/media/some_image.jpg`
 
 If the value is fully resolved already, it will not be modified.
 
@@ -163,7 +188,15 @@ Themes will support additional parameters; consult the documentation for the ins
 for more information about specific attributes that may be supported.
 
 
-## Page Headers
+## Page Content and Markdown
+
+Since this is a _markdown_ content system, markdown syntax is used for writing the articles.  
+Refer to the 
+[official markdown syntax guide](https://daringfireball.net/projects/markdown/syntax){target=_blank} 
+for a refresher on details.
+
+
+### Headers (H1-H6)
 
 By default, page headers (H1 elements) are rendered within the layout template for content based off metadata, so 
 the inclusion of one is not necessary.
@@ -185,26 +218,76 @@ This example will produce the following result because the page title is effecti
 <h1>My Page</h1>
 ```
 
+Each page should have one and only one `H1` tag, but can contain multiple H2 through H6 tags.
 
-## Page Content and Markdown
+To write sub heading tags, use the following:
 
-Since this is a _markdown_ content system, markdown syntax is used for writing the articles.  
-Refer to the 
-[official markdown syntax guide](https://daringfireball.net/projects/markdown/syntax){target=_blank} 
-for a refresher on details.
+```markdown
+## Sub Heading (renders <h2/>)
 
+...
+
+### Tertiary Heading (renders <h3/>)
+```
+
+### Lists
+
+Lists start with either `* `, `+ `, or `- `; all produce the same result.
+
+```markdown
+* Red
+* Green
+* Blue
+```
+
+```markdown
++ Red
++ Green
++ Blue
+```
+
+```markdown
+- Red
+- Green
+- Blue
+```
+
+Ordered lists are prepended by the item number
+
+```markdown
+1. Red
+2. Green
+3. Blue
+```
 
 ### Images
 
-Images are supported within both the `image:...` metadata and from within article content.  These images can either be fully resolved or relatively resolved (relative to the file you are editing).
+Images within markdown should use the following format and can be absolutely resolved,
+(including https:// prefix or just using an absolute path), or relatively resolved
+based on the file it is within.
+
+Please note though, for the default home page content, those images should only be absolutely resolved
+as crawlers will complain about the URL otherwise.
 
 ```markdown
+// Renders <img src="text-icon.gif" alt="test image"/>
 ![test image](test-icon.gif)
 ```
 
-Referencing images relative to the base file works because the browser will make the request 
-relative to that file.  Top-level paths (starting with `/`) and absolute requests 
-(`https://...`) paths are also supported.
+
+### Links
+
+```markdown
+// Renders <a href="/pages/about.html">About</a>
+[About](/pages/about.html)
+```
+
+Besides the basic markdown formatting, this web software supports additional arguments on links.
+
+```markdown
+// Renders Checkout our <a href="https://external.tld" target="_blank">partner</a>
+Checkout our [partner](https://external.tld){target=_blank}
+```
 
 
 ### HTML Attributes
@@ -259,3 +342,39 @@ but ANY HTML ATTRIBUTE is supported.
 | target     | Target attribute        | `{target=_blank}`                  |
 | data-*     | Data attributes         | `{data-foo="bar"}`                 |
 
+
+### Abbreviations
+
+Particularly useful for technical documents with abbreviations, the abbr syntax
+will replace any instance of the abbreviation with an appropriate `<abbr>` tag.
+
+```markdown
+MarkdownMaster CMS is a web platform to allow you to rapidly publish content!
+
+*[CMS]: Content Management System
+```
+
+Will replace `CMS` with `<abbr title="Content Management System">CMS</abbr>` when rendered.
+
+
+### Blockquotes
+
+```markdown
+> This is a blockquote.
+> 
+> This is the second paragraph in the blockquote.
+>
+> ## This is an H2 in a blockquote
+```
+
+Renders
+
+```html
+<blockquote>
+    <p>This is a blockquote.</p>
+
+    <p>This is the second paragraph in the blockquote.</p>
+
+    <h2>This is an H2 in a blockquote</h2>
+</blockquote>
+```
