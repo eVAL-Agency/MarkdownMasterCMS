@@ -349,19 +349,20 @@ class CMS {
 			} else if (collection) {
 				// List view of some sort
 				// All new page views start with fresh filters and default sorting
+				mode = 'listing';
 				collection.resetFilters();
 				collection.filterSort();
 
 				if (search) {
 					// Check for queries
-					collection.filterSearch(search);
+					renderer = collection.renderSearch(search);
 				} else if (tag) {
 					// Check for tags
 					collection.filterTag(tag);
+					renderer = collection.render();
+				} else {
+					renderer = collection.render();
 				}
-
-				mode = 'listing';
-				renderer = collection.render();
 			} else {
 				mode = 'error';
 				renderer = renderError(new CMSError(404, 'Bad request or collection not found'));

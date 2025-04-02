@@ -438,14 +438,49 @@ class FileCollection extends TemplateObject {
 	 * @param {string} search - Search query.
 	 * @returns {File[]} Set of filtered files
 	 */
-	filterSearch(search) {
-		Log.Debug('FileCollection.filterSearch/' + this.type, 'Performing text search for files', search);
+	async filterSearch(search) {
+		return new Promise(resolve => {
+			Log.Debug('FileCollection.filterSearch/' + this.type, 'Performing text search for:', search);
+			let url;
 
-		this[this.type] = this[this.type].filter((file) => {
-			return file.matchesSearch(search);
+			try {
+				url = new URL(window.location.origin + pathJoin(this.config.webpath, 'search.json'));
+				url.searchParams.append('q', search);
+				url.searchParams.append('t', this.type);
+			}
+			catch (e) {
+				Log.Debug('FileCollection.filterSearch/' + this.type, 'Using local-only fallback search');
+				this[this.type] = this[this.type].filter((file) => {
+					return file.matchesSearch(search);
+				});
+
+				resolve(this[this.type]);
+				return;
+			}
+
+			// Try to initiate a server-side search for more in-depth results
+			fetch(url)
+				.then(raw => {
+					return raw.json();
+				})
+				.then(results => {
+					Log.Debug('FileCollection.filterSearch/' + this.type, 'Server provided search results', results);
+					this[this.type] = this[this.type].filter((file) => {
+						return results.indexOf(file.url) !== -1;
+					});
+
+					resolve(this[this.type]);
+				})
+				.catch(() => {
+					// Local-only search fallback
+					Log.Debug('FileCollection.filterSearch/' + this.type, 'Using local-only fallback search');
+					this[this.type] = this[this.type].filter((file) => {
+						return file.matchesSearch(search);
+					});
+
+					resolve(this[this.type]);
+				});
 		});
-
-		return this[this.type];
 	}
 
 	/**
@@ -628,6 +663,23 @@ class FileCollection extends TemplateObject {
 		return renderLayout(this.layout.list, this);
 	}
 
+	async renderSearch(query) {
+		return new Promise((resolve, reject) => {
+			document.title = 'Searching...';
+
+			this.filterSearch(query).then(() => {
+				if (this.layout.title) {
+					document.title = this.layout.title + ' - ' + query;
+				} else {
+					document.title = 'Listing - ' + query;
+				}
+
+				renderLayout(this.layout.list, this)
+					.then(resolve)
+					.catch(reject);
+			});
+		});
+	}
 }
 
 export default FileCollection;
