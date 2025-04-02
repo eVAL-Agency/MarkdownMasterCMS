@@ -13,6 +13,7 @@ require_once('backend/controllers/PageController.php');
 require_once('backend/controllers/SitemapController.php');
 require_once('backend/controllers/MetaController.php');
 require_once('backend/controllers/FormController.php');
+require_once('backend/controllers/MetaController.php');
 require_once('backend/controllers/ListingController.php');
 require_once('backend/libs/MarkdownMaster/File.php');
 
