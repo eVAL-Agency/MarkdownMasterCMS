@@ -85,6 +85,59 @@ class File {
 	}
 
 	/**
+	 * Get the match weight for this file based on a given search string
+	 *
+	 * Returns 0 - 1, where 0 is no match and 1 is a full match.
+	 *
+	 * @param string $pattern
+	 * @return float
+	 */
+	public function getMatch(string $pattern): float {
+		$weight = 0.0;
+		$this->_ensureParsed();
+
+		// Check for full matches first
+		if (str_contains(strtolower(str_replace(['-', '/', '_'], ' ', $this->rel)), $pattern)) {
+			$weight += 10;
+		}
+
+		if (str_contains(strtolower($this->getMeta('title', '')), $pattern)) {
+			$weight += 5;
+		}
+
+		if (str_contains(strtolower($this->getMeta(['description', 'excerpt'], '')), $pattern)) {
+			$weight += 2;
+		}
+
+		if (str_contains(strtolower($this->content), $pattern)) {
+			$weight += 2;
+		}
+
+		// Check for partial matches
+		$keywords = explode(' ', $pattern);
+		foreach ($keywords as $keyword) {
+			if (str_contains(strtolower(str_replace(['-', '/', '_'], ' ', $this->rel)), $keyword)) {
+				$weight += (1 / count($keywords));
+			}
+
+			if (str_contains(strtolower($this->getMeta('title', '')), $keyword)) {
+				$weight += (1 / count($keywords));
+			}
+
+			if (str_contains(strtolower($this->getMeta(['description', 'excerpt'], '')), $keyword)) {
+				$weight += (1 / count($keywords));
+			}
+
+			if (str_contains(strtolower($this->content), $keyword)) {
+				$weight += (1 / count($keywords));
+			}
+		}
+
+		// Total weight of matches, (assuming a keyword matches URL, title, description, and content), is 23.
+		return $weight / 23;
+	}
+
+	/**
 	 * Get a meta value
 	 *
 	 * If multiple keys are applicable for the requested value,
