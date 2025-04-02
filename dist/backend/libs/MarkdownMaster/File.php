@@ -298,9 +298,21 @@ class File {
 		$contents = file_get_contents($this->file);
 		if (str_starts_with($contents, '---')) {
 			// Frontmatter requires the first line of the file to be a frontmatter termination string, by default "---".
-			$parsed = YamlFrontMatter::parse($contents);
-			$meta = $parsed->matter();
-			$this->content = $parsed->body();
+			try {
+				$parsed = YamlFrontMatter::parse($contents);
+				$meta = $parsed->matter();
+				$this->content = $parsed->body();
+			}
+			catch(\Error $e) {
+				// If the file is not valid YAML, then assume it does not contain any frontmatter.
+				$meta = [];
+				$this->content = (Config::GetDebug() ? $e->getMessage() . "\n\n" : '') . $contents;
+			}
+			catch(\Exception $e) {
+				// If the file is not valid YAML, then assume it does not contain any frontmatter.
+				$meta = [];
+				$this->content = (Config::GetDebug() ? $e->getMessage() . "\n\n" : '') . $contents;
+			}
 		}
 		else {
 			// If the first line is NOT this termination string, then this file is assumed to not contain any.
