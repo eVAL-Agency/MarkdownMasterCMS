@@ -180,9 +180,10 @@ describe('FileCollection', () => {
 			collection.files = good_files;
 
 			collection.resetFilters();
-			let files = collection.filterSearch('zulu');
-			expect(files).toHaveLength(1);
-			expect(files[0].title).toEqual('Zulu');
+			collection.filterSearch('zulu').then(files => {
+				expect(files).toHaveLength(1);
+				expect(files[0].title).toEqual('Zulu');
+			});
 		});
 	});
 	describe('filterAttributeSearch', () => {
