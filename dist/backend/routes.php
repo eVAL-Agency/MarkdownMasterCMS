@@ -58,7 +58,14 @@ $routes = [
 		'file' => 'FormController.php',
 		'class' => 'FormController',
 		'params' => null,
-	]
+	],
+	// Search content route, provides full text searches
+	[
+		'uri' => '/search.json',
+		'file' => 'SearchController.php',
+		'class' => 'SearchController',
+		'params' => null,
+	],
 ];
 
 // Add any routes for each content type configured
