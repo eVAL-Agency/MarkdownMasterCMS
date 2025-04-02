@@ -43,7 +43,7 @@ class PageController extends Controller {
 		}
 		else {
 			$listing = new \MarkdownMaster\FileCollection($this->params);
-			$file = str_replace('.html', '.md', $_SERVER['REDIRECT_URL']);
+			$file = str_replace('.html', '.md', $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI']);
 		}
 
 		$page = $listing->getByPath($file);
