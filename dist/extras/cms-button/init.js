@@ -22,11 +22,6 @@
  */
 
 class ButtonElement extends HTMLAnchorElement {
-
-	static get observedAttributes() {
-		return ['prefix', 'icon'];
-	}
-
 	constructor() {
 		// Always call super first in constructor
 		super();
@@ -35,22 +30,18 @@ class ButtonElement extends HTMLAnchorElement {
 		// Create a shadow root
 		const icon = document.createElement('i'),
 			span = document.createElement('span');
-		let icon_prefix = 'fa';
 
 		// Move the contents of the 'A' node to a new span (to play nicely along side an icon)
 		span.innerHTML = this.innerHTML;
 		this.innerHTML = '';
 		span.setAttribute('part', 'content');
 
-		// Allow the user to select a different prefix, ie: using something other than fontawesome
-		if (this.hasAttribute('prefix') && this.getAttribute('prefix')) {
-			icon_prefix = this.getAttribute('prefix');
-		}
-
 		if (this.hasAttribute('icon') && this.getAttribute('icon')) {
-			icon.classList.add(icon_prefix, icon_prefix + '-' + this.getAttribute('icon'));
 			icon.setAttribute('part', 'icon');
 			this.appendChild(icon);
+			if (typeof(fontawesome_icon) === 'function') {
+				fontawesome_icon(icon, this.getAttribute('icon'));
+			}
 		}
 
 		this.classList.add('button');
@@ -58,4 +49,4 @@ class ButtonElement extends HTMLAnchorElement {
 	}
 }
 
-customElements.define('button', ButtonElement, {extends: 'a'});
+customElements.define('cms-button', ButtonElement, {extends: 'a'});

@@ -482,6 +482,7 @@ header .logo img {
 	max-height: 6em;
 }
 
+/** <editor-fold desc="CMS Tags"> **/
 
 cms-tags .tag-weight-1 {
 	font-size: 50%;
@@ -514,6 +515,9 @@ cms-tags .tag-weight-10 {
 	font-size: 140%;
 }
 
+/** </editor-fold> **/
+
+/** <editor-fold desc="Blocks"> **/
 
 .blocks-2, .blocks-3, .blocks-4, .blocks-5, .blocks-6 {
 	display: flex;
@@ -545,6 +549,27 @@ cms-tags .tag-weight-10 {
 	flex: 1 calc(16% - 5rem);
 }
 
+/** </editor-fold> **/
+
+/** <editor-fold desc="CMS Buttons"> **/
+
+.button {
+	display: inline-block;
+	padding: 0.5em 1em;
+	background-color: var(--color-accent1);
+	color: white;
+	text-decoration: none;
+	border-radius: 0.25em;
+	transition: background-color 0.3s ease;
+}
+.button:hover {
+	background-color: var(--color-accent2);
+}
+.button i {
+	margin-right: 0.5em;
+}
+
+/** </editor-fold> **/
 
 cms-form {
 	position: relative;
