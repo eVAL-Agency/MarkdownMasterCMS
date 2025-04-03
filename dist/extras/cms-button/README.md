@@ -2,7 +2,9 @@
 title: CMS Button Tag
 ---
 
-Tag to render a fancy button on the page
+Tag to assist with rendering a fancy button on the page.
+Has no inherit functionality other than adding a class `button` and support for an 
+embedded icon using FontAwesome.
 
 ## Requirements
 

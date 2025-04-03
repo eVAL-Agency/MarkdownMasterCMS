@@ -93,7 +93,7 @@ When browsing to a file, the source markdown is downloaded from the server
 and rendered into HTML with Remarkable, (by default; this can be swapped out if 
 necessary).
 
-For bots anw crawlers, the server-side component is capable of generating HTML
+For bots and crawlers, the server-side component is capable of generating HTML
 from the same markdown files.  Not all features are supported in this rendering,
 but is sufficient for SEO and indexing purposes.
 
