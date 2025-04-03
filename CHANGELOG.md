@@ -9,6 +9,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 ### New Features
 
 * Add support for `field:...` on form email action for the `to` field
+* Add server-side search for full text searching
 
 ### Changes
 
@@ -21,6 +22,9 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Fix GetRootPath to return a trailing slash
 * Additional sanity checks for File paths
 * `cms-pagelist` now renders server-side (SEO Fix)
+* `cms-button` fixes to work again
+* Fix support for rendering files with invalid YAML headers
+* Fix for hosting on nginx
 
 
 ## [MarkdownMaster CMS 5.0.0 - 2025-03-08](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.0)
