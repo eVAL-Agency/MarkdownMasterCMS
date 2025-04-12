@@ -158,4 +158,4 @@ From here, you can copy `config.example.php` to `config.php` and edit the config
 as necessary per [site configuration doc](site-configuration.md).
 
 
-*[MAIB]: Mail-in-a-Box `
+*[MAIB]: Mail-in-a-Box
