@@ -89,8 +89,7 @@ is straight forward as you can choose whatever HTML/CSS framework you prefer.
 
 ### Basic Wiki Theme
 
-![Basic Wiki Theme](img/markdownmaster-cms-wiki-light.webp)
-![Basic Wiki Theme](img/markdownmaster-cms-wiki-dark.webp)
+![Basic Wiki Theme](img/markdownmaster-cms-wiki.webp)
 
 
 ## Documentation
