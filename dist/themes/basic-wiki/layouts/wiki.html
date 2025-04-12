@@ -1,0 +1,22 @@
+<aside>
+	Contents
+	<ul is="cms-toc"></ul>
+</aside>
+
+<main class="">
+	<h1 class="wiki-title">
+		<%= data.title %>
+	</h1>
+
+	<ul class="wiki-links">
+		<li>
+			<a href="<%= data.url %>" class="wiki-link">
+				Source
+			</a>
+		</li>
+	</ul>
+
+	<div class="wiki-content">
+		<%= data.body %>
+	</div>
+</main>

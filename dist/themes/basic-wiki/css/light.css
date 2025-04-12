@@ -1,0 +1,13 @@
+:root {
+	--text-color: #444;
+	--link-color: #1c3280;
+	--background-color: #fff;
+	--input-color: #333;
+	--input-background: #ffffff;
+}
+
+.theme-selector-link[data-theme=light] {
+	border: 1px solid;
+	border-radius: 8px;
+	background-color: #bed4ff;
+}

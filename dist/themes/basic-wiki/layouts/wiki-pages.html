@@ -1,0 +1,19 @@
+<!-- Page List Template -->
+<main class="">
+	<h1 class="wiki-title">
+		Articles
+	</h1>
+	<% data.wiki.forEach(function(page) { %>
+		<% if(!page.draft) { %>
+			<article class="wiki">
+				<h2>
+					<a href="<%= page.permalink %>"><%= page.title %></a>
+				</h2>
+
+				<% if(page.excerpt) { %>
+					<p><%= page.excerpt %></p>
+				<% } %>
+			</article>
+		<% } %>
+	<% }) %>
+</main>

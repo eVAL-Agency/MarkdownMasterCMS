@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<!--
+	Site powered by https://github.com/eVAL-Agency/MarkdownMasterCMS
+	and is licensed under MIT.
+	-->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>MarkdownMasterCMS Website</title>
+	<meta name="description" content="The JavaScript Site Generator">
+	<meta name="author" content="">
+	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+	<link rel="stylesheet" href="{{theme_dir}}css/common.css"/>
+	<link rel="stylesheet" href="{{theme_dir}}css/light.css" media="(prefers-color-scheme: light)"/>
+	<link rel="stylesheet" href="{{theme_dir}}css/dark.css" media="(prefers-color-scheme: dark)"/>
+
+	<!-- Favicon -->
+	<link rel="icon" href="{{webpath}}images/icon.svg">
+</head>
+<body>
+<!-- Main Container -->
+
+<header class="masthead">
+	<a href="{{webpath}}" class="logo">
+		<img src="{{webpath}}images/logo.svg" alt="site logo"/>
+	</a>
+
+	<div>
+		<input type="search" id="search" is="cms-search" data-type="wiki" placeholder="Search Wiki..."/>
+	</div>
+
+	<cms-theme-selector class="theme-selector">
+		<a href="#" class="theme-selector-link" data-theme="light" title="Change to light mode">
+			<i is="cms-icon" icon="sun"></i>
+		</a>
+		<a href="#" class="theme-selector-link" data-theme="dark" title="Change to dark mode">
+			<i is="cms-icon" icon="moon"></i>
+		</a>
+	</cms-theme-selector>
+</header>
+
+<div>
+	<noscript>Please enable JavaScript to view this site.</noscript>
+	<!-- CMS -->
+	<div id="cms"></div>
+</div>
+
+<footer>
+	<p>
+		&copy; {{year}} %COMPANYNAME% | <a href="{{webpath}}wiki/home.html">yoursitename.com</a>
+	</p>
+
+	<!--
+	<ul>
+		<li>
+			<a href="{{webpath}}pages/about.html">About</a>
+		</li>
+		<li>
+			<a href="{{webpath}}pages/contact.html">Contact</a>
+		</li>
+		<li>
+			<a href="{{webpath}}pages/privacy.html">Privacy Policy</a>
+		</li>
+		<li>
+			<a href="{{webpath}}pages/terms-of-use.html">Terms of Use</a>
+		</li>
+	</ul>
+	-->
+
+	<p class="legal-notice">
+		Powered by MIT-licensed
+		<a
+			href="https://markdownmaster.com"
+			target="_blank"
+			title="Flat-file markdown based content management system">MarkdownMaster CMS</a>
+	</p>
+</footer>
+
+
+<!-- BEGIN: Body footer scripts -->
+
+<!-- CMS.js -->
+<script src="{{webpath}}app/cms.js"></script>
+
+<!-- Defaults from theme/server (only available when running in server+client mode) -->
+<script>
+	// Setup config from server
+	CMS.load({{config}});
+
+	// Setup all page types supported by this theme
+	CMS.config.addType('wiki', {
+		list: 'wiki-pages',
+		single: 'wiki',
+		sort: 'title',
+		title: 'Wiki'
+	});
+
+	/**
+	 * Called immediately upon successful initialization of the CMS
+	 *
+	 * @param {CMS} event.detail.cms The CMS object passed for reference
+	 */
+	document.addEventListener('cms:load', event => {
+		// Add any code required to run after the CMS has loaded here
+	});
+
+	/**
+	 * Called after any page load operation
+	 *
+	 * @param {CMS} event.detail.cms CMS object for reference if needed
+	 * @param {FileCollection[]|null} event.detail.collection Collection of files to view for listing pages
+	 * @param {File|null} event.detail.file Single file to view when available
+	 * @param {string} event.detail.mode Type of view, usually either "list", "single", or error.
+	 * @param {string} event.detail.search Any search query
+	 * @param {string} event.detail.tag Any tag selected to view
+	 * @param {string} event.detail.type Content type selected
+	 */
+	document.addEventListener('cms:route', event => {
+		// Add any code required to run after a page has loaded here
+	});
+
+	// Inform the CMS that the configuration is ready.
+	CMS.init();
+
+	// Include any extras used in this template
+	CMS.loadExtra('cms-search');
+	CMS.loadExtra('cms-icon');
+	CMS.loadExtra('cms-toc');
+	CMS.loadExtra('cms-pagelist');
+	CMS.loadExtra('prismjs');
+	CMS.loadExtra('cms-theme-selector');
+</script>
+
+<!-- Config (only necessary when in client-only mode) -->
+<!-- <script src="{{webpath}}config.js"></script> -->
+
+<script>
+	(() => {
+		document.addEventListener('scroll', () => {
+			if (window.scrollY > 10) {
+				document.body.classList.add('scrolled');
+			}
+			else {
+				document.body.classList.remove('scrolled');
+			}
+		});
+	})();
+</script>
+
+<!-- END: Body footer scripts -->
+</body>
+</html>
