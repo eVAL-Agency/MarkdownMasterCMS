@@ -123,6 +123,21 @@ class FileCollection extends TemplateObject {
 	}
 
 	/**
+	 * Clone the file collection
+	 *
+	 * @returns {FileCollection}
+	 */
+	clone() {
+		let clone = new FileCollection(this.type, this.layout, this.config);
+		clone.page = this.page;
+		clone.files = this.files;
+		clone.resultsPerPage = this.resultsPerPage;
+		clone.totalPages = this.totalPages;
+		clone.totalResults = this.totalResults;
+		return clone;
+	}
+
+	/**
 	 * Get file list URL
 	 *
 	 * @returns {string} URL of file list

@@ -412,13 +412,23 @@ class CMS {
 	}
 
 	/**
-	 * Get the given collection either by name or NULL if it does not exist
+	 * Get the given collection by name or NULL if it does not exist
 	 *
 	 * @param {string} name
 	 * @returns {FileCollection|null}
 	 */
 	getCollection(name) {
 		return (Object.hasOwn(this.collections, name)) ? this.collections[name] : null;
+	}
+
+	/**
+	 * Get a clone of the given collection by its name, or NULL if it does not exist
+	 *
+	 * @param {string} name
+	 * @returns {FileCollection|null}
+	 */
+	getCollectionClone(name) {
+		return (Object.hasOwn(this.collections, name)) ? this.collections[name].clone() : null;
 	}
 
 	/**
