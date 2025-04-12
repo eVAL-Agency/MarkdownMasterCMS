@@ -530,95 +530,136 @@ class File extends TemplateObject {
 	 * Supports a single value to compare and both single and array values from the metadata
 	 *
 	 * @param {string}      key   Frontmatter meta key to compare against
-	 * @param {string|null} value Value comparing
+	 * @param {string|null} check Value comparing
 	 * @returns {boolean}
 	 * @private
 	 */
-	_matchesAttribute(key, value) {
-		let op = '',
-			check,
+	_matchesAttribute(key, check) {
+		let op = '=',
 			local_val;
 
-		if (!Object.hasOwn(this, key) || this[key] === null) {
-			// If the property is either not set or NULL, only NULL check value will match
-			// This is done separately to make the Array logic easier herein.
-			return value === null;
-		} else if (value === null) {
-			// If the value is null, then we only want unset attributes,
-			// but the above check confirmed that the value is set
-			return false;
-		}
-
-		if (value.indexOf('~ ') === 0) {
-			// "~ " prefix is RegExp
-			op = '~';
-			check = new RegExp(value.substring(2));
-		} else if (value.indexOf('>= ') === 0) {
-			// Mathematical operation
-			op = '>=';
-			check = value.substring(3);
-		} else if (value.indexOf('<= ') === 0) {
-			// Mathematical operation
-			op = '<=';
-			check = value.substring(3);
-		} else if (value.indexOf('> ') === 0) {
-			// Mathematical operation
-			op = '>';
-			check = value.substring(2);
-		} else if (value.indexOf('< ') === 0) {
-			// Mathematical operation
-			op = '<';
-			check = value.substring(2);
-		} else {
-			// Default case, standard comparison but done case insensitively
-			op = '=';
-			check = value.toLowerCase();
-		}
-
+		// Key conversions, (must be before local_var assignment)
 		if (key === 'date') {
 			// This is a useless parameter as it's formatted into a human-friendly version,
 			// but we can remap it to datetime (that's probably what they wanted)
 			key = 'datetime';
 		}
 
-		if (key === 'datetime') {
-			// Dates must be compared against other Dates.
-			check = new Date(value);
+		local_val = Object.hasOwn(this, key) ? this[key] : null;
+		if (!Array.isArray(local_val)) {
+			// To support array values, just convert everything to an array to make the logic simpler.
+			local_val = [local_val];
 		}
 
+		if (check === null) {
+			check = '';
+		}
 
-		if (Array.isArray(this[key])) {
-			local_val = this[key];
-		} else {
-			// To support array values, just convert everything to an array to make the logic simpler.
-			local_val = [this[key]];
+		// Strings support embedding operator checks
+		if (typeof check === 'string') {
+			if (check.startsWith('!~ ') || check.startsWith('>= ') || check.startsWith('<= ') || check.startsWith('!= ')) {
+				op = check.substring(0, 2);
+				check = check.substring(3);
+			}
+			else if (check.startsWith('~ ') || check.startsWith('> ') || check.startsWith('< ') || check.startsWith('= ')) {
+				op = check.substring(0, 1);
+				check = check.substring(2);
+			}
 		}
 
 		for (let val of local_val) {
-			if (op === '~') {
-				if (check.exec(val) !== null) {
-					return true;
-				}
-			} else if (op === '>=') {
-				if (val >= check) {
-					return true;
-				}
-			} else if (op === '<=') {
-				if (val <= check) {
-					return true;
-				}
-			} else if (op === '>') {
-				if (val > check) {
-					return true;
-				}
-			} else if (op === '<') {
-				if (val < check) {
-					return true;
-				}
-			} else {
-				if (val.toLowerCase() === check) {
-					return true;
-				}
+			if (val === null) {
+				val = '';
+			}
+
+			if (this._compare(val, op, check)) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * Perform a fuzzy check against two values
+	 *
+	 * Will try to perform an intelligent comparison, ie: "true" and TRUE will be presumed as a match,
+	 * this is because YAML will convert "true" to a boolean TRUE when parsed,
+	 * but HTML will treat all attributes as a string.
+	 *
+	 * @param {Date|boolean|string|integer} val
+	 * @param {string} op
+	 * @param {string} check
+	 * @returns {boolean}
+	 * @private
+	 */
+	_compare(val, op, check) {
+
+		if (op === '~' || op === '!~') {
+			// Regex check
+			let re = new RegExp(check),
+				invert = op === '!~',
+				test = re.test(val.toString());
+
+			return invert ? !test : test;
+		}
+
+		if (op === '=' || op === '!=') {
+			// Equality check
+			let invert = op === '!=',
+				test;
+
+			check = check.toLowerCase();
+
+			if (val === true) {
+				test = check === '1' || check === 'true' || check === 'yes' || check === 'on';
+			}
+			else if(val === false) {
+				test = check === '0' || check === 'false' || check === 'no' || check === 'off';
+			}
+			else if(val instanceof Date) {
+				test = val.getTime() === (new Date(check)).getTime();
+			}
+			else {
+				test = val.toString().toLowerCase() === check;
+			}
+
+			return invert ? !test : test;
+		}
+
+		if (op === '>') {
+			if (val instanceof Date) {
+				return val > (new Date(check));
+			}
+			else {
+				return val > check;
+			}
+		}
+
+		if (op === '<') {
+			if (val instanceof Date) {
+				return val < (new Date(check));
+			}
+			else {
+				return val < check;
+			}
+		}
+
+		if (op === '>=') {
+			if (val instanceof Date) {
+				return val >= (new Date(check));
+			}
+			else {
+				return val >= check;
+			}
+		}
+
+		if (op === '<=') {
+			if (val instanceof Date) {
+				return val <= (new Date(check));
+			}
+			else {
+				return val <= check;
 			}
 		}
 
