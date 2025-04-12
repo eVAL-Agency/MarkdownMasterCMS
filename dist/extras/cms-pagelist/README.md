@@ -40,7 +40,13 @@ N/A
 <cms-pagelist type="posts"></cms-pagelist>
 ```
 
-**Attributes**
+Note, when used in Markdown files, the directive must be on a single line.
+
+```markdown
+<cms-pagelist type="posts" sort="recent" limit="4"></cms-pagelist>
+```
+
+### Attributes
 
 
 | Parameter | Required | Example                 | Description                                                        |
@@ -52,8 +58,11 @@ N/A
 | filter-*  | no       | "filter-tag"            | Filter results by a specific key                                   |
 
 
+#### Attribute Type
+
 Type is required and specifies the type of content to retrieve.
 
+#### Attribute Sort
 Sort allows the content to be sorted, multiple sort keys can be specified by separating them with a comma.
 Common sort options are:
 
@@ -61,6 +70,8 @@ Common sort options are:
 * random - Sort results randomly
 * recent - Sort by the most recent date
 * datetime - Sort by oldest first (or datetime-r for newest first)
+
+#### Attribute Filter
 
 Filters can be any system or custom tag on pages, and multiple queries for the same filter
 can be separated by a comma.  For example
@@ -91,14 +102,18 @@ Regular expressions are also supported in values, for example to limit page resu
 >Loading...</cms-pagelist>
 ```
 
-Other filter value modifiers include:
+
+
+All filter value modifiers include:
 
 * `~` - Regular expression match
+* `!~` - Regular expression not match
 * `<` - Less than value
 * `<=` - Less than or equal to value
 * `>` - Greater than value
 * `>=` - Greater than or equal to value
 * `=` - Exact match (default option)
+* `!=` - Not equal to value
 
 ## Example Styles
 

@@ -44,7 +44,7 @@ class CMSPagelistElement extends HTMLElement {
 			return;
 		}
 
-		collection = window.CMS.getCollection(type);
+		collection = window.CMS.getCollectionClone(type);
 		if (collection === null) {
 			CMS.log.Error('cms-pagelist', 'Collection ' + collection + ' not located in CMS');
 			this.parentElement.removeChild(this);
