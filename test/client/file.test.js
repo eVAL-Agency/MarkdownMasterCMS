@@ -480,6 +480,39 @@ This is test content about Zebras`;
 		});
 	});
 
+	describe('_matchesAttribute', () => {
+		let f = new File();
+
+		it('bool true = string true', () => {
+			f.test = true;
+			expect(f._matchesAttribute('test', 'true')).toEqual(true);
+		});
+
+		it('bool true = string 1', () => {
+			f.test = true;
+			expect(f._matchesAttribute('test', '1')).toEqual(true);
+		});
+
+		it('int 1 = string 1', () => {
+			f.test = 1;
+			expect(f._matchesAttribute('test', '1')).toEqual(true);
+		});
+
+		it('Date 2025-01-01 = string 2025-01-01', () => {
+			f.test = new Date('2025-01-01');
+			expect(f._matchesAttribute('test', '2025-01-01')).toEqual(true);
+		});
+
+		it('NULL != string 1', () => {
+			expect(f._matchesAttribute('attributeDoesNotExist', '!= 1')).toEqual(true);
+		});
+
+		it('string /pages/foo.html ~ string foo', () => {
+			f.test = '/pages/foo.html';
+			expect(f._matchesAttribute('test', '~ foo')).toEqual(true);
+		});
+	});
+
 	describe('render', () => {
 		let area = {};
 
