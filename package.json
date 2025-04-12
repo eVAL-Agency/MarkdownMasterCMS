@@ -1,13 +1,13 @@
 {
   "name": "markdownmaster",
   "title": "MarkdownMaster CMS",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "type": "module",
   "description": "Javascript and PHP static site CMS framework using flat-file markdown files.",
   "keywords": [
     "client-side, javascript, site-generator, cms, markdown, php"
   ],
-  "homepage": "https://github.com/eVAL-Agency/MarkdownMasterCMS",
+  "homepage": "https://markdownmaster.com",
   "scripts": {
     "build": "npm run build_app && npm run build_backend",
     "build_app": "npm run action_app_compile && npm run action_app_minify",

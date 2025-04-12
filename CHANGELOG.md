@@ -4,6 +4,25 @@ seotitle: MarkdownMaster CMS Change History
 description: Compiled list of changes to the MarkdownMaster CMS application and archived download links.
 ---
 
+## MarkdownMaster CMS 5.0.2 - (UNRELEASED)
+
+### New Features
+
+* Add "!~" and "!=" to the list of supported operators for filtering
+* New tag - cms-toc for generating a table of contents of the current page
+* New theme - basic-wiki for wiki-style sites
+* New tag - cms-theme-selector for switching themes between light/dark
+
+### Changes
+
+* Cleanup and expand file attribute filtering
+* Add getCollectionClone to CMS to allow manipulating collections independently
+
+### Fixes
+
+* Change cms-pagelist to use `getCollectionClone` to support multiple tags on the same page
+
+
 ## [MarkdownMaster CMS 5.0.1 - 2025-04-03](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.1)
 
 ### New Features

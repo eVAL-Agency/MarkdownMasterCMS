@@ -44,11 +44,12 @@ Aside from business support, you can also help support this project by donating 
 * Abstract content types
 * Custom templates
 * Search, filtering, tagging and sorting
-* Apache ~~, Nginx, Mail-in-a-box, and Nextcloud support~~ (todo)
+* Apache, Nginx, Mail-in-a-box, and Nextcloud support
 * Small footprint
 * [Remarkable](https://github.com/jonschlinkert/remarkable) embedded
 * Crawler and SEO support for most content
 * Automatic sitemap.xml generation
+* Theme support
 
 
 ## Demo
@@ -58,7 +59,9 @@ Check out a [live working site](https://markdownmaster.com?mtm_campaign=github)!
 
 ## Quick Start
 
-1. Setup [Apache](docs/INSTALL.apache.md) or any web environment with PHP 8.2.
+1. Setup/obtain your web environment with at least PHP 8.2 or greater.
+   * [Apache specific install guide](docs/INSTALL.apache.md)
+   * [Mail-in-a-Box specific install guide](docs/INSTALL.mailinabox.md)
 2. Download the **full** 
    [latest release](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/latest)
    which includes themes and example content.
@@ -70,6 +73,24 @@ Check out a [live working site](https://markdownmaster.com?mtm_campaign=github)!
    * Default setup for top-level directory, require SSL, and no `www.` prefix.
 6. Edit theme markup in themes/(themename)/index.html, CSS, and markdown content.
 
+
+## Themes
+
+MarkdownMaster CMS ships with a few themes to get you started, and creating new ones
+is straight forward as you can choose whatever HTML/CSS framework you prefer.
+
+### Basic Blog Theme
+
+![Basic Blog Theme](img/markdownmaster-cms-blog.webp)
+
+### Basic Business Theme
+
+![Basic Business Theme](img/markdownmaster-cms-business.webp)
+
+### Basic Wiki Theme
+
+![Basic Wiki Theme](img/markdownmaster-cms-wiki-light.webp)
+![Basic Wiki Theme](img/markdownmaster-cms-wiki-dark.webp)
 
 
 ## Documentation
