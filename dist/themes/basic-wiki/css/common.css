@@ -1,6 +1,7 @@
 body {
 	background-color: var(--background-color);
 	color: var(--text-color);
+	margin: 0.5rem;
 }
 a {
 	color: var(--link-color);
@@ -88,11 +89,33 @@ ul[is=cms-toc] li.level-4 {
 	padding-left: 4rem;
 }
 
+#search-icon {
+	display: none;
+}
+
 input {
 	padding: 0.5rem;
 	color: var(--input-color);
 	background-color: var(--input-background);
 	border: 1px solid;
+}
+
+pre {
+	max-width: calc(100vw - 1rem - 2em);
+}
+pre.line-numbers {
+	max-width: calc(100vw - 1rem - 4.8em);
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	border: 1px solid;
+}
+td, th {
+	padding: 0.5rem;
+	border: 1px solid;
+	text-align: left;
 }
 
 footer {
@@ -119,4 +142,55 @@ footer ul li:after {
 footer ul li:last-child:after {
 	content: '';
 	margin-left: 0;
+}
+
+@media all and (max-width: 1100px) {
+	#cms {
+		grid-template-columns: auto;
+		grid-template-areas: 'main';
+	}
+	aside {
+		display: none;
+	}
+	table {
+		width: calc(100vw - 1rem);
+	}
+}
+@media all and (max-width: 700px) {
+	header .theme-selector {
+		display: none;
+	}
+	.wiki-links {
+		display: none;
+	}
+	table {
+		width: auto;
+	}
+}
+@media all and (max-width: 600px) {
+	#search-icon {
+		font-size: 1.5rem;
+		display: block;
+	}
+	#search {
+		position: absolute;
+		width: 0;
+		top: 1rem;
+		right: 3rem;
+		padding: 0;
+		border: 0 none;
+		transition: width ease-in-out 0.5s, padding ease-in-out 0.5s;
+	}
+	#search.active {
+		width: 20rem;
+		opacity: 1;
+		border: 1px solid;
+		padding: 0.5rem;
+	}
+}
+@media all and (max-width: 400px) {
+	#search.active {
+		width: 100vw;
+		right: 0;
+	}
 }

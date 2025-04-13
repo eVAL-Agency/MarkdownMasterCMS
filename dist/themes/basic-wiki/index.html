@@ -28,6 +28,7 @@
 
 	<div>
 		<input type="search" id="search" is="cms-search" data-type="wiki" placeholder="Search Wiki..."/>
+		<i is="cms-icon" icon="magnifying-glass" id="search-icon"></i>
 	</div>
 
 	<cms-theme-selector class="theme-selector">
@@ -128,7 +129,7 @@
 	CMS.loadExtra('cms-icon');
 	CMS.loadExtra('cms-toc');
 	CMS.loadExtra('cms-pagelist');
-	CMS.loadExtra('prismjs');
+	CMS.loadExtra('prismjs', {'lineNumbers': true});
 	CMS.loadExtra('cms-theme-selector');
 </script>
 
@@ -145,6 +146,29 @@
 				document.body.classList.remove('scrolled');
 			}
 		});
+
+		let searchIcon = document.getElementById('search-icon'),
+			searchInput = document.getElementById('search');
+		if (searchIcon && searchInput) {
+			searchIcon.addEventListener('click', () => {
+				if (searchInput.classList.contains('active')) {
+					searchInput.classList.remove('active');
+					searchInput.blur();
+				}
+				else {
+					searchInput.classList.add('active');
+					searchInput.focus();
+				}
+			});
+			searchInput.addEventListener('blur', () => {
+				searchInput.classList.remove('active');
+			});
+			searchInput.addEventListener('keyup', (e) => {
+				if (e.key === 'Enter') {
+					searchInput.blur();
+				}
+			});
+		}
 	})();
 </script>
 

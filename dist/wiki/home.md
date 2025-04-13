@@ -11,6 +11,16 @@ These are pulled with the following HTML code within the markdown page:
 <cms-pagelist type="wiki" sort="title" filter-pinned=1 layout="wiki-pages-embed"></cms-pagelist>
 ```
 
+Many wiki articles include tables, which are supported too
+
+| Column A           |   Column B   |                     Column C | Column D      |
+|--------------------|:------------:|-----------------------------:|---------------|
+| This is some value | and the rest | this should be right aligned | and something |
+| This is some value | and the rest | this should be right aligned | and something |
+| This is some value | and the rest | this should be right aligned | and something |
+| This is some value | and the rest | this should be right aligned | and something |
+
+
 ## Pinned Articles
 
 <cms-pagelist type="wiki" sort="title" filter-pinned=1 layout="wiki-pages-embed"></cms-pagelist>
