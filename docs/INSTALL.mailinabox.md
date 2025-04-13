@@ -9,16 +9,19 @@ directly from the Nextcloud shares.
 This allows direct access to the markdown files of the site on your local workstation
 and immediate and seamless deployment of changes thanks to Nextcloud.
 
-This guide starts with the expectation that your mail-in-a-box instance is already up and running,
-however please note this is **NOT SUPPORTED** by MIAB, so have backups and be mindful
-this may break future upgrades.
+Notice, the default config for MIAB only allows for static sites, which is supported by
+MarkdownMaster CMS, but not recommended as it will miss out on any of the SEO and bot features
+built into the backend.
+This guide will offer the advanced option of utilizing the PHP backend of MarkdownMaster CMS,
+but comes with the trade-off of not being able to run on the default domain name.
 
-This provides two options based on how you intend to use the site.
-First option is setting up a new domain separate from your mail-in-a-box instance's primary domain,
-(or separate subdomain), and the second is to piggyback the site off the primary domain.
+## Presumptions
 
-For example, if your mail-in-a-box is `example.tld`, the first option will setup
-`mycontentsite.tld` and the second will setup `example.tld`.
+This guide presumes you have a working Mail-in-a-box instance with Nextcloud installed
+**that is fully updated**.
+
+The MIAB instance is installed at `example.tld` and you will be installed a **new**
+domain `mycontentsite.tld` to host your site.
 
 
 ## Update
@@ -26,9 +29,23 @@ For example, if your mail-in-a-box is `example.tld`, the first option will setup
 This script is tested with the latest released at the time of writing, version 71.
 If you are not on the latest mail-in-a-box version, please update before proceeding.
 
+
+## DNS
+
+You will need to create a new DNS entry for the new domain, `mycontentsite.tld` and point it
+to a `CNAME` record for your MIAB instance, `example.tld` or an `A` record pointing to the
+IP address of your MIAB instance.
+
+**Note** because this domain is managed separately from MAIB, (as it only supports static sites),
+you will need to use an external DNS provider to manage the DNS records for your new site.
+
+If you are forwarding a top-level domain, consider adding `www.` as a DNS entry as well,
+as this is common for websites.
+
+
 ## Install Files
 
-Select a location in your Nextcloud instance to host the files, for example `Sync/example.tld/site` or some such.
+Select a location in your Nextcloud instance to host the files, for example `Sync/mycontentsite.tld/site` or some such.
 Extract MarkdownMaster CMS to this directory and wait for the files to be uploaded.
 
 For collaborative editing, group files **are** supported and allow multiple people to edit the site.
@@ -38,101 +55,86 @@ this file path will be used later.
 
 For examples:
 
-* `/home/user-data/owncloud/you@example.tld/files/example.tld/site`
-* `/home/user-data/owncloud/__groupfolders/1/example.tld/site`
+* `/home/user-data/owncloud/you@example.tld/files/mycontentsite.tld/site`
+* `/home/user-data/owncloud/__groupfolders/1/mycontentsite.tld/site`
 
 
 ## Upgrade PHP
 
 Mail-in-a-box ships with PHP 8.0, but MarkdownMaster requires PHP 8.2 or higher.
-The version of Nextcloud shipped with MIAB only supports up to PHP 8.2, so we'll use that version.
+At the time of writing PHP 8.4 is the latest stable release, so install that alongside
+the existing PHP 8.0 version.
 
 ```bash
-# Install dependencies for PHP 8.2
-sudo VERS=8.2 apt install php"${PHP_VER}" php"${PHP_VER}"-fpm \
- php"${PHP_VER}"-cli php"${PHP_VER}"-sqlite3 php"${PHP_VER}"-gd php"${PHP_VER}"-imap php"${PHP_VER}"-curl \
- php"${PHP_VER}"-dev php"${PHP_VER}"-gd php"${PHP_VER}"-xml php"${PHP_VER}"-mbstring php"${PHP_VER}"-zip php"${PHP_VER}"-apcu
- php"${PHP_VER}"-intl php"${PHP_VER}"-imagick php"${PHP_VER}"-gmp php"${PHP_VER}"-bcmath
+# Install dependencies for MarkdownMaster CMS
+# This includes the nginx plugin for certbot
+sudo apt install php8.4 php8.4-fpm php8.4-xml python3-certbot-nginx
 
-# Enable and start PHP 8.2 backend handler
-sudo systemctl enable php8.2-fpm
-sudo systemctl start php8.2-fpm
 
-# Swap default FPM handler
-sed -i 's/php8.0-fpm\.sock/php8.2-fpm.sock/g' /etc/nginx/conf.d/local.conf
+# Enable and start PHP 8.4 backend handler
+sudo systemctl enable php8.4-fpm
+sudo systemctl start php8.4-fpm
 ```
 
 
-## Install Virtual Host (option 1 - new domain)
+## Install Virtual Host
 
-// @todo: instructions for configuring /etc/nginx/conf.d/newsite.conf
+Create a new file in `/etc/nginx/conf.d` named (for example) `mycontentsite.tld.conf`
+with the following content, adjusted to your site name and file path:
 
+```nginx
+upstream mycontentsite-fpm { # Set name to unique identifier for your site
+    server unix:/var/run/php/php8.4-fpm.sock;
+}
 
-## Install Virtual Host (option 2 - existing domain)
+server {
+    listen 80;
+    # Domain name to serve, you can use mydomain.tld www.mydomain.tld; to include multiple.
+    server_name mycontentsite.tld;
+    return 301 https://$host$request_uri;
+}
 
-To install the site on top of your existing MAIB domain, 
-edit `/etc/nginx/conf.d/local.conf` and location the `listen 443 ssl` server block
-specific for your server URL.
-
-```
-# The secure HTTPS server.
 server {
     listen 443 ssl http2;
     listen [::]:443 ssl http2;
     
-    server_name example.tld;
-    
-    # Improve privacy: Hide version an OS information on
-    # error pages and in the "Server" HTTP-Header.
+    # Domain name to serve, you can use mydomain.tld www.mydomain.tld; to include multiple.
+    server_name mycontentsite.tld;
     server_tokens off;
     
-    ssl_certificate /home/user-data/ssl/ssl_certificate.pem;
-    ssl_certificate_key /home/user-data/ssl/ssl_private_key.pem;
-    
-    # Expose this directory as static files.
-    #root /home/user-data/www/default;
-    #index index.html index.htm;
-    
-    ## ^^  ^^ Comment out the existing `root` and `index` directives
-
-    
-    
-    ### BEGIN directive for MarkdownMaster CMS site
-    
-    # Must be set to the absolute path of the site files.
+    # Path to your site files
     root /home/user-data/owncloud/THE_LOCATION_OF_YOUR_SITE_FILES;
     
-    # Default file handler, index.php handles everything
     index index.php;
     
-    # Ensure index.php can be executed with PHP-FPM handler
+    include snippets/snakeoil.conf;
+    
+    location ~ /.*\.(html|json|xml) {
+        try_files $uri $uri/ /index.php?$args;
+    }
+    
     location = /index.php {
         include fastcgi_params;
         fastcgi_index index.php;
+        
+        # Path to your site files + '/index.php'
         fastcgi_param SCRIPT_FILENAME /home/user-data/owncloud/THE_LOCATION_OF_YOUR_SITE_FILES/index.php;
-        fastcgi_pass php-fpm;
+        
+        # Identifier from upstream block
+        fastcgi_pass mycontentsite-fpm; 
     }
     
-    # Backend processing files for MarkdownMaster CMS
-    rewrite /meta.json /index.php;
-    rewrite /search.json /index.php;
-    rewrite /sitemap.xml /index.php;
-    rewrite /form /index.php;
-    
-    # Update this with any file type present in your site if necessary.
-    rewrite ^/wiki.*\.html /index.php;
-    rewrite ^/posts.*\.html /index.php;
-    rewrite ^/pages.*\.html /index.php;
-    
-    ### END directive for MarkdownMaster CMS site
-    
-    # ... rest of server block
+    include mime.types;
+    types {
+        text/markdown md;
+    }
 }
 ```
 
-## Restart Nginx and test
 
-After editing the Nginx configuration, test the configuration for errors with:
+## Test, Restart, and SSL
+
+After adding the Nginx configuration, test the configuration for errors with:
 
 ```bash
 sudo nginx -t
@@ -144,7 +146,18 @@ and if successful, reload the configuration with:
 sudo systemctl restart nginx
 ```
 
-If everything was successful, browsing to the site should produce the following output:
+If everything was successful, continue to installing the SSL certificate from LetsEncrypt.
+
+```bash
+# Alternatively certbot --nginx -d mycontentsite.tld -d www.mycontentsite.tld
+certbot --nginx -d mycontentsite.tld
+```
+
+
+## Wrapping up
+
+Now that the virtual host is installed and SSL is configured, access the site in a web browser
+and check if you have a valid certificate and are getting a response, probably similar to:
 
 ```
 Error 500
@@ -159,3 +172,4 @@ as necessary per [site configuration doc](site-configuration.md).
 
 
 *[MAIB]: Mail-in-a-Box
+*[SEO]: Search Engine Optimization

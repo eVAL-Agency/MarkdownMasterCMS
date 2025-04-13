@@ -77,18 +77,28 @@ auth_basic "Restricted Access";
 auth_basic_user_file /home/user-data/owncloud/PATH_TO_YOUR_SITE/.htpasswd;
 ```
 
-Then include this file in `/etc/nginx/conf.d/local.conf`, (or your site configuration location):
+Then include this file in `/etc/nginx/conf.d/YOURSITE.conf` inside the 443/SSL server block:
 
 ```nginx
-# Inside the existing /index.php location block, add the include line
-location = /index.php {
-    ... existing directives
     include /home/user-data/owncloud/PATH_TO_YOUR_SITE/nginx_auth.conf;
-}
+```
 
-# Create a new location block for the markdown content
-# Edit as necessary if you have additional content types
-location ~ ^/(wiki|pages|posts)/.*\.md {
+example:
+
+```nginx
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    server_name YOURSITE.tld www.YOURSITE.tld;
+    server_tokens off;
+    root /home/user-data/owncloud/PATH_TO_YOUR_SITE/site;
+    index index.php;
+    include snippets/snakeoil.conf;
     include /home/user-data/owncloud/PATH_TO_YOUR_SITE/nginx_auth.conf;
+
+    location ~ /.*\.(html|json|xml) {
+        try_files $uri $uri/ /index.php?$args;
+    }
+    ...
 }
 ```
