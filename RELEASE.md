@@ -18,6 +18,13 @@ and a simplification of configuration.
 The client-side `config.js` is still supported, but not used by default for new installs.
 This config is generated dynamically from the server-side config.
 
+v5.0.1 features a new server-side search engine for full-text searching and some server-side
+fixes to improve bot rendering.
+
+v5.0.2 features a new theme for wiki-style sites, a table of contents tag, and a theme selector tag.
+
+[Complete changelog](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/CHANGELOG.md)
+
 
 ## Installation
 
