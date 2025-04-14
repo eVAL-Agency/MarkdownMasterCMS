@@ -14,3 +14,6 @@
 	border-radius: 8px;
 	background-color: #242424;
 }
+.only-light {
+	display: none;
+}

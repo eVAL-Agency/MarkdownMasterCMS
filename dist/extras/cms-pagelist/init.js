@@ -42,7 +42,7 @@ class CMSPagelistElement extends HTMLElement {
 
 		if (related !== null) {
 			// Support related articles
-			let post, paths;
+			let post, paths, tags;
 			if (related === 'this') {
 				paths = CMS.getPathsFromURL();
 			}
@@ -67,8 +67,9 @@ class CMSPagelistElement extends HTMLElement {
 				filters['permalink'] = '!= ' + post.permalink;
 
 				// Retrieve related posts by tags
-				if (post.tags.length > 0) {
-					filters['tags'] = post.tags;
+				tags = post.tags || [];
+				if (tags.length > 0) {
+					filters['tags'] = tags;
 				}
 				else {
 					CMS.log.Warn('cms-pagelist', 'No tags found for related articles');
