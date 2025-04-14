@@ -266,10 +266,25 @@ class CMS {
 
 	/**
 	 * Retrieve the current path URL broken down into individual pieces
+	 *
+	 * @param {string|null} path Path to parse, or current location by default
+	 *
 	 * @returns {string[]} The segments of the URL broken down by directory
 	 */
-	getPathsFromURL() {
-		let paths = window.location.pathname.substring(this.config.webpath.length).split('/');
+	getPathsFromURL(path) {
+		path = path ?? window.location.pathname;
+		let paths;
+
+		if (path.startsWith(this.config.webpath)) {
+			path = path.substring(this.config.webpath.length);
+		}
+
+		if (path.startsWith('/')) {
+			// Strip leading slash
+			path = path.substring(1);
+		}
+
+		paths = path.split('/');
 
 		if (paths.length >= 1 && paths[0].endsWith('.html')) {
 			// First node (aka type) has HTML extension, just trim that off.

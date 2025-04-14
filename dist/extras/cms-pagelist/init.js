@@ -35,9 +35,52 @@ class CMSPagelistElement extends HTMLElement {
 			layout = this.getAttribute('layout'),
 			sort = this.getAttribute('sort'),
 			limit = this.getAttribute('limit'),
+			related = this.getAttribute('related'),
 			filters = {},
 			has_filters = false,
 			collection;
+
+		if (related !== null) {
+			// Support related articles
+			let post, paths;
+			if (related === 'this') {
+				paths = CMS.getPathsFromURL();
+			}
+			else {
+				// Allow user to define which page to retrieve related articles from
+				paths = CMS.getPathsFromURL(related);
+			}
+
+			if (paths.length >= 2) {
+				has_filters = true;
+				// Assign the type based on the related reference page
+				type = paths[0];
+				collection = CMS.getCollection(type);
+				if (collection === null) {
+					CMS.log.Error('cms-pagelist', 'Collection ' + type + ' not located in CMS');
+					this.parentElement.removeChild(this);
+					return;
+				}
+				post = collection.getFileByPermalink(paths.join('/'));
+
+				// Omit the original page
+				filters['permalink'] = '!= ' + post.permalink;
+
+				// Retrieve related posts by tags
+				if (post.tags.length > 0) {
+					filters['tags'] = post.tags;
+				}
+				else {
+					CMS.log.Warn('cms-pagelist', 'No tags found for related articles');
+				}
+			}
+			else {
+				CMS.log.Error('cms-pagelist', 'Invalid path for related attribute');
+				this.parentElement.removeChild(this);
+				return;
+			}
+		}
+
 
 		if (type === null) {
 			this.innerHTML = 'ERROR: No type specified';

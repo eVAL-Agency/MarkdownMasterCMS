@@ -4,7 +4,20 @@ seotitle: MarkdownMaster CMS Change History
 description: Compiled list of changes to the MarkdownMaster CMS application and archived download links.
 ---
 
-## MarkdownMaster CMS 5.0.2 - (UNRELEASED)
+## MarkdownMaster CMS 5.0.3 - UNRELEASED
+
+### New Features
+
+* cms-pagelist now supports `related` attribute to retrieve related content based on tags
+
+### Changes
+
+* CMS.getPathsFromURL now supports a string to be passed in, to parse arbitrary URLs.
+
+### Fixes
+
+
+## [MarkdownMaster CMS 5.0.2 - 2025.04.13](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.2)
 
 ### New Features
 

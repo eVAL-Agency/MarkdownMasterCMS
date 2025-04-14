@@ -49,13 +49,14 @@ Note, when used in Markdown files, the directive must be on a single line.
 ### Attributes
 
 
-| Parameter | Required | Example                 | Description                                                        |
-|-----------|----------|-------------------------|--------------------------------------------------------------------|
-| type      | yes      | "posts", "pages", "etc" | Any valid content type defined on your site                        |
-| layout    | no       | "post-list"             | Layout to use for rendering content, useful for controlling UX     |
-| sort      | no       | "datetime-r"            | Sort results by a specific key                                     |
-| limit     | no       | 5                       | Limit the number of results returned                               |
-| filter-*  | no       | "filter-tag"            | Filter results by a specific key                                   |
+| Parameter | Required | Example                 | Description                                                    |
+|-----------|----------|-------------------------|----------------------------------------------------------------|
+| type      | yes*     | "posts", "pages", "etc" | Any valid content type defined on your site                    |
+| layout    | no       | "post-list"             | Layout to use for rendering content, useful for controlling UX |
+| sort      | no       | "datetime-r"            | Sort results by a specific key                                 |
+| limit     | no       | 5                       | Limit the number of results returned                           |
+| filter-*  | no       | "filter-tag"            | Filter results by a specific key                               |
+| related   | no       | "this"                  | Retrieve related content based on tags (also defines type)     |
 
 
 #### Attribute Type
@@ -107,13 +108,25 @@ Regular expressions are also supported in values, for example to limit page resu
 All filter value modifiers include:
 
 * `~` - Regular expression match
-* `!~` - Regular expression not match
+* `!~` - Regular expression not match (Added in v5.0.2)
 * `<` - Less than value
 * `<=` - Less than or equal to value
 * `>` - Greater than value
 * `>=` - Greater than or equal to value
 * `=` - Exact match (default option)
-* `!=` - Not equal to value
+* `!=` - Not equal to value (Added in v5.0.2)
+
+
+#### Attribute Related (Added in v5.0.3)
+
+Pull content related to the requested article, (based on matching tags).
+If set to `related="this"`, the current page is used as reference, allowing templates to
+dynamically pull related content based on the currently viewed page.
+
+A specific URL fragment can be set as well, eg: `related="posts/some-post.html"`.
+
+Using `related` will also set `type`, so defining that is not necessary when using `related`.
+
 
 ## Example Styles
 
