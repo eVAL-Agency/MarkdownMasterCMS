@@ -3,6 +3,7 @@
  *
  * @module CMS
  * @license The MIT License (MIT)
+ * @copyright (c) 2023 - 2024 Charlie Powell
  * @copyright (c) 2025 eVAL Agency
  * @author Charlie Powell
  * @see https://github.com/eVAL-Agency/MarkdownMasterCMS

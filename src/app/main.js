@@ -5,7 +5,7 @@
  * Copyright (c) 2021 Chris Diana
  * https://chrisdiana.github.io/cms.js
  *
- * Copyright (c) 2022-2023 Charlie Powell
+ * Copyright (c) 2022 - 2023 Charlie Powell
  * https://github.com/cdp1337/markdownmaster
  *
  * Copyright (c) 2025 eVAL Agency
