@@ -98,6 +98,8 @@ class FileTest extends TestCase {
 		$this->assertArrayHasKey('date', $data);
 		$this->assertArrayHasKey('draft', $data);
 		$this->assertArrayHasKey('excerpt', $data);
+		$this->assertArrayHasKey('title', $data);
+		$this->assertEquals('No Frontmatter', $file->getMeta('title'));
 
 		$this->assertEquals('This file is missing frontmatter, but it should still render.', $data['excerpt']);
 

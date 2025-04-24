@@ -21,6 +21,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 ### Fixes
 
 * Fix support for script tags within markdown content
+* Pages with no explicit title should render something (Issue #1)
 
 
 ## [MarkdownMaster CMS 5.0.2 - 2025.04.13](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.2)

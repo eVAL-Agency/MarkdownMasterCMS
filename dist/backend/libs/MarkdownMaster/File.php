@@ -372,6 +372,11 @@ class File {
 			$meta['excerpt'] = $this->_generateExcerpt();
 		}
 
+		if (!isset($meta['title'])) {
+			// Ensure each file has a title available
+			$meta['title'] = ucwords(str_replace('_', ' ', basename($this->file, '.md')));
+		}
+
 		$this->meta = $meta;
 	}
 }
