@@ -195,6 +195,16 @@ export default (remarkable) => {
 					level: state.level
 				});
 			} else {
+				// Auto-resolve links to markdown files over to the HTML version
+				if (
+					href.endsWith('.md') && !(
+						href.startsWith('http://') ||
+						href.startsWith('https://') ||
+						href.startsWith('://')
+					)
+				) {
+					href = href.replace(/\.md$/, '.html');
+				}
 				state.push({
 					type: 'link_open',
 					href: href,

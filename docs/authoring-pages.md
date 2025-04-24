@@ -282,6 +282,13 @@ as crawlers will complain about the URL otherwise.
 [About](/pages/about.html)
 ```
 
+Links to markdown files will automatically convert to the `.html` extension, example:
+
+```markdown
+// Renders <a href="/pages/about.html">About</a>
+[About](/pages/about.md)
+```
+
 Besides the basic markdown formatting, this web software supports additional arguments on links.
 
 ```markdown

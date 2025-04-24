@@ -37,6 +37,27 @@ class MarkdownParser extends MarkdownExtra {
 	public function __construct() {
 		parent::__construct();
 		$this->block_gamut['stripScripts'] = 50;
+		$this->url_filter_func = [$this, 'processLink'];
+	}
+
+	/**
+	 * Process a link to check if it points to a Markdown file,
+	 * translate it to an HTML link if so.
+	 *
+	 * @param string $link
+	 * @return string
+	 */
+	public function processLink(string $link): string {
+		if (str_starts_with($link, 'http://') || str_starts_with($link, 'https://') || str_starts_with($link, '://')) {
+			// If the link is an absolute URL, return it as is
+			return $link;
+		}
+
+		if (str_ends_with($link, '.md')) {
+			$link = substr($link, 0, -3) . '.html';
+		}
+
+		return $link;
 	}
 
 	/**

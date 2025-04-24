@@ -9,6 +9,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 ### New Features
 
 * cms-pagelist now supports `related` attribute to retrieve related content based on tags
+* Links in Markdown content translate '.md' to '.html' automatically
 
 ### Changes
 
