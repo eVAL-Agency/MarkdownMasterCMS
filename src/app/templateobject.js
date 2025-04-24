@@ -39,6 +39,15 @@ class TemplateObject {
 			return lookup;
 		}
 	}
+
+	/**
+	 * Handle operations necessary when unloading this page from the browser view
+	 */
+	onUnload() {
+		// Unload the template object
+		// This is called when the template is unloaded
+		// You can use this to clean up any resources or references
+	}
 }
 
 export default TemplateObject;

@@ -31,6 +31,8 @@ namespace MarkdownMaster;
 use Config;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
 
+require_once('backend/libs/MarkdownMaster/MarkdownParser.php');
+
 class File {
 	/** @var string Full web URL of directory */
 	public string $path;
@@ -187,7 +189,7 @@ class File {
 	public function __toString(): string {
 		$this->_ensureParsed();
 
-		$parser = new \Michelf\MarkdownExtra();
+		$parser = new MarkdownParser();
 		return $parser->transform($this->content);
 	}
 

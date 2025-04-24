@@ -35,7 +35,9 @@ class File extends TemplateObject {
 		'name',
 		'permalink',
 		'type',
-		'url'
+		'url',
+		'scripts',
+		'scriptsLoaded',
 	];
 
 	/**
@@ -164,6 +166,18 @@ class File extends TemplateObject {
 		 * @type {null|int}
 		 */
 		this.timestamp = null;
+
+		/**
+		 * List of scripts to load for this file
+		 * @type {string[]}
+		 */
+		this.scripts = [];
+
+		/**
+		 * List of scripts loaded (and ACTIVE) for this pageview
+		 * @type {HTMLScriptElement[]}
+		 */
+		this.scriptsLoaded = [];
 	}
 
 	/**
@@ -214,6 +228,19 @@ class File extends TemplateObject {
 					reject(new CMSError(503, e));
 				});
 		});
+	}
+
+	/**
+	 * Handle operations necessary when unloading this page from the browser view
+	 */
+	onUnload() {
+		if (this.scriptsLoaded.length > 0) {
+			// Unload any scripts loaded for this page
+			this.scriptsLoaded.forEach(script => {
+				document.body.removeChild(script);
+			});
+			this.scriptsLoaded = [];
+		}
 	}
 
 	/**
@@ -378,6 +405,17 @@ class File extends TemplateObject {
 
 					if (this.config.markdownEngine) {
 						this.body = this.config.markdownEngine(html);
+
+						// Scripts being loaded from within a script can be tricky,
+						// extract out any embedded scripts and process them separately.
+						// We do not need to worry about ```<script>example code...</script>``` as this is escaped by the markdown engine.
+						if (this.body.includes('<script')) {
+							let scripts = this.body.matchAll(/<script.*?>([\s\S]*?)<\/script>/g);
+							scripts.forEach(script => {
+								this.scripts.push(script[1]);
+							});
+							this.body = this.body.replace(/<script.*?>[\s\S]*?<\/script>/g, '');
+						}
 					} else {
 						this.body = '<pre>' + html + '</pre>';
 					}
@@ -516,6 +554,15 @@ class File extends TemplateObject {
 				}
 
 				renderLayout(this.layout, this).then(() => {
+					// Add any inline scripts to the page once rendering is complete.
+					this.scripts.forEach(script => {
+						let s = document.createElement('script');
+						s.type = 'text/javascript';
+						s.textContent = script;
+						document.body.appendChild(s);
+						this.scriptsLoaded.push(s);
+					});
+
 					resolve();
 				}).catch(e => {
 					reject(e);

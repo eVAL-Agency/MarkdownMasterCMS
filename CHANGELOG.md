@@ -13,8 +13,13 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 ### Changes
 
 * CMS.getPathsFromURL now supports a string to be passed in, to parse arbitrary URLs.
+* Add CMS.currentPage to point to the current page being viewed
+* Add onUnload handler for pages and collections
+* Parameters `scripts` and `scriptsLoaded` are now reserved on pages
 
 ### Fixes
+
+* Fix support for script tags within markdown content
 
 
 ## [MarkdownMaster CMS 5.0.2 - 2025.04.13](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.2)

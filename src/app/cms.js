@@ -27,16 +27,57 @@ import {Config} from './config';
  */
 class CMS {
 
+	/**
+	 *
+	 * @param {Window} view
+	 */
 	constructor(view) {
+		/**
+		 * Internally set to true when the CMS is ready
+		 * @type {boolean}
+		 */
 		this.ready = false;
-		/** @property FileCollection[] */
+
+		/**
+		 * Name-grouped list of collection objects for all resource types defined
+		 * @type {Object.<string, FileCollection>}
+		 * */
 		this.collections = {};
-		this.filteredCollections = {};
+
+		/**
+		 * Top-level View object, (usually just the Window object)
+		 * @type {Window}
+		 */
 		this.view = view;
+
+		/**
+		 * Configuration handler for the CMS
+		 * @type {Config}
+		 */
 		this.config = new Config();
-		this.lastPage = null;
+
+		/**
+		 * The URL path of the current page (window.location.pathname)
+		 * @type {string}
+		 */
+		this.currentPagePath = '';
+
+		/**
+		 * The renderable object of the currently viewing page or a string with the error
+		 * @type {TemplateObject|string|null}
+		 */
+		this.currentPage = null;
+
+		/**
+		 * Dictionary of all extras and their load events
+		 * @type {Object.<string, {status: string, onload: Array<Function>, onerror: Array<Function>}>}
+		 */
 		this.extras = {};
-		// Set up the logger and a local link for external scripts to tap into easily
+
+		/**
+		 * Reference to the logger for external scripts to tap into easily
+		 * @type {Log}
+		 */
 		this.log = Log;
 
 		// Register the CMS object as a global variable
@@ -174,7 +215,7 @@ class CMS {
 					// AND check for location.history changes (for SEO reasons)
 					this.view.addEventListener('popstate', () => {
 						// Skip hash-only changes.  The browser will handle these itself.
-						if (this.lastPage !== window.location.pathname) {
+						if (this.currentPagePath !== window.location.pathname) {
 							this.route();
 						}
 					});
@@ -331,7 +372,12 @@ class CMS {
 		// Users expect the viewport to start at the top of the page on navigation events.
 		window.scrollTo({ top: 0, behavior: 'smooth' });
 
-		this.lastPage = window.location.pathname;
+		// Unload the current page prior to doing anything
+		if (this.currentPage && this.currentPage.onUnload) {
+			this.currentPage.onUnload();
+		}
+
+		this.currentPagePath = window.location.pathname;
 
 		let paths = this.getPathsFromURL(),
 			type = paths[0],
@@ -357,9 +403,11 @@ class CMS {
 				try {
 					file = collection.getFileByPermalink([type, filename.trim()].join('/'));
 					mode = 'single';
+					this.currentPage = file;
 					renderer = file.render();
 				} catch (e) {
 					mode = 'error';
+					this.currentPage = 'error';
 					renderer = renderError(e);
 				}
 			} else if (collection) {
@@ -368,6 +416,7 @@ class CMS {
 				mode = 'listing';
 				collection.resetFilters();
 				collection.filterSort();
+				this.currentPage = collection;
 
 				if (search) {
 					// Check for queries
@@ -381,6 +430,7 @@ class CMS {
 				}
 			} else {
 				mode = 'error';
+				this.currentPage = 'error';
 				renderer = renderError(new CMSError(404, 'Bad request or collection not found'));
 			}
 
