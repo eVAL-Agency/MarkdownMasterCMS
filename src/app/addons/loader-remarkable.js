@@ -26,6 +26,7 @@ import p from './remarkable.paragraph';
 import link from './remarkable.links';
 import heading from './remarkable.heading';
 import html from './remarkable.html';
+import tasklist from './remarkable.tasklist';
 
 let lib = new Remarkable('full', {
 	html: true,        // Enable HTML tags in source
@@ -52,6 +53,7 @@ lib.use(p);
 lib.use(link);
 lib.use(heading);
 lib.use(html);
+lib.use(tasklist);
 
 
 // Export the renderer function

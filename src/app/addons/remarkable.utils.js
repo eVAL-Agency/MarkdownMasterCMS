@@ -41,27 +41,28 @@ import {utils} from 'remarkable';
 import {AttributeBuilder} from '../utils';
 
 export const CHAR = {
-	LF         : 0x0A,
-	SPACE      : 0x20,
-	EXCLAIM    : 0x21,
-	DBLQUOTE   : 0x22,
-	POUND      : 0x23,
-	SNGQUOTE   : 0x27,
-	OPNPARAN   : 0x28,
-	CLSPARAN   : 0x29,
-	SLASH      : 0x2F,
-	LESSTHAN   : 0x3C,
-	EQUAL      : 0x3D,
-	GREATERTHAN: 0x3E,
-	QUESTION   : 0x3F,
-	OPNBRACKET : 0x5B,
-	BACKSLASH  : 0x5C,
-	CLSBRACKET : 0x5D,
-	a          : 0x61,
-	z          : 0x7A,
-	OPNBRACE   : 0x7B,
-	CLSBRACE   : 0x7D,
-	DEL        : 0x7F
+	LF         : 0x0A,  // Linefeed - new line "\n"
+	SPACE      : 0x20,  // Space
+	EXCLAIM    : 0x21,  // Exclamation mark "!"
+	DBLQUOTE   : 0x22,  // Double quote '"'
+	POUND      : 0x23,  // Pound sign "#"
+	SNGQUOTE   : 0x27,  // Single quote "'"
+	OPNPARAN   : 0x28,  // Open parenthesis "("
+	CLSPARAN   : 0x29,  // Close parenthesis ")"
+	SLASH      : 0x2F,  // Slash "/"
+	LESSTHAN   : 0x3C,  // Less than "<"
+	EQUAL      : 0x3D,  // Equal sign "="
+	GREATERTHAN: 0x3E,  // Greater than ">"
+	QUESTION   : 0x3F,  // Question mark "?"
+	OPNBRACKET : 0x5B,  // Open bracket "["
+	BACKSLASH  : 0x5C,  // Backslash "\"
+	CLSBRACKET : 0x5D,  // Close bracket "]"
+	a          : 0x61,  // "a"
+	x          : 0x78,  // "x"
+	z          : 0x7A,  // "z"
+	OPNBRACE   : 0x7B,  // Open brace "{"
+	CLSBRACE   : 0x7D,  // Close brace "}"
+	DEL        : 0x7F   // Delete character
 };
 
 /**

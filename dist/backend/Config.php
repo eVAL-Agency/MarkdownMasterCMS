@@ -227,6 +227,15 @@ class Config {
 			'extras' => $extras,
 		];
 
+		// Additional / extra options not usually present
+		if (($val = Config::_Get('tasklistChecked', '__DEFAULT__')) !== '__DEFAULT__') {
+			$config['tasklistChecked'] = $val;
+		}
+
+		if (($val = Config::_Get('tasklistUnchecked', '__DEFAULT__')) !== '__DEFAULT__') {
+			$config['tasklistUnchecked'] = $val;
+		}
+
 		return json_encode($config);
 	}
 

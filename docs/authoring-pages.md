@@ -232,7 +232,7 @@ To write sub heading tags, use the following:
 
 ### Lists
 
-Lists start with either `* `, `+ `, or `- `; all produce the same result.
+Lists start with either `* `, `+ `, or `- `.
 
 ```markdown
 * Red
@@ -252,6 +252,12 @@ Lists start with either `* `, `+ `, or `- `; all produce the same result.
 - Blue
 ```
 
+all produce the same result:
+
+- Red
+- Green
+- Blue
+
 Ordered lists are prepended by the item number
 
 ```markdown
@@ -259,6 +265,62 @@ Ordered lists are prepended by the item number
 2. Green
 3. Blue
 ```
+
+Renders as:
+
+1. Red
+2. Green
+3. Blue
+
+### Tasklists (new in 5.0.3)
+
+Task lists are not part of the original Markdown specification, but have been popularized by
+Github and are supported in MarkdownMaster CMS.
+(Note, you don't actually need to put these in a list; they can appear anywhere in the content.)
+
+```markdown
+* [ ] not completed
+* [x] completed
+```
+
+Renders as:
+
+* [ ] not completed
+* [x] completed
+
+This behaviour can be modified by adding `tasklistChecked` and/or `tasklistUnchecked`
+to `config.php`:
+
+```php
+// Set both checked and unchecked tasks to HTML input fields
+return [
+	...
+	'tasklistChecked' => 'input',
+	'tasklistUnchecked' => 'input',
+	...
+];
+
+// Disable fancy rendering of both checked and unchecked tasks
+return [
+	...
+	'tasklistChecked' => null,
+	'tasklistUnchecked' => null,
+	...
+];
+
+// Set checked to a thumbs up and not checked to a thumbs down
+return [
+	...
+	'tasklistChecked' => '👍',
+	'tasklistUnchecked' => '👎',
+	...
+];
+```
+
+For best results, stick with simple UTF-8 emoticons, but technically any text or HTML
+is supported, so you can have the checked task print 'Yup, this is DONE' 
+or some image tag if you really wanted.
+
 
 ### Images
 
@@ -384,4 +446,17 @@ Renders
 
     <h2>This is an H2 in a blockquote</h2>
 </blockquote>
+```
+
+
+### Scripts
+
+Fully functional embedded javascript code is supported, 
+though refer to [using scripts inside MarkdownMaster CMS](scripts-inside-markdown.md)
+if you run into issues or quirks.
+
+```markdown
+<script>
+    console.log('I am running inside your Markdown!');
+</script>
 ```

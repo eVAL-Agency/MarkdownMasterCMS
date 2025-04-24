@@ -144,6 +144,26 @@ export class Config extends Object {
 		this.extras = {};
 
 		/**
+		 * Icon to use for task list items that are checked, ([x])
+		 *
+		 * Set to NULL to disable this feature and just render plain text
+		 * or 'input' to render as an input checkbox
+		 *
+		 * @type {string|null}
+		 */
+		this.tasklistChecked = '✅';
+
+		/**
+		 * Icon to use for task list items that are checked, ([ ])
+		 *
+		 * Set to NULL to disable this feature and just render plain text
+		 * or 'input' to render as an input checkbox
+		 *
+		 * @type {string|null}
+		 */
+		this.tasklistUnchecked = '⬜';
+
+		/**
 		 * Set to true to enable debug logging, (will enable logging events to the console)
 		 * @type {boolean}
 		 */

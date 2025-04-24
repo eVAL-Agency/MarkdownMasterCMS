@@ -10,6 +10,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 
 * cms-pagelist now supports `related` attribute to retrieve related content based on tags
 * Links in Markdown content translate '.md' to '.html' automatically
+* Add support for Github-style task lists (Issue #2)
 
 ### Changes
 
@@ -17,6 +18,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Add CMS.currentPage to point to the current page being viewed
 * Add onUnload handler for pages and collections
 * Parameters `scripts` and `scriptsLoaded` are now reserved on pages
+* Add support for a default value for backend Config
 
 ### Fixes
 
