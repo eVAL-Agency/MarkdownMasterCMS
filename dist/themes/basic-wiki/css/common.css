@@ -102,10 +102,11 @@ input {
 }
 
 pre {
-	max-width: calc(100vw - 1rem - 2em);
+	max-width: calc(75rem - 1rem - 2em);
+	white-space: wrap;
 }
 pre.line-numbers {
-	max-width: calc(100vw - 1rem - 4.8em);
+	max-width: calc(75rem - 1rem - 4.8em);
 }
 
 table {
@@ -155,6 +156,13 @@ footer ul li:last-child:after {
 	}
 	table {
 		width: calc(100vw - 1rem);
+	}
+
+	pre {
+		max-width: calc(100vw - 1rem - 2em);
+	}
+	pre.line-numbers {
+		max-width: calc(100vw - 1rem - 4.8em);
 	}
 }
 @media all and (max-width: 700px) {
