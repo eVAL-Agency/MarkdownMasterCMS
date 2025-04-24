@@ -29,7 +29,7 @@
 class Config {
 	private static $_config = null;
 
-	private static function _Get(string $key) {
+	private static function _Get(string $key, $default = null) {
 		if (self::$_config === null) {
 			if (!file_exists(dirname(__DIR__) . '/config.php')) {
 				throw new Exception(
@@ -91,7 +91,7 @@ class Config {
 			self::$_config = $config;
 		}
 
-		return self::$_config[$key] ?? null;
+		return array_key_exists($key, self::$_config) ? self::$_config[$key] : $default;
 	}
 
 	/**
