@@ -84,7 +84,6 @@ class RssController extends Controller {
 					'description' => $file->getMeta(['excerpt', 'description'], ''),
 					'content:encoded' => (string)$file,
 					'pubDate' => date('r', strtotime($file->getMeta('date', 0))),
-					'enclosure' => [],
 				];
 
 				if ($file->getMeta('image')) {
