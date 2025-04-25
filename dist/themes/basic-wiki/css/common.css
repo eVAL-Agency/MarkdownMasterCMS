@@ -180,6 +180,7 @@ footer ul li:last-child:after {
 	#search-icon {
 		font-size: 1.5rem;
 		display: block;
+		cursor: pointer;
 	}
 	#search {
 		position: absolute;

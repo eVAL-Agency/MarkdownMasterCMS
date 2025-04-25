@@ -60,6 +60,11 @@
 					<i is="cms-icon" icon="mastodon"></i>
 				</a>
 			</li>
+			<li>
+				<a href="{{webpath}}posts.rss" title="RSS Feed">
+					<i is="cms-icon" icon="rss"></i>
+				</a>
+			</li>
 		</ul>
 	</div>
 </div>
@@ -87,7 +92,11 @@
 			</ul>
 		</nav>
 
-		<input type="search" id="search" is="cms-search" data-type="posts" placeholder="Search for Post..."/>
+		<div>
+			<input type="search" id="search" is="cms-search" data-type="posts" placeholder="Search for Post..."/>
+			<i is="cms-icon" icon="magnifying-glass" id="search-icon" title="Search Posts"></i>
+		</div>
+
 	</div>
 </header>
 
@@ -204,6 +213,29 @@
 				document.body.classList.remove('scrolled');
 			}
 		});
+
+		let searchIcon = document.getElementById('search-icon'),
+			searchInput = document.getElementById('search');
+		if (searchIcon && searchInput) {
+			searchIcon.addEventListener('click', () => {
+				if (searchInput.classList.contains('active')) {
+					searchInput.classList.remove('active');
+					searchInput.blur();
+				}
+				else {
+					searchInput.classList.add('active');
+					searchInput.focus();
+				}
+			});
+			searchInput.addEventListener('blur', () => {
+				searchInput.classList.remove('active');
+			});
+			searchInput.addEventListener('keyup', (e) => {
+				if (e.key === 'Enter') {
+					searchInput.blur();
+				}
+			});
+		}
 	})();
 </script>
 
