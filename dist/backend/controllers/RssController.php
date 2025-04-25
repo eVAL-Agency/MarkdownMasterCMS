@@ -57,20 +57,19 @@ class RssController extends Controller {
 			'@version' => '2.0',
 			'@xmlns:content' => 'http://purl.org/rss/1.0/modules/content/',
 			'@xmlns:media' => 'http://search.yahoo.com/mrss/',
+			'@xmlns:atom' => 'http://www.w3.org/2005/Atom',
 			'channel' => [
 				'title' => $page->getMeta(['title', 'seotitle'], ''),
 				'link' => Config::GetHost() . Config::GetWebPath(),
 				'description' => $page->getMeta(['description', 'excerpt'], ''),
 				'generator' => 'MarkdownMaster CMS',
+				'atom:link' => [
+					'@href' => Config::GetHost() . Config::GetWebPath() . $listing->type . '.rss',
+					'@rel' => 'self',
+					'@type' => 'application/rss+xml',
+				],
 				'item' => [],
 			]
-		];
-
-		// Add search input
-		$view->data['textInput'] = [
-			'title' => 'Search',
-			'name' => 's',
-			'link' => Config::GetHost() . Config::GetWebPath() . $listing->type . '.html',
 		];
 
 		foreach ($listing->getFiles([], 'date DESC', 50) as $file) {
@@ -84,7 +83,7 @@ class RssController extends Controller {
 					],
 					'description' => $file->getMeta(['excerpt', 'description'], ''),
 					'content:encoded' => (string)$file,
-					'pubDate' => $file->getMeta('date', date('r')),
+					'pubDate' => date('r', strtotime($file->getMeta('date', 0))),
 					'enclosure' => [],
 				];
 
