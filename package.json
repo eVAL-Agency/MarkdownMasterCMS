@@ -1,7 +1,7 @@
 {
   "name": "markdownmaster",
   "title": "MarkdownMaster CMS",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "type": "module",
   "description": "Javascript and PHP static site CMS framework using flat-file markdown files.",
   "keywords": [
@@ -21,6 +21,7 @@
     "action_app_test": "NODE_OPTIONS=--experimental-vm-modules npx jest --collectCoverage true --coverageDirectory build/coverage",
     "action_app_coverage": "rm -fr docs/coverage && cp -r build/coverage/lcov-report/ docs/coverage",
     "action_backend_composer": "composer -d dist/backend install",
+    "action_backend_composer_update": "composer -d dist/backend update",
     "action_backend_headers": "./update_file_headers.sh",
     "action_backend_test": "XDEBUG_MODE=coverage php test/phpunit.phar -c phpunit.xml",
     "dev": "npm-run-all --parallel serve watch",

@@ -124,6 +124,12 @@ Prepare the local environment for development work (sets up husky pre-commit hoo
 
 `npm run prepare`
 
+---
+
+Rebuild / update composer dependencies, required to be ran after any changes to composer.json
+
+`npm run action_backend_composer_update`
+
 
 ## Contributing and Merge Requests
 

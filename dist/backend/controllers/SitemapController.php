@@ -40,18 +40,18 @@ class SitemapController extends Controller {
 	public function get() {
 		$view = new XMLView();
 		$view->root = 'urlset';
-		$view->namespaces = [
-			'xmlns' => 'http://www.sitemaps.org/schemas/sitemap/0.9',
-			'xmlns:xhtml' => 'http://www.w3.org/1999/xhtml',
-			'xmlns:xsi' => 'http://www.w3.org/2001/XMLSchema-instance',
-			'xsi:schemaLocation' => 'http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd'
-		];
+		$view->data['@xmlns'] = 'http://www.sitemaps.org/schemas/sitemap/0.9';
+		$view->data['@xmlns:xhtml'] = 'http://www.w3.org/1999/xhtml';
+		$view->data['@xmlns:xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
+		$view->data['@xsi:schemaLocation'] = 'http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd';
+		$view->data['url'] = [];
+
 		$types = Config::GetTypes();
 		foreach($types as $type) {
 			$collection = new FileCollection($type);
 			foreach($collection->files as $file) {
 				if (!$file->getMeta('draft', false)) {
-					$view->data[] = ['url' => ['loc' => $file->url]];
+					$view->data['url'][] = ['loc' => $file->url];
 				}
 			}
 		}

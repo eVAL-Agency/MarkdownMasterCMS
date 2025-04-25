@@ -79,6 +79,13 @@ foreach($types as $type) {
 		'params' => $type
 	];
 
+	$routes[] = [
+		'uri' => '/' . $type . '.rss',
+		'file' => 'RssController.php',
+		'class' => 'RssController',
+		'params' => $type
+	];
+
 	// Route for the individual page
 	$routes[] = [
 		'uri' => '#/' . $type . '/.*\.html#',

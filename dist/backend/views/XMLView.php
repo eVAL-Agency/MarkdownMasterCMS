@@ -26,35 +26,20 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+
 class XMLView extends View {
 	public $encoding = 'UTF-8';
 	public $root = 'response';
-	public $namespaces = [];
 	public $data = [];
+	public $mimetype = 'application/xml';
 
 	public function render() {
-		$xml = new SimpleXMLElement('<?xml version="1.0" encoding="' . $this->encoding . '"?><' . $this->root . '/>');
-		foreach ($this->namespaces as $prefix => $uri) {
-			$xml->addAttribute('xmlns:' . $prefix, $uri);
-		}
-		$this->arrayToXML($this->data, $xml);
-
-		header('Content-Type: application/xml');
-		echo $xml->asXML();
-	}
-
-	protected function arrayToXML($data, &$xml) {
-		foreach ($data as $key => $value) {
-			if (is_array($value)) {
-				if (!is_numeric($key)) {
-					$subnode = $xml->addChild($key);
-					$this->arrayToXML($value, $subnode);
-				} else {
-					$this->arrayToXML($value, $xml);
-				}
-			} else {
-				$xml->addChild($key, htmlspecialchars($value));
-			}
-		}
+		$encoder = new XmlEncoder([
+			'xml_root_node_name' => $this->root,
+		]);
+		$xml = $encoder->encode($this->data, $this->encoding);
+		header('Content-Type: ' . $this->mimetype);
+		echo $xml;
 	}
 }

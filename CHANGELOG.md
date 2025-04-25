@@ -11,6 +11,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * cms-pagelist now supports `related` attribute to retrieve related content based on tags
 * Links in Markdown content translate '.md' to '.html' automatically
 * Add support for Github-style task lists (Issue #2)
+* Add RSS support
 
 ### Changes
 
