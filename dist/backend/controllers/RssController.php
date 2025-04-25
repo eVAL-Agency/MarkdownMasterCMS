@@ -73,7 +73,7 @@ class RssController extends Controller {
 			'link' => Config::GetHost() . Config::GetWebPath() . $listing->type . '.html',
 		];
 
-		foreach ($listing->files as $file) {
+		foreach ($listing->getFiles([], 'date DESC', 50) as $file) {
 			if (!$file->getMeta('draft', false)) {
 				$definition =  [
 					'title' => $file->getMeta(['title', 'seotitle'], ''),

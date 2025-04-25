@@ -111,10 +111,22 @@ class FileCollection {
 
 		if ($sort) {
 			usort($files, function($a, $b) use ($sort) {
+				if (str_contains($sort, ' ASC')) {
+					$sort = str_replace(' ASC', '', $sort);
+					$m = [-1, 1];
+				}
+				elseif(str_contains($sort, ' DESC')) {
+					$sort = str_replace(' DESC', '', $sort);
+					$m = [1, -1];
+				}
+				else {
+					$m = [-1, 1];
+				}
+
 				if ($a->getMeta($sort) === $b->getMeta($sort)) {
 					return 0;
 				}
-				return ($a->getMeta($sort) < $b->getMeta($sort)) ? -1 : 1;
+				return ($a->getMeta($sort) < $b->getMeta($sort)) ? $m[0] : $m[1];
 			});
 		}
 
