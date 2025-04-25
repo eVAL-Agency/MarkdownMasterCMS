@@ -20,11 +20,13 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Add onUnload handler for pages and collections
 * Parameters `scripts` and `scriptsLoaded` are now reserved on pages
 * Add support for a default value for backend Config
+* Add links for RSS feed to blog and wiki themes
 
 ### Fixes
 
 * Fix support for script tags within markdown content
 * Pages with no explicit title should render something (Issue #1)
+* Improvements to responsiveness support in blog theme
 
 
 ## [MarkdownMaster CMS 5.0.2 - 2025.04.13](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.2)

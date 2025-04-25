@@ -12,6 +12,7 @@
     "build": "npm run build_app && npm run build_backend",
     "build_app": "npm run action_app_compile && npm run action_app_minify",
     "build_backend": "npm run action_backend_composer && npm run action_backend_headers",
+    "release": "./build_release.sh",
     "watch": "rollup -c -w",
     "test": "npm run action_app_test && npm run action_backend_test",
     "docs": "npm run action_app_docs",
