@@ -189,7 +189,7 @@ class File {
 	public function __toString(): string {
 		$this->_ensureParsed();
 
-		$parser = new MarkdownParser();
+		$parser = new MarkdownParser($this);
 		return $parser->transform($this->content);
 	}
 

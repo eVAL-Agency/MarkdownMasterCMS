@@ -34,10 +34,14 @@ use Michelf\MarkdownExtra;
  * Extends the MarkdownExtra class to add custom functionality
  */
 class MarkdownParser extends MarkdownExtra {
-	public function __construct() {
+	protected File $sourceFile;
+
+	public function __construct(File $sourceFile) {
 		parent::__construct();
 		$this->block_gamut['stripScripts'] = 50;
 		$this->url_filter_func = [$this, 'processLink'];
+
+		$this->sourceFile = $sourceFile;
 	}
 
 	/**
@@ -54,7 +58,20 @@ class MarkdownParser extends MarkdownExtra {
 		}
 
 		if (str_ends_with($link, '.md')) {
+			// Auto translate Markdown links to HTML links
 			$link = substr($link, 0, -3) . '.html';
+		}
+
+		// Check if relative links need to be resolved with the FQDN,
+		// (useful for syndicating content in external applications)
+		if (str_starts_with($link, '/')) {
+			// If the link is a relative URL, prepend the host and webpath
+			$host = Config::GetHost();
+			$webpath = Config::GetWebPath();
+			$link = $host . $webpath . substr($link, 1);
+		}
+		else {
+			$link = dirname($this->sourceFile->url) . '/' . $link;
 		}
 
 		return $link;
