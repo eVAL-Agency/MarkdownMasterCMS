@@ -14,15 +14,50 @@
  */
 class CMSIconElement extends HTMLElement {
 
+	static observedAttributes = ['icon'];
+
 	constructor() {
 		super();
 
+		// If other icon libraries are available, add support for them.
+		// Currently only fontawesome is supported.
+		let handler = 'fontawesome';
+
+		// Preload the backend handler
+		CMS.loadExtra(handler);
+	}
+
+	/**
+	 * Called when the element is added to the DOM.
+	 */
+	connectedCallback() {
+		this.render();
+	}
+
+	/**
+	 * Called when an attribute is modified
+	 *
+	 * @param {string} name
+	 * @param {string} oldValue
+	 * @param {string} newValue
+	 */
+	attributeChangedCallback(name, oldValue, newValue) {
+		this.render();
+	}
+
+	/**
+	 * Execute the plugin on a given node to render the requested content inside it
+	 */
+	render() {
 		let icon = this.getAttribute('icon'),
 			handler = 'fontawesome';
 
+		if (!icon) {
+			return;
+		}
+
 		// If other icon libraries are available, add support for them.
 		// Currently only fontawesome is supported.
-
 		CMS.loadExtra(handler).then(() => {
 			fontawesome_icon(this, icon);
 		});

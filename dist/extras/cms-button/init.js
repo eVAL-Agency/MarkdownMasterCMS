@@ -28,8 +28,7 @@ class ButtonElement extends HTMLAnchorElement {
 
 		// write element functionality in here
 		// Create a shadow root
-		const icon = document.createElement('i'),
-			span = document.createElement('span');
+		const span = document.createElement('span');
 
 		// Move the contents of the 'A' node to a new span (to play nicely along side an icon)
 		span.innerHTML = this.innerHTML;
@@ -37,11 +36,12 @@ class ButtonElement extends HTMLAnchorElement {
 		span.setAttribute('part', 'content');
 
 		if (this.hasAttribute('icon') && this.getAttribute('icon')) {
-			icon.setAttribute('part', 'icon');
+			const icon = document.createElement('i', {is: 'cms-icon'});
+			CMS.loadExtra('cms-icon').then(() => {
+				icon.setAttribute('part', 'icon');
+				icon.setAttribute('icon', this.getAttribute('icon'));
+			});
 			this.appendChild(icon);
-			if (typeof(fontawesome_icon) === 'function') {
-				fontawesome_icon(icon, this.getAttribute('icon'));
-			}
 		}
 
 		this.classList.add('button');
