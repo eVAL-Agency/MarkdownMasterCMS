@@ -36,7 +36,7 @@ function isLetter$1(ch) {
 
 export default (remarkable) => {
 	remarkable.block.ruler.at('htmlblock', (state, startLine, endLine, silent) => {
-		let ch, match, nextLine,
+		let ch, match, nextLine, closed = false,
 			pos = state.bMarks[startLine],
 			max = state.eMarks[startLine],
 			shift = state.tShift[startLine];
@@ -61,6 +61,7 @@ export default (remarkable) => {
 			if (ch === CHAR.SLASH) {
 				// closing tag
 				match = state.src.slice(pos, max).match(HTML_TAG_CLOSE_RE);
+				closed = true;
 				if (!match) { return false; }
 			} else {
 				// opening tag
@@ -74,10 +75,14 @@ export default (remarkable) => {
 			return false;
 		}
 
-		// If we are here - we detected HTML block.
-		// Let's roll down till empty line (block end).
+		// If we are here - we detected an HTML block,
+		// let's roll down until the end of that block is detected.
 		nextLine = startLine + 1;
-		while (nextLine < state.lineMax && !state.isEmpty(nextLine)) {
+		//while (nextLine < state.lineMax && !state.isEmpty(nextLine)) {
+		while (nextLine < state.lineMax && !closed) {
+			if (state.getLines(nextLine, nextLine+1, 0, false) === '</' + match[1] + '>') {
+				closed = true;
+			}
 			nextLine++;
 		}
 

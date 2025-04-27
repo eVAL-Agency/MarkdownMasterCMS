@@ -23,6 +23,10 @@ fixes to improve bot rendering.
 
 v5.0.2 features a new theme for wiki-style sites, a table of contents tag, and a theme selector tag.
 
+v5.0.3 features support for RSS feeds, related posts, and github-style task lists
+
+v5.0.4 features script tag embedding support
+
 [Complete changelog](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/CHANGELOG.md)
 
 
