@@ -9,17 +9,18 @@ The idea of this is similar to [Jekyll](https://github.com/jekyll/jekyll),
 but has the benefit of not requiring any pre-compiling for files to be served.
 All content processing is handled within the browser.
 
-For SEO and bot support, there is a small PHP-based server-side component
-which will return generated HTML output, similar to that of the client-side application.
-This is unnecessary for normal users, but is required
-to ensure that crawlers can access the site data.
+As a complement system to the client-side engine, a PHP-based server-side component
+facilitates support for search crawlers to ensure SEO, bots, form submissions, and
+RSS feeds by rendering the Markdown files into HTML on the server.
+This server-generated content will not exactly match the client-side rendering
+as there are some features lacking, but is sufficient for basic content.
 
 Because there is no database, registry, or administration of pages, 
 deploying new pages is as simple as just uploading Markdown files to your server.
 This can be done via automated sync applications such as NextCloud or just uploading
-via SFTP or your web hosting interface.  _No building or scripts needed for deployment!_
+via SFTP or your web hosting interface.  **No building or scripts needed for deployment!**
 
-The client-side javascript rendering in this project is originally based from
+The client-side javascript rendering in this project was originally based from
 [Chris Diana's CMS.js](https://github.com/chrisdiana/cms.js).
 
 
@@ -40,16 +41,17 @@ Aside from business support, you can also help support this project by donating 
 
 ## Features
 
-* Zero dependencies
+* Low dependencies (just PHP 8.2+ and a web server)
 * Abstract content types
 * Custom templates
 * Search, filtering, tagging and sorting
 * Apache, Nginx, Mail-in-a-box, and Nextcloud support
 * Small footprint
-* [Remarkable](https://github.com/jonschlinkert/remarkable) embedded
+* [Remarkable](https://github.com/jonschlinkert/remarkable) Markdown parser embedded (modified)
 * Crawler and SEO support for most content
 * Automatic sitemap.xml generation
 * Theme support
+* RSS 2.0 feed support
 
 
 ## Demo
