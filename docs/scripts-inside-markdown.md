@@ -33,6 +33,21 @@ Use of `(() => { ... })()` is not required, as inline scripts will already run a
 as they are loaded, and that does not occur until after the document has been rendered.
 If you prefer to use that format however, it will work just fine.
 
+## Caveat - Indentation
+
+To support nested HTML tags, the CMS will **only match the end tag if it is at the beginning of the line**.
+
+eg: if your content is:
+
+```markdown
+<script>
+    console.log('Hello World');</script>
+```
+
+You will probably have a bad time; DO NOT DO THIS.
+
+Have your `</script>` on its own line with no indentation.
+
 
 ## Caveat - No Serverside Content
 
