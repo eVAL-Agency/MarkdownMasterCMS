@@ -17,6 +17,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 ### Changes
 
 * Handle forms with no success target
+* Auto-load extras requested from the server
 
 ### Fixes
 

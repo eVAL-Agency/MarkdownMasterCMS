@@ -196,54 +196,61 @@ class CMS {
 	init() {
 		Log.Debug('CMS.init', 'Initializing MarkdownMaster CMS');
 
-		if (this.config.elementId) {
-			// setup container
-			this.config.container = document.getElementById(this.config.elementId);
-			setSystemContainer(this.config.container);
+		if (!this.config.elementId) {
+			Log.Error('CMS.init', 'Element ID not set in config');
+			return;
+		}
 
-			this.view.addEventListener('click', (e) => {
-				if (e.target && e.target.closest('a')) {
-					this.listenerLinkClick(e);
+		// setup container
+		this.config.container = document.getElementById(this.config.elementId);
+		if (!this.config.container) {
+			Log.Error('CMS.init', 'Element ID not found:', this.config.elementId);
+			return;
+		}
+
+		setSystemContainer(this.config.container);
+
+		this.view.addEventListener('click', (e) => {
+			if (e.target && e.target.closest('a')) {
+				this.listenerLinkClick(e);
+			}
+		});
+
+		// setup file collections
+		this.initFileCollections().then(() => {
+			Log.Debug('CMS.init', 'File collections initialized');
+
+			// AND check for location.history changes (for SEO reasons)
+			this.view.addEventListener('popstate', () => {
+				// Skip hash-only changes.  The browser will handle these itself.
+				if (this.currentPagePath !== window.location.pathname) {
+					this.route();
 				}
 			});
+			// start router by manually triggering hash change
+			//this.view.dispatchEvent(new HashChangeEvent('hashchange'));
 
-			if (this.config.container) {
-				// setup file collections
-				this.initFileCollections().then(() => {
-					Log.Debug('CMS.init', 'File collections initialized');
-
-					// AND check for location.history changes (for SEO reasons)
-					this.view.addEventListener('popstate', () => {
-						// Skip hash-only changes.  The browser will handle these itself.
-						if (this.currentPagePath !== window.location.pathname) {
-							this.route();
-						}
-					});
-					// start router by manually triggering hash change
-					//this.view.dispatchEvent(new HashChangeEvent('hashchange'));
-
-					// Backwards compatibility with 2.0.1 configuration
-					if (this.config.onload && typeof (this.config.onload) === 'function') {
-						document.addEventListener('cms:load', () => {
-							this.config.onload();
-						});
-					}
-					if (this.config.onroute && typeof (this.config.onroute) === 'function') {
-						document.addEventListener('cms:route', () => {
-							this.config.onroute();
-						});
-					}
-
-					this.route();
-					this.ready = true;
-					document.dispatchEvent(new CustomEvent('cms:load', {detail: {cms: this}}));
+			// Backwards compatibility with 2.0.1 configuration
+			if (this.config.onload && typeof (this.config.onload) === 'function') {
+				document.addEventListener('cms:load', () => {
+					this.config.onload();
 				});
-			} else {
-				Log.Error('CMS.init', 'Element ID not found:', this.config.elementId);
 			}
-		} else {
-			Log.Error('CMS.init', 'Element ID not set in config');
-		}
+			if (this.config.onroute && typeof (this.config.onroute) === 'function') {
+				document.addEventListener('cms:route', () => {
+					this.config.onroute();
+				});
+			}
+
+			this.route();
+			this.ready = true;
+			document.dispatchEvent(new CustomEvent('cms:load', {detail: {cms: this}}));
+		});
+
+		// Load any pre-requested extras, (usually assigned from the server)
+		Object.keys(this.config.extras).forEach(extra => {
+			this.loadExtra(extra);
+		});
 	}
 
 	/**
