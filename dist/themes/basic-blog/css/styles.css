@@ -581,6 +581,9 @@ cms-tags .tag-weight-10 {
 
 /** </editor-fold> **/
 
+
+/** <editor-fold desc="CMS Form"> **/
+
 cms-form {
 	position: relative;
 }
@@ -591,6 +594,7 @@ cms-form label {
 cms-form input[type="text"],
 cms-form input[type="email"],
 cms-form input[type="password"],
+cms-form select,
 cms-form textarea {
 	width: calc(100% - 1em);
 	padding: 0.5em;
@@ -604,6 +608,10 @@ cms-form input[type="submit"] {
 	padding: 0.5em 1em;
 	border-radius: 0.25em;
 	cursor: pointer;
+}
+cms-form .cms-form-option label {
+	display: inline-block;
+	margin: 0.5em 0 0 1em;
 }
 cms-form .required-note {
 	font-size: 0.75rem;
@@ -624,6 +632,8 @@ cms-form .error-message {
 cms-form .error-message.hidden {
 	transform: scaleY(0);
 }
+
+/** </editor-fold> **/
 
 
 .authors-list {

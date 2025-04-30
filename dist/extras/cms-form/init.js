@@ -39,7 +39,8 @@ class CMSFormElement extends HTMLElement {
 
 		let name = this.getAttribute('name'),
 			successPage = this.getAttribute('success'),
-			formData = CMS.config.extra('cms-form', name);
+			formData = CMS.config.extra('cms-form', name),
+			submitRendered = false;
 
 		if (!formData) {
 			this.innerHTML = 'No form with name ' + name + ' configured.';
@@ -58,56 +59,259 @@ class CMSFormElement extends HTMLElement {
 		this.form.appendChild(input);
 
 		Object.keys(formData.fields).forEach(key => {
-			let field = formData.fields[key],
-				label = document.createElement('label'),
-				error = document.createElement('div'),
-				input;
+			let field = formData.fields[key];
 
-			label.innerHTML = field.label ?? key;
-			label.setAttribute('for', [name, key].join('-'));
-			if (field.required) {
-				label.innerHTML += ' <span class="required-note">*</span>';
+			if (field.type === 'hidden') {
+				this.form.appendChild(this._generateInput(key, field));
 			}
-
-			if (field.type === 'textarea') {
-				input = document.createElement('textarea');
+			else if(field.type === 'checkboxes' || field.type === 'radio') {
+				this.form.appendChild(this._generateLabel(key, field));
+				this._generateInputs(key, field).forEach(el => {
+					this.form.appendChild(el);
+				})
+				this.form.appendChild(this._generateError(key, field));
 			}
-			else {
-				input = document.createElement('input');
-				input.setAttribute('type', field.type ?? 'text');
-			}
-
-			// Set client-side validation checks
-			if (field.type === 'email') {
-				input.addEventListener('blur', this.emailValidateEvent.bind(this));
+			else if(field.type === 'submit') {
+				submitRendered = true;
+				this.submitBtn = this._generateInput(key, field);
+				this.form.appendChild(this.submitBtn);
 			}
 			else {
-				input.addEventListener('blur', this.genericValidateEvent.bind(this));
+				this.form.appendChild(this._generateLabel(key, field));
+				this.form.appendChild(this._generateInput(key, field));
+				this.form.appendChild(this._generateError(key, field));
 			}
-
-			input.setAttribute('id', [name, key].join('-'));
-			input.setAttribute('name', key);
-			input.setAttribute('placeholder', field.placeholder ?? '');
-			if (field.required) {
-				input.setAttribute('required', 'required');
-			}
-
-			error.setAttribute('id', [name, key, 'error'].join('-'));
-			error.setAttribute('class', 'error-message hidden');
-
-			this.form.appendChild(label);
-			this.form.appendChild(input);
-			this.form.appendChild(error);
 		});
 
-		this.submitBtn = document.createElement('input');
-		this.submitBtn.setAttribute('type', 'submit');
-		this.submitBtn.setAttribute('value', 'Submit');
-		this.form.appendChild(this.submitBtn);
+		if (!submitRendered) {
+			// Render a default submit button if none was provided
+			this.submitBtn = document.createElement('input');
+			this.submitBtn.setAttribute('type', 'submit');
+			this.submitBtn.setAttribute('value', 'Submit');
+			this.form.appendChild(this.submitBtn);
+		}
 
 		this.form.addEventListener('submit', this.formSubmitEvent.bind(this));
 
 		this.appendChild(this.form);
+	}
+
+	/**
+	 * Calculate the ID for a given field
+	 *
+	 * @param {string} key
+	 * @returns {string}
+	 * @private
+	 */
+	_getFieldId(key) {
+		let id = [this.getAttribute('name'), key].join('-');
+		// Santize the ID
+		id = id.replace(/[^a-zA-Z0-9-_]/g, '_');
+		return id;
+	}
+
+	/**
+	 * Create a <label> element for a given field
+	 *
+	 * @param {string} key
+	 * @param {Object} field
+	 * @param {string|null}  field.label
+	 * @param {string|null}  field.type
+	 * @param {boolean|null} field.required
+	 * @param {Object|null}  field.options
+	 * @param {string|null}  field.value
+	 * @param {string|null}  field.placeholder
+	 * @returns {HTMLLabelElement}
+	 * @private
+	 */
+	_generateLabel(key, field) {
+		let label = document.createElement('label'),
+			fieldId = this._getFieldId(key);
+
+		label.innerHTML = field.label ?? key;
+		label.setAttribute('for', fieldId);
+		if (field.required) {
+			label.innerHTML += ' <span class="required-note">*</span>';
+		}
+
+		return label;
+	}
+
+	/**
+	 * Create an <input> element for a given field
+	 *
+	 * @param {string} key
+	 * @param {Object} field
+	 * @param {string|null}  field.label
+	 * @param {string|null}  field.type
+	 * @param {boolean|null} field.required
+	 * @param {Object|null}  field.options
+	 * @param {string|null}  field.value
+	 * @param {string|null}  field.placeholder
+	 * @returns {HTMLInputElement|HTMLTextAreaElement|HTMLSelectElement}
+	 * @private
+	 */
+	_generateInput(key, field) {
+		let fieldId = this._getFieldId(key),
+			input;
+
+		if (field.type === 'textarea') {
+			input = document.createElement('textarea');
+			if (field.value) {
+				input.setAttribute('value', field.value);
+			}
+		}
+		else if (field.type === 'select') {
+			input = document.createElement('select');
+			Object.keys(field.options).forEach(subkey => {
+				let opt = document.createElement('option');
+				opt.value = subkey;
+				opt.innerHTML = field.options[subkey];
+				if ((field.value || '') === subkey) {
+					opt.setAttribute('selected', 'selected');
+				}
+				input.appendChild(opt);
+			});
+		}
+		else {
+			input = document.createElement('input');
+			input.setAttribute('type', field.type ?? 'text');
+			if (field.value) {
+				input.setAttribute('value', field.value);
+			}
+		}
+
+		// Set client-side validation checks
+		if (field.type === 'email') {
+			input.addEventListener('blur', this.emailValidateEvent.bind(this));
+		}
+		else {
+			input.addEventListener('blur', this.genericValidateEvent.bind(this));
+		}
+
+		input.setAttribute('id', fieldId);
+		input.setAttribute('name', key);
+		if (field.placeholder) {
+			input.setAttribute('placeholder', field.placeholder);
+		}
+		if (field.required) {
+			input.setAttribute('required', 'required');
+		}
+
+		return input;
+	}
+
+	/**
+	 * Create multiple <input> and <label> elements for a given field, usually for radio or checkboxes
+	 *
+	 * @param {string} key
+	 * @param {Object} field
+	 * @param {string|null}  field.label
+	 * @param {string|null}  field.type
+	 * @param {boolean|null} field.required
+	 * @param {Object|null}  field.options
+	 * @param {string|null}  field.value
+	 * @param {string|null}  field.placeholder
+	 * @returns {list<HTMLInputElement|HTMLLabelElement>}
+	 * @private
+	 */
+	_generateInputs(key, field) {
+		let fieldId = this._getFieldId(key),
+			optCounter = 0,
+			inputs = [];
+
+		Object.keys(field.options).forEach(subkey => {
+			let div = document.createElement('div'),
+				input = document.createElement('input'),
+				label = document.createElement('label');
+
+			optCounter += 1;
+
+			div.className = 'cms-form-option';
+
+			if (field.type === 'checkboxes') {
+				input.type = 'checkbox';
+				input.setAttribute('name', key + '[]');
+				div.classList.add('checkbox');
+			}
+			else {
+				input.type = 'radio';
+				input.setAttribute('name', key);
+				div.classList.add('radio');
+			}
+			input.value = subkey;
+			input.setAttribute('id', fieldId + '-' + optCounter);
+
+			label.innerHTML = field.options[subkey];
+			label.setAttribute('for', fieldId + '-' + optCounter);
+
+			div.appendChild(input);
+			div.appendChild(label);
+
+			inputs.push(div);
+		});
+
+		return inputs;
+
+		if (field.type === 'textarea') {
+			input = document.createElement('textarea');
+			if (field.value) {
+				input.setAttribute('value', field.value);
+			}
+		}
+		else if (field.type === 'select') {
+			input = document.createElement('select');
+
+		}
+		else {
+			input = document.createElement('input');
+			input.setAttribute('type', field.type ?? 'text');
+			if (field.value) {
+				input.setAttribute('value', field.value);
+			}
+		}
+
+		// Set client-side validation checks
+		if (field.type === 'email') {
+			input.addEventListener('blur', this.emailValidateEvent.bind(this));
+		}
+		else {
+			input.addEventListener('blur', this.genericValidateEvent.bind(this));
+		}
+
+
+		if (field.placeholder) {
+			input.setAttribute('placeholder', field.placeholder);
+		}
+		if (field.required) {
+			input.setAttribute('required', 'required');
+		}
+
+		return input;
+	}
+
+	/**
+	 * Create an error container <div> element for a given field
+	 *
+	 * @param {string} key
+	 * @param {Object} field
+	 * @param {string|null}  field.label
+	 * @param {string|null}  field.type
+	 * @param {boolean|null} field.required
+	 * @param {Object|null}  field.options
+	 * @param {string|null}  field.value
+	 * @param {string|null}  field.placeholder
+	 * @returns {HTMLDivElement}
+	 * @private
+	 */
+	_generateError(key, field) {
+		let error = document.createElement('div'),
+			fieldId = this._getFieldId(key) + '-error';
+
+		error.setAttribute('id', fieldId);
+		error.setAttribute('class', 'error-message hidden');
+
+		return error;
 	}
 
 	/**
@@ -231,7 +435,21 @@ class CMSFormElement extends HTMLElement {
 				}
 				else {
 					CMS.log.Debug('Extra/cms-form', 'Received successful response from form handler', response);
-					CMS.historyPushState(CMS.config.webpath + this.getAttribute('success') + '.html');
+					if (this.getAttribute('success')) {
+						CMS.historyPushState(CMS.config.webpath + this.getAttribute('success') + '.html');
+					}
+					else {
+						this.submitBtn.disabled = false;
+						this.submitBtn.value = prevSubmitText;
+
+						if (response.message) {
+							alert(response.message);
+						}
+						else {
+							alert('Form submitted successfully');
+						}
+					}
+
 				}
 			})
 			.catch(error => {

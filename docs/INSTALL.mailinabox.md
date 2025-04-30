@@ -113,6 +113,10 @@ server {
         try_files $uri $uri/ /index.php?$args;
     }
     
+    location = /form {
+        try_files $uri /index.php?$args;
+    }
+    
     location = /index.php {
         include fastcgi_params;
         fastcgi_index index.php;

@@ -8,7 +8,15 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 
 ### New Features
 
+* Add support for custom form submit buttons
+* Add support for select fields on forms
+* Add support for radio inputs on forms
+* Add support for checkbox inputs on forms
+* Add support for hidden inputs on forms
+
 ### Changes
+
+* Handle forms with no success target
 
 ### Fixes
 
