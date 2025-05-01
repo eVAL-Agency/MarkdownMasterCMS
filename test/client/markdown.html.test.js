@@ -59,4 +59,24 @@ console.log('test');
 
 </script>`);
 	});
+
+	/**
+	 * In most tags, markdown inside HTML tags should be allowed
+	 */
+	it('markdown inside html', () => {
+		let md = `<div class="blocks-2">
+
+This is a markdown paragraph
+{.block}
+
+<div class="block">This is an HTML div</div>
+
+</div>`,
+			html = renderer(md);
+
+		expect(html.trim()).toEqual(`<div class="blocks-2">
+<p class="block">This is a markdown paragraph</p>
+<div class="block">This is an HTML div</div>
+</div>`);
+	});
 });

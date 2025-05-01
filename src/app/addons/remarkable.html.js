@@ -39,6 +39,7 @@ export default (remarkable) => {
 		let ch, match, nextLine, closed = false,
 			pos = state.bMarks[startLine],
 			max = state.eMarks[startLine],
+			fullCapture = false,
 			shift = state.tShift[startLine];
 
 		pos += shift;
@@ -75,15 +76,32 @@ export default (remarkable) => {
 			return false;
 		}
 
+		// Some tags are fully captured; ie: their contents are NOT rendered as Markdown.
+		// Notably, script or style tags.
+		if (match[1] === 'script' || match[1] === 'style') {
+			fullCapture = true;
+		}
+
 		// If we are here - we detected an HTML block,
 		// let's roll down until the end of that block is detected.
 		nextLine = startLine + 1;
 		//while (nextLine < state.lineMax && !state.isEmpty(nextLine)) {
 		while (nextLine < state.lineMax && !closed) {
-			if (state.getLines(nextLine, nextLine+1, 0, false) === '</' + match[1] + '>') {
-				closed = true;
+			if (fullCapture) {
+				if (state.getLines(nextLine, nextLine+1, 0, false) === '</' + match[1] + '>') {
+					closed = true;
+				}
+				nextLine++;
 			}
-			nextLine++;
+			else {
+				// Regular tags just check for an empty line.
+				if (state.isEmpty(nextLine)) {
+					closed = true;
+				}
+				else {
+					nextLine++;
+				}
+			}
 		}
 
 		state.line = nextLine;
