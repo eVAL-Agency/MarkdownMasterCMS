@@ -29,9 +29,10 @@ This is an amazing article about dogs.  [See More](#){#see-more-link}
 </script>
 ```
 
-Use of `(() => { ... })()` is not required, as inline scripts will already run as soon
-as they are loaded, and that does not occur until after the document has been rendered.
-If you prefer to use that format however, it will work just fine.
+Use of IIFE `(() => { ... })()` is not required as inline scripts
+will automatically get wrapped prior to rendering to the page to prevent
+scope issues.
+
 
 ## Caveat - Indentation
 
@@ -70,3 +71,5 @@ of the browser first rendering the server-generated version,
 so care must be taken with these to ensure proper execution.
 
 Example: make use of `cms:route` or other events as [documented in the CMS events](document-events.md)
+
+*[IIFE]: Immediately Invoked Function Expression

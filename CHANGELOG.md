@@ -18,6 +18,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 
 * Handle forms with no success target
 * Auto-load extras requested from the server
+* Wrap inline script tags in IIFE to prevent scope issues
 
 ### Fixes
 

@@ -558,7 +558,8 @@ class File extends TemplateObject {
 					this.scripts.forEach(script => {
 						let s = document.createElement('script');
 						s.type = 'text/javascript';
-						s.textContent = script;
+						// Auto-include IIFE wrapper around scripts to prevent scope issues
+						s.textContent = '(() => { \n' + script + '\n})();';
 						document.body.appendChild(s);
 						this.scriptsLoaded.push(s);
 					});
