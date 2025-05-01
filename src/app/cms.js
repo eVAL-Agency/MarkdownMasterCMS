@@ -133,7 +133,7 @@ class CMS {
 					this.config.extras[extra] = options;
 				}
 				let script = document.createElement('script');
-				script.src = this.config.webpath + 'extras/' + extra + '/init.js';
+				script.src = this.config.webpath + 'extras/' + extra + '/' + extra + '.js';
 				script.onload = () => {
 					this.log.Debug('CMS.loadExtra', 'Plugin successfully loaded:', extra);
 					this.extras[extra].status = 'loaded';
