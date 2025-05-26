@@ -2,7 +2,7 @@
 title: Whiskered Wonders
 description: A whimsical world of feline fantasy and the charming creatures we call cats.
 image:
-    src: media/640px-Domestic_shorthaired_cat_face.jpg
+    src: media/640px-Domestic_shorthaired_cat_face.webp
 tags: [cats, whimsical, feline, fantasy, charming, creatures]
 author: bob
 ---

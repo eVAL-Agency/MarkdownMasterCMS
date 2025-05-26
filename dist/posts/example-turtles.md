@@ -2,7 +2,7 @@
 title: "Turtle Facts: The Enchanting World of These Ancient Reptiles"
 description: "Dive into the deep waters of turtle facts and uncover the secrets behind their charming existence. From their majestic shells to their epic migrations, these ancient reptiles have a story to tell."
 image:
-    src: media/639px-Florida_Box_Turtle_Digon3a.jpg
+    src: media/639px-Florida_Box_Turtle_Digon3a.webp
 tags: [turtles, reptiles, ancient, wisdom, conservation, migration, nesting, habitats]
 author: alice
 ---

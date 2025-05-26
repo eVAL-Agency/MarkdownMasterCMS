@@ -2,7 +2,7 @@
 title: Whiskers and the Cat Tree
 description: A whimsical tale of a curious cat and her favorite playtime spot
 image: 
-  src: media/640px-Domestic_shorthaired_cat_face.jpg
+  src: media/640px-Domestic_shorthaired_cat_face.webp
 tags: [cats, whimsical, feline, fantasy, charming, creatures]
 author: bob
 ---
