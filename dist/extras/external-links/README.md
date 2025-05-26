@@ -18,7 +18,7 @@ CMS.loadExtra('external-links');
 
 or from within `config.js`
 
-```js
+```javascript
 extras: {
   'external-links': {}
 }
@@ -27,7 +27,18 @@ extras: {
 
 ## Configuration
 
-N/A
+This plugin will work automatically with no configuration, but does allow for
+local domains to be defined if necessary.
+This allows you to mark domains that should not be treated as external links.
+
+```html
+<script>
+CMS.loadExtra('external-links', {
+	'local': ['localhost', '127.0.0.1', 'example.com']
+});
+</script>
+```
+
 
 
 ## Required Schema
@@ -44,6 +55,6 @@ N/A
 Will be rendered as:
 
 ```html
-<a href="https://example.com" target="_blank" rel="noopener noreferrer" class="external">Example Site</a>
+<a href="https://example.com" target="_blank" rel="external noopener" class="external">Example Site</a>
 ```
 
