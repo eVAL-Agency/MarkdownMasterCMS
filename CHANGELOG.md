@@ -13,12 +13,14 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Add support for radio inputs on forms
 * Add support for checkbox inputs on forms
 * Add support for hidden inputs on forms
+* Add external-links plugin for auto handling links to external sites
 
 ### Changes
 
 * Handle forms with no success target
 * Auto-load extras requested from the server
 * Wrap inline script tags in IIFE to prevent scope issues
+* Rename extras from `init.js` to `{name}.js` to make them easier to find
 
 ### Fixes
 
