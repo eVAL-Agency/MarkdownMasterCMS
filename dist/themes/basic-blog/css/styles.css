@@ -458,13 +458,13 @@ h1 {
 	font-size: 1.5rem;
 }
 
-header {
+header.masthead {
 	position: sticky;
 	top: 0;
 	z-index: 40;
 	background-color: var(--background-color);
 }
-header .container {
+header.masthead .container {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -472,16 +472,16 @@ header .container {
 	border-top: 2px solid black;
 	border-bottom: 2px solid black;
 }
-header nav ul {
+header.masthead nav ul {
 	display: flex;
 	gap: 1rem;
 	list-style: none;
 }
-header nav a {
+header.masthead nav a {
 	color: var(--color-accent1);
 	text-decoration: none;
 }
-header .logo img {
+header.masthead .logo img {
 	max-width: 18em;
 	max-height: 6em;
 }
@@ -838,6 +838,14 @@ cms-form .error-message.hidden {
 	color: var(--color-accent1);
 	text-decoration: none;
 }
+
+
+
+
+.post-comments {
+	flex: 4 100%;
+}
+
 
 
 .posts-list {
