@@ -43,7 +43,7 @@ class PageController extends Controller {
 		}
 		else {
 			$listing = new \MarkdownMaster\FileCollection($this->params);
-			$file = str_replace('.html', '.md', $_SERVER['REDIRECT_URL'] ?? $_SERVER['REQUEST_URI']);
+			$file = str_replace('.html', '.md', $this->request->uri);
 		}
 
 		$page = $listing->getByPath($file);
@@ -76,6 +76,10 @@ class PageController extends Controller {
 			else {
 				$view->meta['image'] = $image;
 			}
+		}
+
+		if ($page->getMeta('author')) {
+			$view->meta['author'] = $page->getMeta('author');
 		}
 
 		// Generate body classes, to mimic the frontend CMS

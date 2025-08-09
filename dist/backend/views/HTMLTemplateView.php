@@ -36,7 +36,12 @@ class HTMLTemplateView extends View {
 	public array $classes = [];
 
 	public function render() {
-		$templateFile = 'themes/' . Config::GetTheme() . '/index.html';
+		header('Content-Type: text/html');
+		echo $this->fetch();
+	}
+
+	public function fetch(): string {
+		$templateFile = Config::GetRootPath() . 'themes/' . Config::GetTheme() . '/index.html';
 		if (!file_exists($templateFile)) {
 			// Try the default (legacy) index.html in the root directory.
 			$templateFile = 'index.html';
@@ -66,7 +71,7 @@ class HTMLTemplateView extends View {
 		}
 
 		if ($this->seoTitle) {
-			$xpath->query('//title')->item(0)->nodeValue = $this->seoTitle;
+			$xpath->query('//title')->item(0)->nodeValue = htmlspecialchars($this->seoTitle, ENT_XML1, 'UTF-8');
 		}
 		if ($this->description) {
 			$tag = $xpath->query('/html/head/meta[@name="description"]');
@@ -133,8 +138,7 @@ class HTMLTemplateView extends View {
 			$this->_renderPagelist($dom, $pageList);
 		}
 
-		header('Content-Type: text/html');
-		echo $dom->saveHTML();
+		return $dom->saveHTML();
 	}
 
 	/**

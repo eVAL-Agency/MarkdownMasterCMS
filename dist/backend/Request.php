@@ -39,7 +39,16 @@ class Request {
 
 	public function __construct() {
 		$this->method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-		$this->uri = $_SERVER['REQUEST_URI'] ?? '';
+		if (isset($_SERVER['REDIRECT_URL'])) {
+			$this->uri = $_SERVER['REDIRECT_URL'];
+		}
+		elseif (isset($_SERVER['REQUEST_URI'])) {
+			$this->uri = $_SERVER['REQUEST_URI'];
+		}
+		else {
+			$this->uri = '';
+		}
+
 		if (strpos($this->uri, '?') !== false) {
 			$this->uri = substr($this->uri, 0, strpos($this->uri, '?'));
 		}
