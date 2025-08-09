@@ -322,30 +322,8 @@ class File {
 			$this->content = $contents;
 		}
 
-		foreach($meta as $item => $value) {
-			if (is_array($value) && isset($value['href'])) {
-				// Ensure href links are fully resolved
-				if (
-					!str_contains($value['href'], '://') &&
-					!str_starts_with($value['href'], '/')
-				) {
-					$meta['item']['href'] = $this->path . $value['href'];
-				}
-			}
-
-			if (is_array($value) && isset($value['src'])) {
-				// Ensure src image links are fully resolved
-				if (
-					!str_contains($value['src'], '://') &&
-					!str_starts_with($value['src'], '/')
-				) {
-					$meta[$item]['src'] = $this->path . $value['src'];
-				}
-
-				if (!isset($value['alt'])) {
-					$meta[$item]['alt'] = basename($value['src']);
-				}
-			}
+		if (is_array($meta)) {
+			$meta = $this->_parseMetaFields($meta);
 		}
 
 		if (!isset($meta['date'])) {
@@ -378,5 +356,73 @@ class File {
 		}
 
 		$this->meta = $meta;
+	}
+
+	/**
+	 * Parse various fields to ensure data consistency and convenience formatting.
+	 *
+	 * ie: images should always attempt to be fully resolved so the page content works across different applications
+	 *
+	 * @param array $metas
+	 *
+	 * @return array
+	 */
+	private function _parseMetaFields(array $metas): array {
+
+		foreach($metas as $item => $value) {
+			if (is_array($value) && array_is_list($value)) {
+				// Recurse through simple lists to check their keys.
+				$l = count($value) - 1;
+				for ($i = 0; $i <= $l; $i++) {
+					if (is_array($value[$i])) {
+						$metas[$item][$i] = $this->_parseMetaFields($value[$i]);
+					}
+				}
+			}
+			elseif (is_array($value) && isset($value['href'])) {
+				// Ensure href links are fully resolved
+				if (
+					!str_contains($value['href'], '://') &&
+					!str_starts_with($value['href'], '/')
+				) {
+					$metas[$item]['href'] = $this->path . $value['href'];
+				}
+			}
+			elseif (is_array($value) && isset($value['src'])) {
+				// Ensure src image links are fully resolved
+				if (
+					!str_contains($value['src'], '://') &&
+					!str_starts_with($value['src'], '/')
+				) {
+					$metas[$item]['src'] = $this->path . $value['src'];
+				}
+
+				if (!isset($value['alt'])) {
+					$metas[$item]['alt'] = str_replace(['_', '-'], ' ', pathinfo($value['src'], PATHINFO_FILENAME));
+				}
+			}
+			elseif (is_scalar($value) && $item === 'image' && $this->_stringLooksLikeImage($value)) {
+				// Ensure image links are fully resolved
+				if (
+					!str_contains($value, '://') &&
+					!str_starts_with($value, '/')
+				) {
+					$metas[$item] = $this->path . $value;
+				}
+			}
+		}
+
+		return $metas;
+	}
+
+	/**
+	 * Simple check to see if a given string looks like an image file.
+	 *
+	 * @param string $str
+	 * @return bool
+	 */
+	private function _stringLooksLikeImage(string $str): bool {
+		// Check if the string looks like an image file
+		return preg_match('/\.(jpg|jpeg|png|gif|webp|svg)$/i', $str) === 1;
 	}
 }
