@@ -70,6 +70,10 @@
 function fontawesome_icon(icon, name) {
 	let prefix = '',
 		identifier = '',
+		aliases = {
+			'wikipedia': 'wikipedia-w',
+			'external-link': 'arrow-up-right-from-square',
+		},
 		brands = [
 			'42-group', '500px',
 			'accessible-icon', 'accusoft', 'address-book', 'adn', 'adversal', 'affiliatetheme', 'airbnb', 'algolia', 'alipay', 'amazon', 'amazon-pay', 'amilia', 'android', 'angellist', 'angrycreative', 'angular', 'app-store', 'app-store-ios', 'apper', 'apple', 'apple-pay', 'artstation', 'asymmetrik', 'atlassian', 'audible', 'autoprefixer', 'avianex', 'aviato', 'aws',
@@ -98,6 +102,14 @@ function fontawesome_icon(icon, name) {
 			'xbox', 'xing',
 			'y-combinator', 'yahoo', 'yammer', 'yandex', 'yandex-international', 'yarn', 'yelp', 'yoast', 'youtube',
 			'zhihu' ];
+
+	// Common aliases
+	for (let key in aliases) {
+		if (key === name) {
+			name = aliases[key];
+			break;
+		}
+	}
 
 	if (brands.indexOf(name) !== -1) {
 		identifier = 'fab';
