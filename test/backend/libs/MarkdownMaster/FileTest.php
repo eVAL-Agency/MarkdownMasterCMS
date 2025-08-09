@@ -60,8 +60,8 @@ class FileTest extends TestCase {
 		$this->assertEquals('http://localhost/tests/good_file.html', $file->url);
 		$this->assertEquals('/tests/good_file.md', $file->rel);
 		$this->assertEquals('Testing Bug Features', $file->getMeta('title'));
-		$this->assertEquals('Google Friendly Title', $file->getMeta('seotitle'));
-		$this->assertEquals('Google Friendly Title', $file->getMeta(['seotitle', 'title'], null));
+		$this->assertEquals('Google Friendly Title & Stuff', $file->getMeta('seotitle'));
+		$this->assertEquals('Google Friendly Title & Stuff', $file->getMeta(['seotitle', 'title'], null));
 		$this->assertNull($file->getMeta(['invalid1'], null));
 		$this->assertEquals('This is a generic test', $file->getMeta('excerpt'));
 		$this->assertEquals('2023-03-14', $file->getMeta('date'));
@@ -165,5 +165,34 @@ but it should still render.</p>
 	public function testDateIsTimestamp() {
 		$file = new File(Config::GetRootPath() . 'tests/date_is_timestamp.md');
 		$this->assertEquals('2025-03-15', $file->getMeta('date'));
+	}
+
+	/**
+	 * Test image filename resolving
+	 *
+	 * @return void
+	 */
+	public function testImageResolving() {
+		$imagePath = Config::GetHost() . Config::GetWebPath() . 'tests/';
+		$file = new File(Config::GetRootPath() . 'tests/image_resolving.md');
+		$this->assertEquals('Image Test', $file->getMeta('title'));
+
+		$this->assertEquals($imagePath . 'some-image.jpg', $file->getMeta('image')['src']);
+		$this->assertEquals('some image', $file->getMeta('image')['alt']);
+
+		$this->assertEquals($imagePath . 'some-banner.jpg', $file->getMeta('banner')['src']);
+		$this->assertEquals('some banner', $file->getMeta('banner')['alt']);
+
+		$this->assertEquals($imagePath . 'some-full.jpg', $file->getMeta('full')['src']);
+		$this->assertEquals('Full Image', $file->getMeta('full')['alt']);
+
+		$this->assertEquals($imagePath . 'product1.jpg', $file->getMeta('products')[0]['image']);
+		$this->assertEquals('Product 1', $file->getMeta('products')[0]['title']);
+
+		$this->assertEquals($imagePath . 'product2.jpg', $file->getMeta('products')[1]['image']);
+		$this->assertEquals('Product 2', $file->getMeta('products')[1]['title']);
+
+		$this->assertEquals($imagePath . 'product3.jpg', $file->getMeta('products')[2]['image']);
+		$this->assertEquals('Product 3', $file->getMeta('products')[2]['title']);
 	}
 }

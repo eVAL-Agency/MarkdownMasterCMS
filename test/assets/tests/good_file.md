@@ -1,6 +1,6 @@
 ---
 title: Testing Bug Features
-seotitle: Google Friendly Title
+seotitle: Google Friendly Title & Stuff
 excerpt: This is a generic test
 date: '2023-03-14'
 author: Alice

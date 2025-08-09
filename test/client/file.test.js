@@ -115,7 +115,7 @@ describe('File', () => {
 			f.parseFrontMatter();
 
 			expect(f.title).toEqual('Testing Bug Features');
-			expect(f.seotitle).toEqual('Google Friendly Title');
+			expect(f.seotitle).toEqual('Google Friendly Title & Stuff');
 			expect(f.excerpt).toEqual('This is a generic test');
 			expect(f.author).toEqual('Alice');
 			expect(f.banner).toEqual({alt: '200.jpg', src: 'https://www.http.cat/200.jpg'});
@@ -393,7 +393,7 @@ This is test content about Zebras`;
 			expect(f.permalink).toBeNull();
 			f.parseContent();
 			expect(f.title).toEqual('Testing Bug Features');
-			expect(f.seotitle).toEqual('Google Friendly Title');
+			expect(f.seotitle).toEqual('Google Friendly Title & Stuff');
 			expect(f.excerpt).toEqual('This is a generic test');
 			expect(f.author).toEqual('Alice');
 			expect(f.banner).toEqual({alt: '200.jpg', src: 'https://www.http.cat/200.jpg'});
@@ -522,7 +522,7 @@ This is test content about Zebras`;
 			f.content = generic_contents;
 			f.parseContent();
 			f.render().then(() => {
-				expect(global.document.title).toEqual('Google Friendly Title');
+				expect(global.document.title).toEqual('Google Friendly Title & Stuff');
 				expect(area.innerHTML).toEqual('<html><body><h1>Testing Bug Features</h1></body></html>');
 			});
 		});
