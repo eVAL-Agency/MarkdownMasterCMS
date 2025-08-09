@@ -116,7 +116,7 @@ class Config {
 	 * @throws Exception
 	 */
 	public static function GetDefaultView() : string {
-		return self::_Get('defaultView');
+		return self::_Get('defaultView', 'home');
 	}
 
 	/**
