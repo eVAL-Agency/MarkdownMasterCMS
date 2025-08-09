@@ -4,7 +4,7 @@ seotitle: MarkdownMaster CMS Change History
 description: Compiled list of changes to the MarkdownMaster CMS application and archived download links.
 ---
 
-## MarkdownMaster CMS 5.0.4 - 2025.XX.XX
+## [MarkdownMaster CMS 5.0.4 - 2025.08.09](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.4)
 
 ### New Features
 
@@ -14,6 +14,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Add support for checkbox inputs on forms
 * Add support for hidden inputs on forms
 * Add external-links plugin for auto handling links to external sites
+* Add mastodon-comments plugin for embedding Mastodon posts as comments
 
 ### Changes
 
@@ -21,10 +22,12 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Auto-load extras requested from the server
 * Wrap inline script tags in IIFE to prevent scope issues
 * Rename extras from `init.js` to `{name}.js` to make them easier to find
+* Remove mastodon-share in favor of mastodon-comments
 
 ### Fixes
 
 * Fix support for newlines within HTML and script tags
+* Fix '&' and other non-XML friendly characters in titles
 
 
 ## [MarkdownMaster CMS 5.0.3 - 2025.04.27](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.3)
