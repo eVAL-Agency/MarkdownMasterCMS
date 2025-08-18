@@ -43,6 +43,10 @@ class CMSPagelistElement extends HTMLElement {
 		if (related !== null) {
 			// Support related articles
 			let post, paths, tags;
+			if (sort === null) {
+				// Default sort by the best match
+				sort = '__match-r';
+			}
 			if (related === 'this') {
 				paths = CMS.getPathsFromURL();
 			}
@@ -129,11 +133,11 @@ class CMSPagelistElement extends HTMLElement {
 		collection.resetFilters();
 
 		// User-request sort and filter parameters
-		if (sort !== null) {
-			collection.filterSort(sort);
-		}
 		if (has_filters) {
 			collection.filterAttributeSearch(filters);
+		}
+		if (sort !== null) {
+			collection.filterSort(sort);
 		}
 		if (limit !== null) {
 			collection.paginate(parseInt(limit), 1);

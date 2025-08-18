@@ -178,6 +178,13 @@ class File extends TemplateObject {
 		 * @type {HTMLScriptElement[]}
 		 */
 		this.scriptsLoaded = [];
+
+		/**
+		 * Internal match score for this file when matchesAttributeSearch is used.
+		 * @type {number}
+		 * @private
+		 */
+		this.__match = 0;
 	}
 
 	/**
@@ -496,7 +503,10 @@ class File extends TemplateObject {
 	 * file.matchesAttributeSearch({author: 'Bob', tags: 'HR'}, 'OR');
 	 */
 	matchesAttributeSearch(query, mode) {
-		let found = false, matches_all = true;
+		let found = false,
+			matches_all = true,
+			match_count = 0,
+			match_total = 0;
 
 		mode = mode || 'AND';
 
@@ -505,8 +515,10 @@ class File extends TemplateObject {
 				// Multiple values, this grouping is an 'OR' automatically
 				let set_match = false;
 				for (let i = 0; i < value.length; i++) {
+					match_total += 1;
 					if (this._matchesAttribute(key, value[i])) {
 						set_match = true;
+						match_count += 1;
 					}
 				}
 				if (set_match) {
@@ -515,13 +527,17 @@ class File extends TemplateObject {
 					matches_all = false;
 				}
 			} else {
+				match_total += 1;
 				if (this._matchesAttribute(key, value)) {
 					found = true;
+					match_count += 1;
 				} else {
 					matches_all = false;
 				}
 			}
 		}
+
+		this.__match = match_total > 0 ? (match_count / match_total) : 0;
 
 		if (mode.toUpperCase() === 'OR') {
 			// an OR check just needs at least one matching result

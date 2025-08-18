@@ -4,6 +4,17 @@ seotitle: MarkdownMaster CMS Change History
 description: Compiled list of changes to the MarkdownMaster CMS application and archived download links.
 ---
 
+## MarkdownMaster CMS 5.0.5 - YYYY.MM.DD
+
+### New Features
+
+### Changes
+
+* Pagelist plugin now defaults sorting of `related` pages based on relevance.
+
+### Fixes
+
+
 ## [MarkdownMaster CMS 5.0.4 - 2025.08.09](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.4)
 
 ### New Features

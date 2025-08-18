@@ -365,6 +365,7 @@ class FileCollection extends TemplateObject {
 	resetFilters() {
 		//this.entries = this.files;
 		this[this.type] = this.files.filter((file) => {
+			file.__match = 0;
 			return !file.draft;
 		});
 	}

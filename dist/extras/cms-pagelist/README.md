@@ -127,6 +127,9 @@ A specific URL fragment can be set as well, eg: `related="posts/some-post.html"`
 
 Using `related` will also set `type`, so defining that is not necessary when using `related`.
 
+Related search will also default `sort` to `__match-r` to return results that
+most accurately match the tags of the reference page first.
+
 
 ## Example Styles
 
