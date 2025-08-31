@@ -10,11 +10,11 @@
 		<span itemprop="name"><%= data.title %></span>
 	</a>
 
-	<% if(data.get('social', null)) { %>
+	<% if(data.get('socials', null)) { %>
 		<ul class="social-links">
-			<% Object.keys(data.social).forEach(function(key) { %>
+			<% Object.keys(data.socials).forEach(function(key) { %>
 			<li>
-				<a itemprop="url" href="<%= data.social[key] %>" title="<%= data.title %> on <%= key %>" target="_blank">
+				<a itemprop="url" href="<%= data.socials[key] %>" title="<%= data.title %> on <%= key %>" target="_blank">
 					<i is="cms-icon" icon="<%= key %>"></i>
 				</a>
 			</li>

@@ -4,9 +4,9 @@ alias: bob
 image: 
   src: bob-by-randomuser.me.jpg
   alt: Generated example image by randomuser.me
-social:
+socials:
   github: https://github.com/
-  mastodon: https://social.veraciousnetwork.com/
+  mastodon: https://social.veraciousnetwork.com/@testbob
 ---
 
 Hi there! I'm Bob, a curious and adventurous individual with a passion for exploring new places and trying new things. 

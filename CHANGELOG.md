@@ -8,6 +8,8 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 
 ### New Features
 
+* Add support for fediverse:creator meta tag on pages based on socials data
+
 ### Changes
 
 * Pagelist plugin now defaults sorting of `related` pages based on relevance.

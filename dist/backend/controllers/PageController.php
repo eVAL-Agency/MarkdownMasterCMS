@@ -26,6 +26,8 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+use MarkdownMaster\FileCollection;
+
 require_once('backend/libs/MarkdownMaster/FileCollection.php');
 require_once('backend/views/HTMLTemplateView.php');
 
@@ -80,6 +82,29 @@ class PageController extends Controller {
 
 		if ($page->getMeta('author')) {
 			$view->meta['author'] = $page->getMeta('author');
+
+			// Allow the author field to be extrapolated to a number of meta fields.
+			// This helps to add additional details about the author to crawlers.
+			if (in_array('authors', Config::GetTypes())) {
+				$author = (new FileCollection('authors'))
+					->getFiles([
+						'title' => $view->meta['author'],
+						'alias' => $view->meta['author']
+					], null, 1, 'OR');
+
+				if (count($author) >= 1) {
+					$socials = $author[0]->getMeta('socials', []);
+					// Pull the "mastodon" social link if it's available in the author's socials
+					if (isset($socials['mastodon']) && filter_var($socials['mastodon'], FILTER_VALIDATE_URL) && str_contains($socials['mastodon'], '/@')) {
+						// Convert the link from site/@user to @user@site
+						$view->meta['fediverse:creator'] = preg_replace(
+							'#https?://(.*?)/@([^/]+)#',
+							'@$2@$1',
+							$socials['mastodon']
+						);
+					}
+				}
+			}
 		}
 
 		// Generate body classes, to mimic the frontend CMS

@@ -4,7 +4,7 @@ alias: alice
 image: 
   src: alice-by-randomuser.me.jpg
   alt: Generated example image by randomuser.me
-social:
+socials:
   github: https://github.com/
   mastodon: https://social.veraciousnetwork.com/
 ---
