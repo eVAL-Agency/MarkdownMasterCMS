@@ -96,16 +96,40 @@ class FileCollection {
 		return null;
 	}
 
-	public function getFiles($filter = [], string $sort = null, int $limit = 50) {
+	/**
+	 * Retrieve a list of Files which match the given filter criteria.
+	 *
+	 * @param array<string,mixed> $filter
+	 * @param string|null $sort
+	 * @param int $limit
+	 * @param string $op
+	 *
+	 * @return array<File>
+	 */
+	public function getFiles(array $filter = [], ?string $sort = null, int $limit = 50, string $op = 'AND') : array {
 		$files = $this->files;
 		if (count($filter) > 0) {
-			$files = array_filter($files, function($file) use ($filter) {
+			$files = array_filter($files, function($file) use ($filter, $op) {
+				$match_any = false;
+				$match_all = true;
 				foreach ($filter as $key => $value) {
 					if ($file->getMeta($key) !== $value) {
-						return false;
+						$match_all = false;
+					}
+					else {
+						$match_any = true;
 					}
 				}
-				return true;
+
+				if ($op === 'AND') {
+					return $match_all;
+				}
+				elseif ($op === 'OR') {
+					return $match_any;
+				}
+				else {
+					return false;
+				}
 			});
 		}
 
