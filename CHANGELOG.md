@@ -14,6 +14,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 
 * Pagelist plugin now defaults sorting of `related` pages based on relevance.
 * Add support for operation mode (OR / AND) on backend File lookups
+* Add kofi and external-link aliases to fontawesome
 
 ### Fixes
 

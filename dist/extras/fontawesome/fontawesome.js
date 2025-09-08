@@ -71,8 +71,9 @@ function fontawesome_icon(icon, name) {
 	let prefix = '',
 		identifier = '',
 		aliases = {
-			'wikipedia': 'wikipedia-w',
 			'external-link': 'arrow-up-right-from-square',
+			'kofi': 'dollar',
+			'wikipedia': 'wikipedia-w',
 		},
 		brands = [
 			'42-group', '500px',
