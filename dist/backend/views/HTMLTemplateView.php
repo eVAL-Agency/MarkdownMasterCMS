@@ -99,14 +99,14 @@ class HTMLTemplateView extends View {
 		}
 
 		foreach ($this->meta as $key => $value) {
-			$tag = $xpath->query('/html/head/meta[@name="' . $key . '"]');
+			// Opengraph tags use property= instead of name=
+			$keyAttribute = str_starts_with($key, 'og:') ? 'property' : 'name';
+
+			$tag = $xpath->query('/html/head/meta[@' . $keyAttribute . '="' . $key . '"]');
 			if ($tag->length == 0) {
 				$tag = $dom->createElement('meta');
-				$tag->setAttribute('name', $key);
+				$tag->setAttribute($keyAttribute, $key);
 				$tag->setAttribute('content', $value);
-				if ($key === 'image') {
-					$tag->setAttribute('property', 'og:image');
-				}
 				$xpath->query('/html/head')->item(0)->appendChild($tag);
 			}
 			else {

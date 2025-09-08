@@ -69,17 +69,79 @@ class PageController extends Controller {
 			$view->canonical = $page->url;
 		}
 
+		// Set the main body content for the view directly based on the page's rendering
 		$view->body = (string)$page;
+
+		// Add titles for non-standard bots
+		$twitterTitle = $page->getMeta(['twittertitle', 'ogtitle', 'seotitle', 'title'], '');
+		if ($twitterTitle) {
+			$view->meta['twitter:title'] = $twitterTitle;
+		}
+		$ogTitle = $page->getMeta(['ogtitle', 'twittertitle', 'seotitle', 'title'], '');
+		if ($ogTitle) {
+			$view->meta['og:title'] = $ogTitle;
+		}
+
+		// Add some advertising/branding for the CMS
+		$view->meta['generator'] = 'MarkdownMaster CMS (https://markdownmaster.com)';
+
+		// Make sure non-standard bots parse the description
+		if ($view->description) {
+			$view->meta['og:description'] = $view->description;
+			$view->meta['twitter:description'] = $view->description;
+		}
+
+		// Handle the image tag, this is particularly notable as images tend to catch user attention better than just text.
 		if ($page->getMeta('image', null)) {
+			$imageUrl = '';
+			$imageAlt = '';
+
 			$image = $page->getMeta('image');
-			if (is_array($image) && isset($image['src'])) {
-				$view->meta['image'] = $image['src'];
+			if (is_array($image)) {
+				if (isset($image['src'])) {
+					$imageUrl = $image['src'];
+				}
+				if (isset($image['alt'])) {
+					$imageAlt = $image['alt'];
+				}
 			}
 			else {
-				$view->meta['image'] = $image;
+				$imageUrl = $image;
+			}
+
+			if ($imageUrl) {
+				$view->meta['image'] = $imageUrl;
+				$view->meta['og:image'] = $imageUrl;
+				$view->meta['twitter:image'] = $imageUrl;
+				$view->meta['twitter:card'] = 'summary_large_image';
+
+				// Twitter recommends providing image dimensions too, so convert the image URL to a path and check it.
+				$imagePath = str_replace(
+					Config::GetHost() . Config::GetWebPath(),
+					Config::GetRootPath(),
+					$imageUrl
+				);
+				if (file_exists($imagePath) && is_readable($imagePath)) {
+					$size = getimagesize($imagePath);
+					if ($size) {
+						$view->meta['og:image:width'] = $size[0];
+						$view->meta['og:image:height'] = $size[1];
+						$view->meta['twitter:image:width'] = $size[0];
+						$view->meta['twitter:image:height'] = $size[1];
+					}
+				}
+			}
+
+			if ($imageAlt) {
+				$view->meta['og:image:alt'] = $imageAlt;
+				$view->meta['twitter:image:alt'] = $imageAlt;
 			}
 		}
 
+		// @todo Add support for video pages if desired.  This would override twitter:card to be "player"
+		// and add twitter:player (the URL of the video), twitter:player:width, and twitter:player:height
+
+		// Add author attribution links to the meta data
 		if ($page->getMeta('author')) {
 			$view->meta['author'] = $page->getMeta('author');
 
@@ -102,6 +164,13 @@ class PageController extends Controller {
 							'@$2@$1',
 							$socials['mastodon']
 						);
+					}
+
+					if (isset($socials['twitter']) && filter_var($socials['twitter'], FILTER_VALIDATE_URL)) {
+						$view->meta['twitter:creator'] = str_replace('https://twitter.com/', '@', $socials['twitter']);
+					}
+					elseif (isset($socials['x']) && filter_var($socials['x'], FILTER_VALIDATE_URL)) {
+						$view->meta['twitter:creator'] = str_replace('https://x.com/', '@', $socials['x']);
 					}
 				}
 			}

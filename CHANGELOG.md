@@ -9,6 +9,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 ### New Features
 
 * Add support for fediverse:creator meta tag on pages based on socials data
+* Add support for Twitter card previews
 
 ### Changes
 
