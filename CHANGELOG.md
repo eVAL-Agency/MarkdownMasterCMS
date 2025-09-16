@@ -19,6 +19,8 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 
 ### Fixes
 
+* Include search parameters in default redirect to preserve campaign tracking and search parameters
+
 
 ## [MarkdownMaster CMS 5.0.4 - 2025.08.09](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.4)
 

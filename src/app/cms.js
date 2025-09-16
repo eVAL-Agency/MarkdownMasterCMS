@@ -402,7 +402,7 @@ class CMS {
 		if (!type) {
 			// Default view
 			// route will be re-called immediately upon updating the state
-			this.historyReplaceState(this.config.webpath + this.config.defaultView + '.html');
+			this.historyReplaceState(this.config.webpath + this.config.defaultView + '.html' + window.location.search);
 		} else {
 			// List and single views
 			if (collection && filename) {
