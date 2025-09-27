@@ -1,9 +1,10 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+use MarkdownMaster\Config;
 use MarkdownMaster\File;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
+use PHPUnit\Framework\TestCase;
 
 #[CoversClass(File::class)]
 #[UsesClass(Config::class)]

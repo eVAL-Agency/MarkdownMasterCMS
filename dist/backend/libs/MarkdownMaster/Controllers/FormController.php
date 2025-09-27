@@ -26,14 +26,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once('backend/views/JSONView.php');
 
+namespace MarkdownMaster\Controllers;
+
+use Egulias\EmailValidator\EmailValidator;
+use Egulias\EmailValidator\Validation\DNSCheckValidation;
+use Egulias\EmailValidator\Validation\RFCValidation;
+use MarkdownMaster\Config;
+use MarkdownMaster\Controller;
+use MarkdownMaster\Views\JSONView;
 use Symfony\Component\Mailer\Mailer;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Mime\Email;
-use Egulias\EmailValidator\EmailValidator;
-use Egulias\EmailValidator\Validation\RFCValidation;
-use Egulias\EmailValidator\Validation\DNSCheckValidation;
+use Exception;
 
 /**
  * Handle submissions of form data to /form,
@@ -111,7 +116,7 @@ class FormController extends Controller {
 
 		// Validate the form data and assign all keys to the form data
 		$errors = [];
-		foreach($formConfig['fields'] as $field => $fieldSettings) {
+		foreach ($formConfig['fields'] as $field => $fieldSettings) {
 			$required = $fieldSettings['required'] ?? false;
 			$type = $fieldSettings['type'] ?? 'text';
 			$value = trim($data[$field] ?? '');
@@ -142,8 +147,8 @@ class FormController extends Controller {
 			return $view;
 		}
 
-		foreach($formConfig['actions'] as $actionSettings) {
-			switch($actionSettings['action']) {
+		foreach ($formConfig['actions'] as $actionSettings) {
+			switch ($actionSettings['action']) {
 				case 'email':
 					$this->actionEmail($formData, $actionSettings);
 					break;
@@ -191,7 +196,7 @@ class FormController extends Controller {
 				'/layouts/' . $settings['action'] . '-' . $settings['template'] . '.tpl';
 			if (file_exists($tplName)) {
 				$template = file_get_contents($tplName);
-				foreach($data as $key => $val) {
+				foreach ($data as $key => $val) {
 					$template = str_replace('{{' . $key . '}}', $val, $template);
 				}
 

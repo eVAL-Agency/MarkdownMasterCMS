@@ -57,6 +57,11 @@ class MarkdownParser extends MarkdownExtra {
 			return $link;
 		}
 
+		if (preg_match('/^[a-zA-Z]+:/', $link)) {
+			// If the link is a protocol-relative URL or has a custom scheme, return it as is
+			return $link;
+		}
+
 		if (str_ends_with($link, '.md')) {
 			// Auto translate Markdown links to HTML links
 			$link = substr($link, 0, -3) . '.html';

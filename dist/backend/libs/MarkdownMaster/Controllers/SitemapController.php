@@ -26,60 +26,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-class Controller {
-	protected $request;
-    protected $params;
+namespace MarkdownMaster\Controllers;
 
-	public function __construct(Request $request, $params) {
-		$this->request = $request;
-        $this->params = $params;
-	}
+use MarkdownMaster\Config;
+use MarkdownMaster\Controller;
+use MarkdownMaster\FileCollection;
+use MarkdownMaster\Views\XMLView;
 
-	public function run() {
-		switch ($this->request->method) {
-			case 'GET':
-				return $this->get();
-				break;
-			case 'POST':
-				return $this->post();
-				break;
-			case 'PUT':
-				return $this->put();
-				break;
-			case 'DELETE':
-				return $this->delete();
-				break;
-			default:
-				throw new Exception('Method not allowed', 405);
+/**
+ * Controller to generate a sitemap
+ *
+ * Called from /sitemap.xml
+ */
+class SitemapController extends Controller {
+	public function get() {
+		$view = new XMLView();
+		$view->root = 'urlset';
+		$view->data['@xmlns'] = 'http://www.sitemaps.org/schemas/sitemap/0.9';
+		$view->data['@xmlns:xhtml'] = 'http://www.w3.org/1999/xhtml';
+		$view->data['@xmlns:xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
+		$view->data['@xsi:schemaLocation'] = 'http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd';
+		$view->data['url'] = [];
+
+		$types = Config::GetTypes();
+		foreach ($types as $type) {
+			$collection = new FileCollection($type);
+			foreach ($collection->files as $file) {
+				if (!$file->getMeta('draft', false)) {
+					$view->data['url'][] = ['loc' => $file->url];
+				}
+			}
 		}
+
+		return $view;
 	}
-
-    /**
-     * @throws Exception
-     */
-    public function get() {
-        throw new Exception(get_class($this) . " does not support GET requests", 405);
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function post() {
-        throw new Exception(get_class($this) . " does not support POST requests", 405);
-    }
-
-	/**
-	 * @throws Exception
-	 */
-	public function put() {
-		throw new Exception(get_class($this) . " does not support PUT requests", 405);
-	}
-
-	/**
-	 * @throws Exception
-	 */
-	public function delete() {
-		throw new Exception(get_class($this) . " does not support DELETE requests", 405);
-	}
-
 }

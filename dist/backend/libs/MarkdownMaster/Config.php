@@ -26,19 +26,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+namespace MarkdownMaster;
+
+use Exception;
+
 class Config {
 	private static $_config = null;
 
 	private static function _Get(string $key, $default = null) {
 		if (self::$_config === null) {
-			if (!file_exists(dirname(__DIR__) . '/config.php')) {
+			if (!file_exists(BASE_DIR . '/config.php')) {
 				throw new Exception(
 					'Configuration file not found, please copy config.example.php to config.php',
 					500
 				);
 			}
 
-			$config = require dirname(__DIR__) . '/config.php';
+			$config = require BASE_DIR . '/config.php';
 
 			if (!is_array($config)) {
 				throw new Exception('Configuration file must return an array', 500);
@@ -46,9 +50,9 @@ class Config {
 
 			// Allow the theme to set defaults
 			if (isset($config['theme'])) {
-				$themeSettingsFile = dirname(__DIR__) . '/themes/' . $config['theme'] . '/settings.php';
+				$themeSettingsFile = BASE_DIR . '/themes/' . $config['theme'] . '/settings.php';
 				if (file_exists($themeSettingsFile)) {
-					$themeConfig = require dirname(__DIR__) . '/themes/' . $config['theme'] . '/settings.php';
+					$themeConfig = require BASE_DIR . '/themes/' . $config['theme'] . '/settings.php';
 					$config = array_merge($themeConfig, $config);
 				}
 			}
@@ -109,13 +113,13 @@ class Config {
 	}
 
 	public static function GetRootPath(): string {
-		return self::_Get('rootpath') ?? dirname(__DIR__) . '/';
+		return self::_Get('rootpath') ?? BASE_DIR . '/';
 	}
 
 	/**
 	 * @throws Exception
 	 */
-	public static function GetDefaultView() : string {
+	public static function GetDefaultView(): string {
 		return self::_Get('defaultView', 'home');
 	}
 
@@ -211,7 +215,7 @@ class Config {
 				$formClientConfig[$name] = [
 					'fields' => [],
 				];
-				foreach($form['fields'] as $fieldName => $field) {
+				foreach ($form['fields'] as $fieldName => $field) {
 					$formClientConfig[$name]['fields'][$fieldName] = $field;
 				}
 			}

@@ -26,12 +26,30 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-class JSONView extends View {
-	public $data = [];
+namespace MarkdownMaster\Controllers;
 
-	public function render() {
-		http_response_code($this->status);
-		header('Content-Type: application/json');
-		echo json_encode($this->data);
+use MarkdownMaster\Config;
+use MarkdownMaster\Controller;
+use MarkdownMaster\Views\HTMLTemplateView;
+use MarkdownMaster\FileCollection;
+
+/**
+ * Controller to handle listing files in a given type
+ */
+class ListingController extends Controller {
+	public function get() {
+		$listing = new FileCollection($this->params);
+
+		$view = new HTMLTemplateView();
+		$view->title = 'Listing of ' . $this->params;
+		$view->canonical = Config::GetHost() . Config::GetWebPath() . $this->params . '.html';
+		$view->body = '<h1>Listing of ' . $this->params . '</h1>';
+		foreach ($listing->files as $file) {
+			if (!$file->getMeta('draft', false)) {
+				$view->body .= $file->getListing();
+			}
+		}
+
+		return $view;
 	}
 }

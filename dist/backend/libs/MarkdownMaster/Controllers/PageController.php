@@ -26,10 +26,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-use MarkdownMaster\FileCollection;
+namespace MarkdownMaster\Controllers;
 
-require_once('backend/libs/MarkdownMaster/FileCollection.php');
-require_once('backend/views/HTMLTemplateView.php');
+use MarkdownMaster\Config;
+use MarkdownMaster\Controller;
+use MarkdownMaster\FileCollection;
+use MarkdownMaster\Views\HTMLTemplateView;
 
 /**
  * Controller to display a single page

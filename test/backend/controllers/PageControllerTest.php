@@ -1,8 +1,12 @@
 <?php
 
-use PHPUnit\Framework\TestCase;
+use MarkdownMaster\Config;
+use MarkdownMaster\Controllers\PageController;
+use MarkdownMaster\Request;
+use MarkdownMaster\Views\HTMLTemplateView;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
+use PHPUnit\Framework\TestCase;
 
 #[UsesClass(Request::class)]
 #[UsesClass(Config::class)]

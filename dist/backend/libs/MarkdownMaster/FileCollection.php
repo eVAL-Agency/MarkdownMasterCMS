@@ -28,9 +28,6 @@
 
 namespace MarkdownMaster;
 
-require_once('backend/libs/MarkdownMaster/File.php');
-use Config;
-
 class FileCollection {
 	/** @var File[] */
 	public $files = [];

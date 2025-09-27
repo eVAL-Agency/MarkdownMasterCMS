@@ -26,9 +26,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once('backend/libs/MarkdownMaster/FileCollection.php');
-require_once('backend/views/XMLView.php');
+namespace MarkdownMaster\Controllers;
 
+use MarkdownMaster\Config;
+use MarkdownMaster\Controller;
+use MarkdownMaster\Views\XMLView;
+use MarkdownMaster\FileCollection;
 use Ramsey\Uuid\Uuid;
 
 /**
@@ -36,16 +39,16 @@ use Ramsey\Uuid\Uuid;
  */
 class RssController extends Controller {
 	public function get() {
-		$listing = new \MarkdownMaster\FileCollection($this->params);
+		$listing = new FileCollection($this->params);
 
 		// Use the default page view for the basis of the site data
 		$default = Config::GetDefaultView();
-		$defaultListing = new \MarkdownMaster\FileCollection(substr($default, 0, strpos($default, '/')));
+		$defaultListing = new FileCollection(substr($default, 0, strpos($default, '/')));
 		$file = Config::GetWebPath() . $default . '.md';
 		$page = $defaultListing->getByPath($file);
 
 		if (in_array('authors', Config::GetTypes())) {
-			$authorListing = new \MarkdownMaster\FileCollection('authors');
+			$authorListing = new FileCollection('authors');
 		}
 		else {
 			$authorListing = null;
@@ -74,7 +77,7 @@ class RssController extends Controller {
 
 		foreach ($listing->getFiles([], 'date DESC', 50) as $file) {
 			if (!$file->getMeta('draft', false)) {
-				$definition =  [
+				$definition = [
 					'title' => $file->getMeta(['title', 'seotitle'], ''),
 					'link' => $file->url,
 					'guid' => [

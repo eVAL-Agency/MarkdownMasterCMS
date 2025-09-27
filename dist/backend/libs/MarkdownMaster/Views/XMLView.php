@@ -26,10 +26,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-class View {
-	public int $status = 200;
+namespace MarkdownMaster\Views;
+
+use MarkdownMaster\View;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+
+class XMLView extends View {
+	public $encoding = 'UTF-8';
+	public $root = 'response';
+	public $data = [];
+	public $mimetype = 'application/xml';
 
 	public function render() {
-		throw new Exception('render() method must be extended');
+		$encoder = new XmlEncoder([
+			'xml_root_node_name' => $this->root,
+		]);
+		$xml = $encoder->encode($this->data, $this->encoding);
+		header('Content-Type: ' . $this->mimetype);
+		echo $xml;
 	}
 }

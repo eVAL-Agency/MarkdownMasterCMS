@@ -27,8 +27,11 @@
  */
 
 
+namespace MarkdownMaster;
+
 use JetBrains\PhpStorm\NoReturn;
-require_once 'views/HTMLTemplateView.php';
+use MarkdownMaster\Views\HTMLTemplateView;
+use Exception;
 
 class Request {
 	public string $method;
@@ -67,7 +70,7 @@ class Request {
 	public function replyError(string $message, int $code = 500, ?string $trace = null): void {
 		http_response_code($code);
 
-		if (class_exists('Config') && Config::IsReady() && Config::GetDebug()) {
+		if (class_exists('MarkdownMaster\\Config') && Config::IsReady() && Config::GetDebug()) {
 			$trace = $trace ?? print_r(debug_backtrace(), true);
 		}
 		else {
@@ -127,7 +130,7 @@ class Request {
 	 * @return Controller|null
 	 */
 	public function getController(): ?Controller {
-		$routes = require __DIR__ . '/routes.php';
+		$routes = require BASE_DIR . '/backend/routes.php';
 		$webPath = Config::GetWebPath();
 		$checkUri = '/' . substr($this->uri, strlen($webPath));
 
@@ -137,11 +140,9 @@ class Request {
 				$route['regex'] === true &&
 				preg_match($route['uri'], $checkUri)
 			) {
-				require_once('backend/controllers/' . $route['file']);
 				return new $route['class']($this, $route['params']);
 			}
 			elseif ($route['uri'] === $checkUri) {
-				require_once('backend/controllers/' . $route['file']);
 				return new $route['class']($this, $route['params']);
 			}
 		}

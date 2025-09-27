@@ -1,4 +1,9 @@
 <?php
+
+namespace MarkdownMaster\Views;
+
+use MarkdownMaster\View;
+
 /**
  * MarkdownMaster CMS
  *
@@ -25,21 +30,12 @@
  * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-
-class XMLView extends View {
-	public $encoding = 'UTF-8';
-	public $root = 'response';
+class JSONView extends View {
 	public $data = [];
-	public $mimetype = 'application/xml';
 
 	public function render() {
-		$encoder = new XmlEncoder([
-			'xml_root_node_name' => $this->root,
-		]);
-		$xml = $encoder->encode($this->data, $this->encoding);
-		header('Content-Type: ' . $this->mimetype);
-		echo $xml;
+		http_response_code($this->status);
+		header('Content-Type: application/json');
+		echo json_encode($this->data);
 	}
 }

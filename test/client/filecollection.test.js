@@ -218,8 +218,8 @@ describe('FileCollection', () => {
 
 			let tags = collection.getTags();
 			expect(tags).toHaveLength(2);
-			expect(tags[0]).toEqual({name: 'Test', count: 2, url: '/tests.html?tag=test', weight: 10});
-			expect(tags[1]).toEqual({name: 'greek', count: 1, url: '/tests.html?tag=greek', weight: 5});
+			expect(tags[0]).toEqual({name: 'Test', tag: 'test', count: 2, url: '/tests.html?tag=test', weight: 10});
+			expect(tags[1]).toEqual({name: 'greek', tag: 'greek', count: 1, url: '/tests.html?tag=greek', weight: 5});
 		});
 	});
 	describe('getFileByPermalink', () => {

@@ -28,10 +28,7 @@
 
 namespace MarkdownMaster;
 
-use Config;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
-
-require_once('backend/libs/MarkdownMaster/MarkdownParser.php');
 
 class File {
 	/** @var string Full web URL of directory */

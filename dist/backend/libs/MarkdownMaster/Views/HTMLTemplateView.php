@@ -26,6 +26,16 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+namespace MarkdownMaster\Views;
+
+use MarkdownMaster\Config;
+use MarkdownMaster\View;
+use MarkdownMaster\FileCollection;
+use Exception;
+use DOMDocument;
+use DOMXPath;
+use DOMElement;
+
 class HTMLTemplateView extends View {
 	public string $seoTitle = '';
 	public string $title = '';
@@ -67,7 +77,9 @@ class HTMLTemplateView extends View {
 
 		if (count($this->classes)) {
 			$tag = $xpath->query('/html/body')->item(0);
-			$tag->setAttribute('class', implode(' ', $this->classes));
+			$classes = $tag->getAttribute('class');
+			$classes .= ($classes ? ' ' : '') . implode(' ', $this->classes);
+			$tag->setAttribute('class', $classes);
 		}
 
 		if ($this->seoTitle) {
@@ -124,11 +136,12 @@ class HTMLTemplateView extends View {
 
 		$fragment = new DOMDocument();
 		$body = $this->body;
-		if ($this->title) {
+		if ($this->title && !str_contains($body, '<h1')) {
+			// Add the title as an H1 if it's not already in the body
 			$body = '<h1>' . $this->title . '</h1>' . $body;
 		}
-		$fragment->loadHTML( '<div>' . $body . '</div>');
-		$fragment = $dom->importNode( $fragment->documentElement, true );
+		$fragment->loadHTML('<div>' . $body . '</div>');
+		$fragment = $dom->importNode($fragment->documentElement, true);
 		$body = $fragment->getElementsByTagName('body')->item(0);
 		$tag->item(0)->appendChild($body->childNodes[0]);
 
@@ -159,7 +172,7 @@ class HTMLTemplateView extends View {
 		$sort = null;
 		$filters = [];
 
-		foreach($element->attributes as $attr) {
+		foreach ($element->attributes as $attr) {
 			$key = $attr->name;
 			$val = $attr->value;
 			if ($key === 'limit') {
@@ -181,16 +194,16 @@ class HTMLTemplateView extends View {
 			return;
 		}
 
-		$collection = new \MarkdownMaster\FileCollection($type);
+		$collection = new FileCollection($type);
 		$files = $collection->getFiles($filters, $sort, $limit);
 		$html = '';
-		foreach($files as $file) {
+		foreach ($files as $file) {
 			$html .= $file->getListing();
 		}
 
 		$fragment = new DOMDocument();
-		$fragment->loadHTML( '<div>' . $html . '</div>');
-		$fragment = $dom->importNode( $fragment->documentElement, true );
+		$fragment->loadHTML('<div>' . $html . '</div>');
+		$fragment = $dom->importNode($fragment->documentElement, true);
 		$body = $fragment->getElementsByTagName('body')->item(0);
 		$element->nodeValue = '';
 		$element->appendChild($body->childNodes[0]);

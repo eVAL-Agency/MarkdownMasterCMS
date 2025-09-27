@@ -26,39 +26,62 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once('backend/libs/MarkdownMaster/FileCollection.php');
-require_once('backend/views/JSONView.php');
+namespace MarkdownMaster;
 
-use MarkdownMaster\FileCollection;
+class Controller {
+	protected $request;
+	protected $params;
 
-/**
- * Controller for meta data in files
- *
- * Hooks into meta.json
- */
-class MetaController extends Controller {
+	public function __construct(Request $request, $params) {
+		$this->request = $request;
+		$this->params = $params;
+	}
+
+	public function run() {
+		switch ($this->request->method) {
+			case 'GET':
+				return $this->get();
+				break;
+			case 'POST':
+				return $this->post();
+				break;
+			case 'PUT':
+				return $this->put();
+				break;
+			case 'DELETE':
+				return $this->delete();
+				break;
+			default:
+				throw new Exception('Method not allowed', 405);
+		}
+	}
+
 	/**
-	 * @return JSONView
+	 * @throws Exception
 	 */
 	public function get() {
-		$view = new JSONView();
-
-		$types = Config::GetTypes();
-		foreach($types as $type) {
-			$collection = new FileCollection($type);
-            $view->data[$type] = [];
-			foreach($collection->files as $file) {
-				if (!$file->getMeta('draft', false)) {
-					$view->data[$type][] = [
-						'url' => $file->url,
-						'path' => $file->rel,
-						'meta' => $file->getMetas(),
-						'timestamp' => $file->getTimestamp(),
-					];
-				}
-			}
-		}
-
-		return $view;
+		throw new Exception(get_class($this) . " does not support GET requests", 405);
 	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function post() {
+		throw new Exception(get_class($this) . " does not support POST requests", 405);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function put() {
+		throw new Exception(get_class($this) . " does not support PUT requests", 405);
+	}
+
+	/**
+	 * @throws Exception
+	 */
+	public function delete() {
+		throw new Exception(get_class($this) . " does not support DELETE requests", 405);
+	}
+
 }

@@ -4,22 +4,31 @@ seotitle: MarkdownMaster CMS Change History
 description: Compiled list of changes to the MarkdownMaster CMS application and archived download links.
 ---
 
-## MarkdownMaster CMS 5.0.5 - YYYY.MM.DD
+## MarkdownMaster CMS 5.1.0 - YYYY.MM.DD
 
 ### New Features
 
 * Add support for fediverse:creator meta tag on pages based on socials data
 * Add support for Twitter card previews
+* Add support for server-side plugin code
+* Add getFilteredTags to retrieve only tags based on current search filters
+* Add support for reverse search when using getTags (-r convention)
 
 ### Changes
 
 * Pagelist plugin now defaults sorting of `related` pages based on relevance.
 * Add support for operation mode (OR / AND) on backend File lookups
 * Add kofi and external-link aliases to fontawesome
+* Dropped composer in favor of native include lookups
+* Add cms:pagelist:loaded document event
+* Add tag attribute on returned objects when using getTags
 
 ### Fixes
 
 * Include search parameters in default redirect to preserve campaign tracking and search parameters
+* Server-generated pages preserve existing body classnames correctly
+* Server-generated pages only add an H1 if one is not located in the content
+* Server-generated pages handle mailto: and other non-HTTP links correctly
 
 
 ## [MarkdownMaster CMS 5.0.4 - 2025.08.09](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.4)

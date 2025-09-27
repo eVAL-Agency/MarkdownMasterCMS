@@ -26,26 +26,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once('backend/libs/MarkdownMaster/FileCollection.php');
-require_once('backend/views/HTMLTemplateView.php');
+namespace MarkdownMaster;
 
-/**
- * Controller to handle listing files in a given type
- */
-class ListingController extends Controller {
-	public function get() {
-		$listing = new \MarkdownMaster\FileCollection($this->params);
+class View {
+	public int $status = 200;
 
-		$view = new HTMLTemplateView();
-		$view->title = 'Listing of ' . $this->params;
-		$view->canonical = Config::GetHost() . Config::GetWebPath() . $this->params . '.html';
-		$view->body = '<h1>Listing of ' . $this->params . '</h1>';
-		foreach ($listing->files as $file) {
-			if (!$file->getMeta('draft', false)) {
-				$view->body .= $file->getListing();
-			}
-		}
-
-		return $view;
+	public function render() {
+		throw new Exception('render() method must be extended');
 	}
 }

@@ -26,32 +26,37 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once('backend/libs/MarkdownMaster/FileCollection.php');
-require_once('backend/views/XMLView.php');
+namespace MarkdownMaster\Controllers;
 
+use MarkdownMaster\Config;
+use MarkdownMaster\Controller;
 use MarkdownMaster\FileCollection;
+use MarkdownMaster\Views\JSONView;
 
 /**
- * Controller to generate a sitemap
+ * Controller for meta data in files
  *
- * Called from /sitemap.xml
+ * Hooks into meta.json
  */
-class SitemapController extends Controller {
+class MetaController extends Controller {
+	/**
+	 * @return JSONView
+	 */
 	public function get() {
-		$view = new XMLView();
-		$view->root = 'urlset';
-		$view->data['@xmlns'] = 'http://www.sitemaps.org/schemas/sitemap/0.9';
-		$view->data['@xmlns:xhtml'] = 'http://www.w3.org/1999/xhtml';
-		$view->data['@xmlns:xsi'] = 'http://www.w3.org/2001/XMLSchema-instance';
-		$view->data['@xsi:schemaLocation'] = 'http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd';
-		$view->data['url'] = [];
+		$view = new JSONView();
 
 		$types = Config::GetTypes();
-		foreach($types as $type) {
+		foreach ($types as $type) {
 			$collection = new FileCollection($type);
-			foreach($collection->files as $file) {
+			$view->data[$type] = [];
+			foreach ($collection->files as $file) {
 				if (!$file->getMeta('draft', false)) {
-					$view->data['url'][] = ['loc' => $file->url];
+					$view->data[$type][] = [
+						'url' => $file->url,
+						'path' => $file->rel,
+						'meta' => $file->getMetas(),
+						'timestamp' => $file->getTimestamp(),
+					];
 				}
 			}
 		}

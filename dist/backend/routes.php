@@ -29,41 +29,39 @@
 /**
  * All routes for the backend application
  */
+
+use MarkdownMaster\Config;
+
 $routes = [
 	// Default index page; re-routes to the defaultView internally
 	// and returns that content along with the resolved canonical URL.
 	[
 		'uri' => '/',
-		'file' => 'PageController.php',
-		'class' => 'PageController',
+		'class' => 'MarkdownMaster\\Controllers\\PageController',
 		'params' => '__DEFAULT__',
 	],
 	// Sitemap route
 	[
 		'uri' => '/sitemap.xml',
-		'file' => 'SitemapController.php',
-		'class' => 'SitemapController',
+		'class' => 'MarkdownMaster\\Controllers\\SitemapController',
         'params' => null,
 	],
 	// Meta content route, provides information about pages
 	[
 		'uri' => '/meta.json',
-		'file' => 'MetaController.php',
-		'class' => 'MetaController',
+		'class' => 'MarkdownMaster\\Controllers\\MetaController',
         'params' => null,
 	],
 	// Form submission route, handles all forms
 	[
 		'uri' => '/form',
-		'file' => 'FormController.php',
-		'class' => 'FormController',
+		'class' => 'MarkdownMaster\\Controllers\\FormController',
 		'params' => null,
 	],
 	// Search content route, provides full text searches
 	[
 		'uri' => '/search.json',
-		'file' => 'SearchController.php',
-		'class' => 'SearchController',
+		'class' => 'MarkdownMaster\\Controllers\\SearchController',
 		'params' => null,
 	],
 ];
@@ -74,15 +72,13 @@ foreach($types as $type) {
 	// Route for the listing page
 	$routes[] = [
 		'uri' => '/' . $type . '.html',
-		'file' => 'ListingController.php',
-		'class' => 'ListingController',
+		'class' => 'MarkdownMaster\\Controllers\\ListingController',
 		'params' => $type
 	];
 
 	$routes[] = [
 		'uri' => '/' . $type . '.rss',
-		'file' => 'RssController.php',
-		'class' => 'RssController',
+		'class' => 'MarkdownMaster\\Controllers\\RssController',
 		'params' => $type
 	];
 
@@ -90,8 +86,7 @@ foreach($types as $type) {
 	$routes[] = [
 		'uri' => '#/' . $type . '/.*\.html#',
 		'regex' => true,
-		'file' => 'PageController.php',
-		'class' => 'PageController',
+		'class' => 'MarkdownMaster\\Controllers\\PageController',
 		'params' => $type
 	];
 }

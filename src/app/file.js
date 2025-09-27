@@ -264,7 +264,8 @@ class File extends TemplateObject {
 		if (this.tags && Array.isArray(this.tags)) {
 			this.tags.forEach(tag => {
 				tags.push({
-					name: tag,
+					tag: tag.toLowerCase(),
+					name: tag.replace(/_/g, ' '),
 					count: 1,
 					weight: 1,
 					url: this.config.webpath + this.type + '.html?tag=' + encodeURIComponent(tag.toLowerCase())

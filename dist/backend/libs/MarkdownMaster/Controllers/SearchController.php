@@ -26,9 +26,10 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once('backend/libs/MarkdownMaster/FileCollection.php');
-require_once('backend/views/JSONView.php');
+namespace MarkdownMaster\Controllers;
 
+use MarkdownMaster\Controller;
+use MarkdownMaster\Views\JSONView;
 use MarkdownMaster\FileCollection;
 
 class SearchController extends Controller {
@@ -37,9 +38,9 @@ class SearchController extends Controller {
 
 		if (isset($_GET['q']) && isset($_GET['t'])) {
 			$q = strtolower(preg_replace('/[^a-zA-Z ]/', '', $_GET['q']));
-			$collection = new \MarkdownMaster\FileCollection($_GET['t']);
+			$collection = new FileCollection($_GET['t']);
 			$results = [];
-			foreach($collection->files as $file) {
+			foreach ($collection->files as $file) {
 				if (!$file->getMeta('draft', false)) {
 					$match = $file->getMatch($q);
 					if ($match > 0) {
@@ -49,10 +50,10 @@ class SearchController extends Controller {
 			}
 
 			// Sort results
-			usort($results, function($a, $b) {
+			usort($results, function ($a, $b) {
 				return $a['match'] <=> $b['match'];
 			});
-			foreach($results as $result) {
+			foreach ($results as $result) {
 				$view->data[] = $result['file'];
 			}
 		}

@@ -554,11 +554,45 @@ class FileCollection extends TemplateObject {
 	 * @returns {Object} {{name: string, count: number, url: string, weight: int}[]}
 	 */
 	getTags(sort = null, weightMax = 10) {
+		return this._getTags(sort, weightMax, true);
+	}
+
+	/**
+	 * Get tags of only currently filtered files located from this collection
+	 *
+	 * Each set will contain the properties `name`, `count`, `url`, and `weight`.
+	 *
+	 * @param {string|null} [sort=null] Key ['name', 'count', 'url'] to sort results
+	 * @param {number} [weightMax=10] Max weight
+	 * @returns {Object} {{name: string, count: number, url: string, weight: int}[]}
+	 */
+	getFilteredTags(sort = null, weightMax = 10) {
+		return this._getTags(sort, weightMax, false);
+	}
+
+	/**
+	 * Get all tags located from this collection
+	 *
+	 * Each set will contain the properties `name`, `count`, `url`, and `weight`.
+	 *
+	 * @param {string|null} [sort=null] Key ['name', 'count', 'url'] to sort results
+	 * @param {number} [weightMax=10] Max weight
+	 * @returns {Object} {{name: string, count: number, url: string, weight: int}[]}
+	 */
+	_getTags(sort = null, weightMax = 10, all = false) {
 		let tags = [],
 			tagNames = [],
-			maxPages = 1;
+			maxPages = 1,
+			source;
 
-		this.files.forEach(file => {
+		if (all) {
+			source = this.files;
+		}
+		else {
+			source = this[this.type];
+		}
+
+		source.forEach(file => {
 			if (!file.draft && file.tags && Array.isArray(file.tags)) {
 				file.tags.forEach(tag => {
 					let tag_lower = tag.toLowerCase(),
@@ -566,7 +600,8 @@ class FileCollection extends TemplateObject {
 					if (pos === -1) {
 						// New tag discovered
 						tags.push({
-							name: tag,
+							tag: tag_lower,
+							name: tag.replace(/_/g, ' '),
 							count: 1,
 							url: this.config.webpath + this.type + '.html?tag=' + encodeURIComponent(tag_lower)
 						});
@@ -586,7 +621,13 @@ class FileCollection extends TemplateObject {
 		}
 
 		if (sort) {
-			tags.sort((a, b) => { return a[sort] > b[sort]; });
+			if (sort.endsWith('-r')) {
+				sort = sort.substring(0, sort.length - 2);
+				tags.sort((a, b) => { return a[sort] < b[sort]; });
+			}
+			else {
+				tags.sort((a, b) => { return a[sort] > b[sort]; });
+			}
 		}
 
 		return tags;
@@ -638,7 +679,8 @@ class FileCollection extends TemplateObject {
 	/**
 	 * Set pagination (total number of results) for this collection
 	 *
-	 * @param {number} results
+	 * @param {number} results Total number of results per page
+	 * @param {number} page Current page number (1-based) or NULL to retrieve from URL
 	 */
 	paginate(results, page) {
 		results = results || 20;

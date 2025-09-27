@@ -2,13 +2,13 @@
 
 namespace backend\controllers;
 
-use Config;
-use MetaController;
-use JSONView;
-use PHPUnit\Framework\TestCase;
+use MarkdownMaster\Config;
+use MarkdownMaster\Controllers\MetaController;
+use MarkdownMaster\Request;
+use MarkdownMaster\Views\JSONView;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
-use Request;
+use PHPUnit\Framework\TestCase;
 
 #[UsesClass(Request::class)]
 #[UsesClass(Config::class)]

@@ -29,11 +29,26 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-require_once('backend/vendor/autoload.php');
-require_once('backend/View.php');
-require_once('backend/Request.php');
-require_once('backend/Config.php');
-require_once('backend/Controller.php');
+define('BASE_DIR', __DIR__);
+
+spl_autoload_register(function($class) {
+	//var_dump($class); die();
+	require_once(str_replace('\\', '/', $class) . '.php');
+});
+
+set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/backend/libs');
+
+use MarkdownMaster\Config;
+use MarkdownMaster\Request;
+
+
+// As of 5.1, allow plugins to load server-side code to provide additional functionality
+foreach(array_keys(Config::GetExtras()) as $extra) {
+	if (file_exists('extras/' . $extra . '/autoload.php')) {
+		require_once('extras/' . $extra . '/autoload.php');
+	}
+}
+
 
 $request = new Request();
 
