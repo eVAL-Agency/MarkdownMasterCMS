@@ -85,7 +85,10 @@ class Config {
 			}
 
 			// This key should be an array.
-			$config['types'] = array_map('trim', explode(',', $config['types']));
+			// This allows them be defined as a single string.
+			if (is_scalar($config['types'])) {
+				$config['types'] = array_map('trim', explode(',', $config['types']));
+			}
 
 			if (isset($config['debug']) && $config['debug']) {
 				error_reporting(E_ALL);

@@ -6,6 +6,22 @@ Tag to assist with rendering a fancy button on the page.
 Has no inherit functionality other than adding a class `button` and support for an 
 embedded icon using FontAwesome.
 
+## Initialization
+
+To load this plugin, add the following to the `extras` block in your
+[config.php](https://markdownmaster.com/docs/site-configuration.html) or
+theme [settings.php](https://markdownmaster.com/docs/theme-development.html):
+
+```php
+'extras' => [
+    // ...
+    
+    'cms-button' => [],
+    
+    // ...
+],
+```
+
 ## Requirements
 
 None

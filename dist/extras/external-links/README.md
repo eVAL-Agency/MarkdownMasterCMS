@@ -10,20 +10,18 @@ Optionally can also add an icon at the end of the link to visually indicate it i
 
 ## Initialization
 
-To load this functionality from HTML:
+To load this plugin, add the following to the `extras` block in your
+[config.php](https://markdownmaster.com/docs/site-configuration.html) or
+theme [settings.php](https://markdownmaster.com/docs/theme-development.html):
 
-```html
-<script>
-CMS.loadExtra('external-links');
-</script>
-```
-
-or from within `config.js`
-
-```javascript
-extras: {
-  'external-links': {}
-}
+```php
+'extras' => [
+    // ...
+    
+    'external-links' => [],
+    
+    // ...
+],
 ```
 
 

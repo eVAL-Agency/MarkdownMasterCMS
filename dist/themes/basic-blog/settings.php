@@ -4,10 +4,15 @@
  */
 return [
 	// Type of files to support
-	'types' => 'pages, posts, authors',
+	'types' => ['pages', 'posts', 'authors'],
 
 	// ID of element to attach CMS.js to
 	'elementId' => 'cms',
 
-	'extras' => [],
+	'extras' => [
+		'cms-search' => [],
+		'cms-icon' => [],
+		'cms-button' => [],
+		'external-links' => [],
+	],
 ];

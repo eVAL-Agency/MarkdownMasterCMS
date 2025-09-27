@@ -7,20 +7,18 @@ Provide a block of content from a collection, eg: a list of blog posts or a list
 
 ## Initialization
 
-To load this functionality from HTML:
+To load this plugin, add the following to the `extras` block in your
+[config.php](https://markdownmaster.com/docs/site-configuration.html) or
+theme [settings.php](https://markdownmaster.com/docs/theme-development.html):
 
-```html
-<script>
-CMS.loadExtra('cms-pagelist');
-</script>
-```
-
-or from within `config.js`
-
-```js
-extras: {
-  'cms-pagelist': {}
-}
+```php
+'extras' => [
+    // ...
+    
+    'cms-pagelist' => [],
+    
+    // ...
+],
 ```
 
 
@@ -130,6 +128,10 @@ Using `related` will also set `type`, so defining that is not necessary when usi
 Related search will also default `sort` to `__match-r` to return results that
 most accurately match the tags of the reference page first.
 
+### Events (Added in v5.1.0)
+
+The `cms:pagelist:load` event is dispatched when page content has been loaded.
+This is required because the content from pagelist is loaded _after_ `cms:route` is triggered.
 
 ## Example Styles
 

@@ -33,6 +33,19 @@ CMS.loadExtra('my-plugin');
 ## Plugin Configuration
 
 Plugins support configuration options that can be passed by the site operator.
+This should be defined within either the theme `settings.php` or site-specific `config.php` files.
+
+
+```php
+'extras' => [
+    'my-plugin' => [
+        'config1' => 'value1',
+        'config2' => 'value2'
+    ]
+]
+```
+
+(Static-only installations can define them manually with the `CMS.loadExtra()` method.)
 
 ```html
 <script>

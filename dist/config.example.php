@@ -30,6 +30,13 @@ return [
 	// Set the theme to use for the frontend
 	'theme' => 'basic-blog',
 
+	// List any extras (plugins) to enable here
+	// Extras should be installed in the /extras/ directory
+	// 'my-extra',
+	'extras' => [
+
+	],
+
 	// Set to true to enable DEBUG mode on backend and frontend.
 	'debug' => false,
 

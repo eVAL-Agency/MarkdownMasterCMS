@@ -146,6 +146,15 @@ class CMSPagelistElement extends HTMLElement {
 		window.CMS.fetchLayout(layout, collection)
 			.then(html => {
 				this.innerHTML = html;
+
+				document.dispatchEvent(
+					new CustomEvent(
+						'cms:pagelist:loaded',
+						{
+							detail: {type, layout, sort, limit, result: this}
+						}
+					)
+				);
 			})
 			.catch(error => {
 				console.error('Unable to render <cms-pagelist> template [' + layout + ']', error);

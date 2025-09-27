@@ -60,6 +60,27 @@ The URL that will be the default view that will initially load
 
 ---
 
+#### extras (Server and Client)
+
+List of extras (plugins) to load for the site.
+
+```php
+'extras' => [
+    'cms-pagelist' => [],
+    'active-nav' => [
+        'navSelector' => 'nav li',
+        'navActiveClass' => 'active',
+    ],
+],
+```
+
+Plugins that do not require any configuration, (or none set), can be defined with an empty array.
+
+Refer to the specific plugin for its specific configuration options.
+These options are shared by both server and client.
+
+---
+
 #### Theme (Server only)
 
 Set the theme to use for the site, this is the name of the directory within the `themes` directory.

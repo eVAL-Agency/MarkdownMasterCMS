@@ -7,20 +7,18 @@ Generate a table of contents for a page, based on the headings within the page.
 
 ## Initialization
 
-To load this functionality from HTML:
+To load this plugin, add the following to the `extras` block in your
+[config.php](https://markdownmaster.com/docs/site-configuration.html) or
+theme [settings.php](https://markdownmaster.com/docs/theme-development.html):
 
-```html
-<script>
-CMS.loadExtra('cms-toc');
-</script>
-```
-
-or from within `config.js`
-
-```js
-extras: {
-  'cms-toc': {}
-}
+```php
+'extras' => [
+    // ...
+    
+    'cms-toc' => [],
+    
+    // ...
+],
 ```
 
 

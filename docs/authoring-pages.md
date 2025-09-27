@@ -163,6 +163,8 @@ If the value starts with `/`, it is assumed to be at the root of the website, an
 | author      | Name or alias of the author of this page                              |
 | tags        | Comma-separated list of tags for the content on this page             |
 | image       | Fully resolve or relative path to preview image of this page          |
+| draft       | If true, this page will be hidden from listing pages                  |
+| extras      | List of plugins to load on this page                                  |
 
 
 ### Protected Attributes

@@ -7,20 +7,18 @@ Simple icon renderer
 
 ## Initialization
 
-To load this functionality from HTML:
+To load this plugin, add the following to the `extras` block in your
+[config.php](https://markdownmaster.com/docs/site-configuration.html) or
+theme [settings.php](https://markdownmaster.com/docs/theme-development.html):
 
-```html
-<script>
-CMS.loadExtra('cms-icon');
-</script>
-```
-
-or from within `config.js`
-
-```js
-extras: {
-  'cms-icon': {}
-}
+```php
+'extras' => [
+    // ...
+    
+    'cms-icon' => [],
+    
+    // ...
+],
 ```
 
 

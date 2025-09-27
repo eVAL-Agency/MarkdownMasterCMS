@@ -10,18 +10,18 @@ A powerful web analytics platform that gives you 100% data ownership.
 
 ## Initialization
 
-To load this plugin from raw HTML:
+To load this plugin, add the following to the `extras` block in your
+[config.php](https://markdownmaster.com/docs/site-configuration.html) or
+theme [settings.php](https://markdownmaster.com/docs/theme-development.html):
 
-```html
-<script>
-CMS.loadExtra('matomo');
-</script>
-```
-
-OR to load this plugin from a layout:
-
-```html
-<% CMS.loadExtra('matomo'); %>
+```php
+'extras' => [
+    // ...
+    
+    'matomo' => [],
+    
+    // ...
+],
 ```
 
 

@@ -10,21 +10,21 @@ Provide syntax highlighting for code blocks powered by [Prism.JS](https://prismj
 
 ## Initialization
 
-To load this plugin from raw HTML:
+To load this plugin, add the following to the `extras` block in your
+[config.php](https://markdownmaster.com/docs/site-configuration.html) or
+theme [settings.php](https://markdownmaster.com/docs/theme-development.html):
 
-```html
-<script>
-CMS.loadExtra('prismjs', {
-    theme: 'light|dark|auto',
-    lineNumbers: true|false
-});
-</script>
-```
-
-OR to load this plugin from a layout:
-
-```html
-<% CMS.loadExtra('prismjs', {theme: '...', lineNumbers: ...}); %>
+```php
+'extras' => [
+    // ...
+    
+    'prismjs' => [
+        'theme' => 'light|dark|auto',
+        'lineNumbers' => true|false,
+    ],
+    
+    // ...
+],
 ```
 
 

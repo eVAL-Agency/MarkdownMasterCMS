@@ -6,15 +6,21 @@ Adds a class name to navigation elements that match the page URL.
 
 ## Initialization
 
-To load this plugin from raw HTML:
+To load this plugin, add the following to the `extras` block in your 
+[config.php](https://markdownmaster.com/docs/site-configuration.html) or 
+theme [settings.php](https://markdownmaster.com/docs/theme-development.html):
 
-```html
-<script>
-	CMS.loadExtra('active-nav', {
-		'navSelector': 'nav li',
-		'navActiveClass': 'active'
-	});
-</script>
+```php
+'extras' => [
+    // ...
+    
+    'active-nav' => [
+        'navSelector' => 'nav li',
+        'navActiveClass' => 'active',
+    ],
+    
+    // ...
+],
 ```
 
 

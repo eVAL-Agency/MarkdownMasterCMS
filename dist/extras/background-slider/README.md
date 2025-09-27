@@ -11,25 +11,18 @@ For videos, the next-slide advance is performed at the end of the video playback
 
 ## Initialization
 
-To load this plugin from raw HTML:
+To load this plugin, add the following to the `extras` block in your
+[config.php](https://markdownmaster.com/docs/site-configuration.html) or
+theme [settings.php](https://markdownmaster.com/docs/theme-development.html):
 
-```html
-<script>
-	CMS.loadExtra('background-slider');
-</script>
-```
-
-OR to load this plugin from a layout:
-
-```html
-<% CMS.loadExtra('background-slider'); %>
-```
-
-OR to load this plugin from a page:
-
-```yaml
-extras:
-  - background-slider
+```php
+'extras' => [
+    // ...
+    
+    'background-slider' => [],
+    
+    // ...
+],
 ```
 
 

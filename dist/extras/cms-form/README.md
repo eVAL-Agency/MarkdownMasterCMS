@@ -12,6 +12,14 @@ as this will define both backend functionality and frontend configuration.
 ```php
 return [
     // ...
+    
+    'extras' => [
+        // ...
+        
+        'cms-form' => [],
+        
+        // ...
+    ],
 
 	// Uncomment to enable forms
 	'forms' => [

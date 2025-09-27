@@ -27,12 +27,20 @@ fediverse: '114594237700425231'
 
 ## Initialization
 
-To load this plugin from the theme:
+To load this plugin, add the following to the `extras` block in your
+[config.php](https://markdownmaster.com/docs/site-configuration.html) or
+theme [settings.php](https://markdownmaster.com/docs/theme-development.html):
 
-```html
-<script>
-	CMS.loadExtra('mastodon-comments', {'host': 'your-mastodon-instance'});
-</script>
+```php
+'extras' => [
+    // ...
+    
+    'mastodon-comments' => [
+        'host' => 'your-mastodon-instance',
+    ],
+    
+    // ...
+],
 ```
 
 

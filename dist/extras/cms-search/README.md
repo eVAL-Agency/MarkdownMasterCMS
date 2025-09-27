@@ -7,20 +7,18 @@ Provides search input functionality that hooks into the site
 
 ## Initialization
 
-To load this functionality from HTML:
+To load this plugin, add the following to the `extras` block in your
+[config.php](https://markdownmaster.com/docs/site-configuration.html) or
+theme [settings.php](https://markdownmaster.com/docs/theme-development.html):
 
-```html
-<script>
-CMS.loadExtra('cms-search');
-</script>
-```
-
-or from within `config.js`
-
-```js
-extras: {
-  'cms-search': {}
-}
+```php
+'extras' => [
+    // ...
+    
+    'cms-search' => [],
+    
+    // ...
+],
 ```
 
 
