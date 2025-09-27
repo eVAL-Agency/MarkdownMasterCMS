@@ -72,6 +72,60 @@ use Exception;
  * ```
  */
 class FormController extends Controller {
+	private static array $Actions = [
+		'email' => ['MarkdownMaster\\Controllers\\FormController', 'ActionEmail'],
+	];
+
+	public static function AddAction(string $name, callable $callback): void {
+		self::$Actions[$name] = $callback;
+	}
+
+	public static function ActionEmail(array $data, array $settings) {
+		$emailConfig = Config::GetEmail();
+		$email = new Email();
+		$transport = Transport::fromDsn($emailConfig['dsn']);
+		$mailer = new Mailer($transport);
+
+		if (isset($emailConfig['from']) && isset($emailConfig['fromName'])) {
+			$from = $emailConfig['fromName'] . '<' . $emailConfig['from'] . '>';
+		}
+		else {
+			$from = $emailConfig['from'];
+		}
+
+		if (str_starts_with($settings['to'], 'field:')) {
+			// Allow the "to" field for emails to start with "field:" to specify
+			// this should be sent to the address in the form data.
+			$field = substr($settings['to'], 6);
+			$settings['to'] = $data[$field];
+		}
+
+		$email->subject($settings['subject'] ?? 'Form submission')
+			->from($from)
+			->to($settings['to']);
+
+		$template = null;
+		if (isset($settings['template'])) {
+			$tplName = Config::GetRootPath() . 'themes/' . Config::GetTheme() .
+				'/layouts/' . $settings['action'] . '-' . $settings['template'] . '.tpl';
+			if (file_exists($tplName)) {
+				$template = file_get_contents($tplName);
+				foreach ($data as $key => $val) {
+					$template = str_replace('{{' . $key . '}}', $val, $template);
+				}
+
+				$email->text($template);
+			}
+		}
+
+
+		if (!$template) {
+			$email->text('Form submission from ' . $data['form'] . ' at ' . date('Y-m-d H:i:s') . "\n\n" . print_r($data, true));
+		}
+
+		$mailer->send($email);
+	}
+
 	/**
 	 * Handle POST requests to /form
 	 *
@@ -148,67 +202,20 @@ class FormController extends Controller {
 		}
 
 		foreach ($formConfig['actions'] as $actionSettings) {
-			switch ($actionSettings['action']) {
-				case 'email':
-					$this->actionEmail($formData, $actionSettings);
-					break;
-				case 'test':
-					// Print form data to the output View, (useful for testing, both in unittests and in development)
-					$view->data['form'] = $formData;
-					break;
-				default:
-					throw new Exception('Invalid form configuration - unknown action: ' . $actionSettings['action'], 500);
+			if ($actionSettings['action'] === 'test') {
+				// Print form data to the output View, (useful for testing, both in unittests and in development)
+				$view->data['form'] = $formData;
+			}
+			elseif (isset(self::$Actions[$actionSettings['action']])) {
+				call_user_func(self::$Actions[$actionSettings['action']], $formData, $actionSettings);
+			}
+			else {
+				throw new Exception('Invalid form configuration - unknown action: ' . $actionSettings['action'], 500);
 			}
 		}
 
 		$view->data['success'] = true;
 		$view->data['message'] = 'Processed form successfully';
 		return $view;
-	}
-
-	private function actionEmail(array $data, array $settings) {
-		$emailConfig = Config::GetEmail();
-		$email = new Email();
-		$transport = Transport::fromDsn($emailConfig['dsn']);
-		$mailer = new Mailer($transport);
-
-		if (isset($emailConfig['from']) && isset($emailConfig['fromName'])) {
-			$from = $emailConfig['fromName'] . '<' . $emailConfig['from'] . '>';
-		}
-		else {
-			$from = $emailConfig['from'];
-		}
-
-		if (str_starts_with($settings['to'], 'field:')) {
-			// Allow the "to" field for emails to start with "field:" to specify
-			// this should be sent to the address in the form data.
-			$field = substr($settings['to'], 6);
-			$settings['to'] = $data[$field];
-		}
-
-		$email->subject($settings['subject'] ?? 'Form submission')
-			->from($from)
-			->to($settings['to']);
-
-		$template = null;
-		if (isset($settings['template'])) {
-			$tplName = Config::GetRootPath() . 'themes/' . Config::GetTheme() .
-				'/layouts/' . $settings['action'] . '-' . $settings['template'] . '.tpl';
-			if (file_exists($tplName)) {
-				$template = file_get_contents($tplName);
-				foreach ($data as $key => $val) {
-					$template = str_replace('{{' . $key . '}}', $val, $template);
-				}
-
-				$email->text($template);
-			}
-		}
-
-
-		if (!$template) {
-			$email->text('Form submission from ' . $data['form'] . ' at ' . date('Y-m-d H:i:s') . "\n\n" . print_r($data, true));
-		}
-
-		$mailer->send($email);
 	}
 }

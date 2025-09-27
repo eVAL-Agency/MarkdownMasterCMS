@@ -32,8 +32,12 @@
 define('BASE_DIR', __DIR__);
 
 spl_autoload_register(function($class) {
-	//var_dump($class); die();
-	require_once(str_replace('\\', '/', $class) . '.php');
+	try{
+		require_once(str_replace('\\', '/', $class) . '.php');
+	}
+	catch (Error $e) {
+		return false;
+	}
 });
 
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/backend/libs');
