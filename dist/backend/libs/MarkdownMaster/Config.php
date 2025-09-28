@@ -53,7 +53,7 @@ class Config {
 				$themeSettingsFile = BASE_DIR . '/themes/' . $config['theme'] . '/settings.php';
 				if (file_exists($themeSettingsFile)) {
 					$themeConfig = require BASE_DIR . '/themes/' . $config['theme'] . '/settings.php';
-					$config = array_merge($themeConfig, $config);
+					$config = array_merge_recursive($themeConfig, $config);
 				}
 			}
 
