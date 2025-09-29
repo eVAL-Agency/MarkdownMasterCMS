@@ -13,6 +13,8 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Add support for server-side plugin code
 * Add getFilteredTags to retrieve only tags based on current search filters
 * Add support for reverse search when using getTags (-r convention)
+* Add support for opengraph URL tags
+* Add support for opengraph type tags
 
 ### Changes
 
@@ -22,6 +24,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Dropped composer in favor of native include lookups
 * Add cms:pagelist:loaded document event
 * Add tag attribute on returned objects when using getTags
+* Add support for server-side type details on files
 
 ### Fixes
 

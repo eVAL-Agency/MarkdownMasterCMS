@@ -214,6 +214,17 @@ export class Config extends Object {
 	}
 
 	/**
+	 * Add multiple types at once
+	 *
+	 * @param types
+	 */
+	addTypes(types) {
+		Object.keys(types).forEach(type => {
+			this.addType(type, types[type]);
+		});
+	}
+
+	/**
 	 * Get a plugin / extra configuration value
 	 *
 	 * @param {string} name Name of the plugin

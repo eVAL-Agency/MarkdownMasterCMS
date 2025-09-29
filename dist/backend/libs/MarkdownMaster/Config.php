@@ -33,69 +33,87 @@ use Exception;
 class Config {
 	private static $_config = null;
 
+	private static function _Load() {
+		if (!file_exists(BASE_DIR . '/config.php')) {
+			throw new Exception(
+				'Configuration file not found, please copy config.example.php to config.php',
+				500
+			);
+		}
+
+		$config = require BASE_DIR . '/config.php';
+
+		if (!is_array($config)) {
+			throw new Exception('Configuration file must return an array', 500);
+		}
+
+		// Allow the theme to set defaults
+		if (isset($config['theme'])) {
+			$themeSettingsFile = BASE_DIR . '/themes/' . $config['theme'] . '/settings.php';
+			if (file_exists($themeSettingsFile)) {
+				$themeConfig = require BASE_DIR . '/themes/' . $config['theme'] . '/settings.php';
+				$config = array_merge_recursive($themeConfig, $config);
+			}
+		}
+
+		if (!isset($config['host']) || $config['host'] === '') {
+			throw new Exception('Configuration setting "host" is required', 500);
+		}
+		if (!isset($config['webpath']) || $config['webpath'] === '') {
+			throw new Exception('Configuration setting "webpath" is required', 500);
+		}
+		if (!isset($config['defaultView']) || $config['defaultView'] === '') {
+			throw new Exception('Configuration setting "defaultView" is required', 500);
+		}
+		if (!isset($config['types']) || $config['types'] === '') {
+			throw new Exception('Configuration setting "types" is required', 500);
+		}
+
+		if (strpos($config['host'], '://') === -1) {
+			// Convenience fix; prepend https by default
+			$config['host'] = 'https://' . $config['host'];
+		}
+
+		if (!str_starts_with($config['webpath'], '/')) {
+			// Convenience fix; prepend / by default
+			$config['webpath'] = '/' . $config['webpath'];
+		}
+		if (!str_ends_with($config['webpath'], '/')) {
+			// Convenience fix; append / by default
+			$config['webpath'] = $config['webpath'] . '/';
+		}
+
+		// This key should be an array.
+		// This allows them be defined as a single string.
+		if (is_scalar($config['types'])) {
+			$config['types'] = array_map('trim', explode(',', $config['types']));
+		}
+
+		if (array_is_list($config['types'])) {
+			// Convert to associative array with defaults
+			$types = [];
+			foreach ($config['types'] as $type) {
+				$types[$type] = [
+					'list' => $type . 's',
+					'single' => rtrim($type, 's'),
+					'sort' => 'title',
+					'title' => ucfirst($type) . 's',
+				];
+			}
+			$config['types'] = $types;
+		}
+
+		if (isset($config['debug']) && $config['debug']) {
+			error_reporting(E_ALL);
+			ini_set('display_errors', 1);
+		}
+
+		self::$_config = $config;
+	}
+
 	private static function _Get(string $key, $default = null) {
 		if (self::$_config === null) {
-			if (!file_exists(BASE_DIR . '/config.php')) {
-				throw new Exception(
-					'Configuration file not found, please copy config.example.php to config.php',
-					500
-				);
-			}
-
-			$config = require BASE_DIR . '/config.php';
-
-			if (!is_array($config)) {
-				throw new Exception('Configuration file must return an array', 500);
-			}
-
-			// Allow the theme to set defaults
-			if (isset($config['theme'])) {
-				$themeSettingsFile = BASE_DIR . '/themes/' . $config['theme'] . '/settings.php';
-				if (file_exists($themeSettingsFile)) {
-					$themeConfig = require BASE_DIR . '/themes/' . $config['theme'] . '/settings.php';
-					$config = array_merge_recursive($themeConfig, $config);
-				}
-			}
-
-			if (!isset($config['host']) || $config['host'] === '') {
-				throw new Exception('Configuration setting "host" is required', 500);
-			}
-			if (!isset($config['webpath']) || $config['webpath'] === '') {
-				throw new Exception('Configuration setting "webpath" is required', 500);
-			}
-			if (!isset($config['defaultView']) || $config['defaultView'] === '') {
-				throw new Exception('Configuration setting "defaultView" is required', 500);
-			}
-			if (!isset($config['types']) || $config['types'] === '') {
-				throw new Exception('Configuration setting "types" is required', 500);
-			}
-
-			if (strpos($config['host'], '://') === -1) {
-				// Convenience fix; prepend https by default
-				$config['host'] = 'https://' . $config['host'];
-			}
-
-			if (!str_starts_with($config['webpath'], '/')) {
-				// Convenience fix; prepend / by default
-				$config['webpath'] = '/' . $config['webpath'];
-			}
-			if (!str_ends_with($config['webpath'], '/')) {
-				// Convenience fix; append / by default
-				$config['webpath'] = $config['webpath'] . '/';
-			}
-
-			// This key should be an array.
-			// This allows them be defined as a single string.
-			if (is_scalar($config['types'])) {
-				$config['types'] = array_map('trim', explode(',', $config['types']));
-			}
-
-			if (isset($config['debug']) && $config['debug']) {
-				error_reporting(E_ALL);
-				ini_set('display_errors', 1);
-			}
-
-			self::$_config = $config;
+			self::_Load();
 		}
 
 		return array_key_exists($key, self::$_config) ? self::$_config[$key] : $default;
@@ -127,10 +145,44 @@ class Config {
 	}
 
 	/**
+	 * Get the type of content supported by the current theme
+	 *
+	 * Returns the key names only
+	 *
+	 * @return string[]
 	 * @throws Exception
 	 */
 	public static function GetTypes(): array {
+		return array_keys(self::_Get('types'));
+	}
+
+	/**
+	 * Get the full type configuration supported by the current theme
+	 *
+	 * @return array
+	 */
+	public static function GetTypesFull(): array {
 		return self::_Get('types');
+	}
+
+	/**
+	 * Get a specific detail about a type of content
+	 *
+	 * @param string $type   Type of content to lookup
+	 * @param string $key    Detail key to lookup
+	 * @param mixed $default Default value to return if not found
+	 * @return mixed|null
+	 */
+	public static function GetTypeDetail(string $type, string $key, $default = null): mixed {
+		$types = self::_Get('types');
+		if (!isset($types[$type])) {
+			return $default;
+		}
+		if (!isset($types[$type][$key])) {
+			return $default;
+		}
+
+		return $types[$type][$key];
 	}
 
 	/**

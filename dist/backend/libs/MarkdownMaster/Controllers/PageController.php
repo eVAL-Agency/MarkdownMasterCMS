@@ -32,6 +32,7 @@ use MarkdownMaster\Config;
 use MarkdownMaster\Controller;
 use MarkdownMaster\FileCollection;
 use MarkdownMaster\Views\HTMLTemplateView;
+use Exception;
 
 /**
  * Controller to display a single page
@@ -42,11 +43,11 @@ class PageController extends Controller {
 	public function get() {
 		if ($this->params === '__DEFAULT__') {
 			$default = Config::GetDefaultView();
-			$listing = new \MarkdownMaster\FileCollection(substr($default, 0, strpos($default, '/')));
+			$listing = new FileCollection(substr($default, 0, strpos($default, '/')));
 			$file = Config::GetWebPath() . $default . '.md';
 		}
 		else {
-			$listing = new \MarkdownMaster\FileCollection($this->params);
+			$listing = new FileCollection($this->params);
 			$file = str_replace('.html', '.md', $this->request->uri);
 		}
 
@@ -71,8 +72,14 @@ class PageController extends Controller {
 			$view->canonical = $page->url;
 		}
 
+		// Add og:url for OpenGraph
+		$view->meta['og:url'] = $view->canonical;
+
 		// Set the main body content for the view directly based on the page's rendering
 		$view->body = (string)$page;
+
+		// Add support for OpenGraph type if specified in the listing config
+		$view->meta['og:type'] = Config::GetTypeDetail($listing->type, 'og:type', 'website');
 
 		// Add titles for non-standard bots
 		$twitterTitle = $page->getMeta(['twittertitle', 'ogtitle', 'seotitle', 'title'], '');
