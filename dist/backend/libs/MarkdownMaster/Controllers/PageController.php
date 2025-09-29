@@ -63,6 +63,16 @@ class PageController extends Controller {
 		$view->title = $page->getMeta(['title', 'seotitle'], '');
 		$view->description = $page->getMeta(['description', 'excerpt'], '');
 
+		if (strlen($view->description) > 160) {
+			// Truncate to the last full word before 157 characters and add ellipsis
+			$truncated = substr($view->description, 0, 157);
+			$lastSpace = strrpos($truncated, ' ');
+			if ($lastSpace !== false) {
+				$truncated = substr($truncated, 0, $lastSpace);
+			}
+			$view->description = $truncated . '...';
+		}
+
 		// Google doesn't like non-top-level canonical pages for the site,
 		// so remap the canonical default page back to / as opposed to the actual page.
 		if ($page->url === $default_url) {

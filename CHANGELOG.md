@@ -25,6 +25,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Add cms:pagelist:loaded document event
 * Add tag attribute on returned objects when using getTags
 * Add support for server-side type details on files
+* Force descriptions to be trimmed at 160 characters for SEO purposes
 
 ### Fixes
 
