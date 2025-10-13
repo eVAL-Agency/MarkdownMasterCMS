@@ -31,6 +31,7 @@ namespace MarkdownMaster\Controllers;
 use MarkdownMaster\Config;
 use MarkdownMaster\Controller;
 use MarkdownMaster\FileCollection;
+use MarkdownMaster\Hooks;
 use MarkdownMaster\Views\HTMLTemplateView;
 use Exception;
 
@@ -200,6 +201,14 @@ class PageController extends Controller {
 			'page-' . $listing->type . '-single',
 			'page-' . str_replace('/', '-', substr($file, strlen(Config::GetWebPath()), -3))
 		];
+
+		// Allow external plugins to tap into the view prior to rendering
+		Hooks::Run('render_page_view', $page, $view);
+
+		// Add debug information if enabled
+		if (Config::GetDebug()) {
+			$view->footScripts[] = 'console.log("Backend Hooks:", ' . json_encode(Hooks::GetDebugInfo()) . ');';
+		}
 
 		return $view;
 	}

@@ -8,7 +8,7 @@ A powerful web analytics platform that gives you 100% data ownership.
 * License - GNU General Public License v3.0
 
 
-## Initialization
+## Initialization and Configuration
 
 To load this plugin, add the following to the `extras` block in your
 [config.php](https://markdownmaster.com/docs/site-configuration.html) or
@@ -18,26 +18,27 @@ theme [settings.php](https://markdownmaster.com/docs/theme-development.html):
 'extras' => [
     // ...
     
-    'matomo' => [],
+    'matomo' => [
+        'host' => 'matomo.yourprovider.com', // No trailing slash, no http(s)://
+        'siteId' => 1,                        // Your Matomo Site ID
+    ],
     
     // ...
 ],
 ```
 
+`host` and `siteId` are optional and are used to build the default tracking code.
+If omitted, the tracking code will not be automatically added to pages
+and you will need to manually ensure the necessary tracking code is present in your HTML.
 
-## Additional Required Scripts
+This can be useful if you need to adjust the tracking code for custom configurations.
 
-For most reliable results, Matomo expects additional scripts to be loaded in the `<head>`
-section of the theme.  This snippet is probably wrapped with `<!-- Matomo -->` ...
-`<!-- End Matomo Code -->`.
+The `host` parameter is the domain name where your Matomo instance is hosted.
+Exclude any 'https://' prefix or ending slash.
 
-The `Image Tracking` option can be placed in a `<noscript>` tag at the end of the theme
-to track users who have disabled JavaScript.
-
-
-## Configuration
-
-N/A
+The `siteId` parameter is the numeric ID of the site you are tracking
+and is displayed in the tracking code installation section of Matomo
+as well as in the URL when viewing the property as the `idSite` parameter.
 
 
 ## Required Schema

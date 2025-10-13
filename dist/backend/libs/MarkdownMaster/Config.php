@@ -33,6 +33,12 @@ use Exception;
 class Config {
 	private static $_config = null;
 
+	/**
+	 * Load the configuration file
+	 *
+	 * @return void
+	 * @throws Exception
+	 */
 	private static function _Load() {
 		if (!file_exists(BASE_DIR . '/config.php')) {
 			throw new Exception(
@@ -120,6 +126,13 @@ class Config {
 	}
 
 	/**
+	 * Get the host URL of the site
+	 *
+	 * Returns the full URL including protocol, without a trailing slash.
+	 *
+	 * Example: https://www.yourdomain.tld
+	 *
+	 * @return string
 	 * @throws Exception
 	 */
 	public static function GetHost(): string {
@@ -127,17 +140,37 @@ class Config {
 	}
 
 	/**
+	 * Get the web path to the CMS installation
+	 *
+	 * Returns the path with leading and trailing slashes.
+	 *
+	 * Example: /cms.js/dist/ or just / (for top-level sites)
+	 *
+	 * @return string
 	 * @throws Exception
 	 */
 	public static function GetWebPath(): string {
 		return self::_Get('webpath');
 	}
 
+	/**
+	 * Get the root filesystem path to the CMS installation
+	 *
+	 * Example: /var/www/cms.js/
+	 *
+	 * @return string
+	 * @throws Exception
+	 */
 	public static function GetRootPath(): string {
 		return self::_Get('rootpath') ?? BASE_DIR . '/';
 	}
 
 	/**
+	 * Get the default view to load when no specific page is requested (without any suffixes)
+	 *
+	 * Example: pages/home or wiki/home
+	 *
+	 * @return string
 	 * @throws Exception
 	 */
 	public static function GetDefaultView(): string {
@@ -148,6 +181,8 @@ class Config {
 	 * Get the type of content supported by the current theme
 	 *
 	 * Returns the key names only
+	 *
+	 * Example: ['pages', 'posts', 'landings']
 	 *
 	 * @return string[]
 	 * @throws Exception
@@ -160,6 +195,7 @@ class Config {
 	 * Get the full type configuration supported by the current theme
 	 *
 	 * @return array
+	 * @throws Exception
 	 */
 	public static function GetTypesFull(): array {
 		return self::_Get('types');
@@ -172,6 +208,7 @@ class Config {
 	 * @param string $key    Detail key to lookup
 	 * @param mixed $default Default value to return if not found
 	 * @return mixed|null
+	 * @throws Exception
 	 */
 	public static function GetTypeDetail(string $type, string $key, $default = null): mixed {
 		$types = self::_Get('types');
@@ -250,6 +287,26 @@ class Config {
 
 	public static function GetExtras(): array {
 		return self::_Get('extras') ?? [];
+	}
+
+	/**
+	 * Get a plugin configuration parameter
+	 *
+	 * @param string $extra Plugin name
+	 * @param string $key Parameter key
+	 * @param mixed $default Default value if not found
+	 * @return mixed
+	 */
+	public static function GetExtraParameter(string $extra, string $key, $default = null): mixed {
+		$extras = self::GetExtras();
+		if (!isset($extras[$extra]) || !is_array($extras[$extra])) {
+			return $default;
+		}
+		if (!isset($extras[$extra][$key])) {
+			return $default;
+		}
+
+		return $extras[$extra][$key];
 	}
 
 	/**

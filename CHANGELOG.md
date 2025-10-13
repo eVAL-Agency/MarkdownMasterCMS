@@ -15,6 +15,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Add support for reverse search when using getTags (-r convention)
 * Add support for opengraph URL tags
 * Add support for opengraph type tags
+* Add support for backend hooks
 
 ### Changes
 
@@ -26,6 +27,10 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Add tag attribute on returned objects when using getTags
 * Add support for server-side type details on files
 * Force descriptions to be trimmed at 160 characters for SEO purposes
+* Add support for scripts to be injected in HTML pages (head and foot)
+* Add support for content to be injected at the end of the body
+* Add support for backend Config::GetExtraParameter to mimic frontend functionality
+* Matomo plugin can how handle tracking code injection automatically
 
 ### Fixes
 

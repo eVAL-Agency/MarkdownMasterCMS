@@ -44,6 +44,9 @@ class HTMLTemplateView extends View {
 	public string $canonical = '';
 	public array $meta = [];
 	public array $classes = [];
+	public array $headScripts = [];
+	public array $footScripts = [];
+	public array $footContent = [];
 
 	public function render() {
 		header('Content-Type: text/html');
@@ -150,6 +153,25 @@ class HTMLTemplateView extends View {
 		$pageLists = $xpath->query('//cms-pagelist');
 		foreach ($pageLists as $pageList) {
 			$this->_renderPagelist($dom, $pageList);
+		}
+
+		// Add any head/foot scripts to the DOM
+		foreach ($this->headScripts as $script) {
+			$tag = $dom->createElement('script', $script);
+			$xpath->query('/html/head')->item(0)->appendChild($tag);
+		}
+		foreach ($this->footScripts as $script) {
+			$tag = $dom->createElement('script', $script);
+			$xpath->query('/html/body')->item(0)->appendChild($tag);
+		}
+
+		// Add any foot content to the end of the body
+		foreach ($this->footContent as $content) {
+			$fragment = new DOMDocument();
+			$fragment->loadHTML('<div>' . $content . '</div>');
+			$fragment = $dom->importNode($fragment->documentElement, true);
+			$body = $fragment->getElementsByTagName('body')->item(0);
+			$xpath->query('/html/body')->item(0)->appendChild($body->childNodes[0]);
 		}
 
 		return $dom->saveHTML();
