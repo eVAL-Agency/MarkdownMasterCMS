@@ -59,6 +59,16 @@ Pull the tags for all files as a weighted cloud list
 <cms-tags type="posts" as="cloud"></cms-tags>
 ```
 
+### Blocks support (new in 5.1.0)
+
+If the `cms-tags` element has one of the blocks-* classes, 
+each tag will include a `block` class to allow rendering as valid blocks.
+
+```html
+<!-- Uses the block system to render tags as 5 equal width blocks -->
+<cms-tags type="posts" limit="10" class="blocks-5"></cms-tags>
+```
+
 
 ### Attributes
 
@@ -66,6 +76,7 @@ Pull the tags for all files as a weighted cloud list
 - `file` - The specific file to pull tags from (permalink of the file)
 - `as` - The style of tag list to render (default, cloud)
 - `sort` - The sort order to use for the tags
+- `limit` - Limit the number of tags displayed (default is all)
 
 ## Example Styles
 

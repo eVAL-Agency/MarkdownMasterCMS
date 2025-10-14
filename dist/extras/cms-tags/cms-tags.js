@@ -33,7 +33,9 @@ class CMSTagsElement extends HTMLElement {
 			file = this.getAttribute('file'),
 			as = this.getAttribute('as') ?? 'default',
 			sort = this.getAttribute('sort') ?? 'name',
+			limit = this.getAttribute('limit') ?? null,
 			tags,
+			tagsAreBlocks = false,
 			collection = window.CMS.getCollection(type);
 
 		if (file) {
@@ -44,14 +46,38 @@ class CMSTagsElement extends HTMLElement {
 			tags = collection.getTags(sort);
 		}
 
+		// Check to see if this container is one of the blocks-# tags to indicate a block container.
+		// If so, add "block" to each tag.
+		let cl = this.classList;
+		if (
+			cl.contains('blocks-2') ||
+			cl.contains('blocks-3') ||
+			cl.contains('blocks-4') ||
+			cl.contains('blocks-5') ||
+			cl.contains('blocks-6')
+		) {
+			tagsAreBlocks = true;
+		}
+
+
+		let counter = 0;
 		tags.forEach(tag => {
+			counter += 1;
+			if (limit && counter > limit) {
+				return;
+			}
+
 			let a = document.createElement('a'),
-				label = tag.name;
+				label = '<span class="tag-name">' + tag.name + '</span>';
 
 			a.classList.add('tag');
+			if (tagsAreBlocks) {
+				a.classList.add('block');
+			}
+
 			if (as === 'cloud') {
 				a.classList.add('tag-weight-' + tag.weight);
-				label += ' (' + tag.count + ')';
+				label += '<span class="tag-weight">' + tag.count + '</span>';
 			}
 			a.href = tag.url;
 			a.innerHTML = label;

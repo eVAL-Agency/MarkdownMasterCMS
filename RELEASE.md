@@ -1,8 +1,7 @@
 # Release Notes
 
-The 5.0 release is a complete re-thinking of the application
-architecture.  The default backend handler has been ported from 
-Python to PHP for better support in multi-tenant hosting environments.
+The 5.1 release features a number of backend fixes and improvements,
+including a new hook system to allow plugins to tap into core functionality.
 
 PHP 8.2 or better is required for use of this server-side functionality.
 
@@ -10,22 +9,11 @@ The application can still operate in CLIENT-ONLY mode,
 but this will lack bot support, crawler support, and internal form handling.
 
 Before updating, please read through the
-[release notes for 5.0](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/docs/upgrade-notes/upgrade-4.0-to-5.0.md)
-
-Other changes include plugin (called extras), architectural changes
-and a simplification of configuration.
+[5.0 to 5.1 migration](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/docs/upgrade-notes/upgrade-5.0-to-5.1.md)
 
 The client-side `config.js` is still supported, but not used by default for new installs.
 This config is generated dynamically from the server-side config.
 
-v5.0.1 features a new server-side search engine for full-text searching and some server-side
-fixes to improve bot rendering.
-
-v5.0.2 features a new theme for wiki-style sites, a table of contents tag, and a theme selector tag.
-
-v5.0.3 features support for RSS feeds, related posts, and github-style task lists
-
-v5.0.4 features script tag embedding support
 
 [Complete changelog](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/CHANGELOG.md)
 
@@ -50,7 +38,8 @@ For upgrades, the **app** version just contains the backend, application, and pl
 
 ## Upgrade Notes
 
-* [2.x to 3.0](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/docs/upgrade-notes/upgrade-2.x-to-3.0.md)
-* [3.0 to 3.1](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/docs/upgrade-notes/upgrade-3.0-to-3.1.md)
-* [3.1 to 4.0](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/docs/upgrade-notes/upgrade-3.1-to-4.0.md)
+* [5.0 to 5.1](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/docs/upgrade-notes/upgrade-5.0-to-5.1.md)
 * [4.0 to 5.0](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/docs/upgrade-notes/upgrade-4.0-to-5.0.md)
+* [3.1 to 4.0](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/docs/upgrade-notes/upgrade-3.1-to-4.0.md)
+* [3.0 to 3.1](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/docs/upgrade-notes/upgrade-3.0-to-3.1.md)
+* [2.x to 3.0](https://github.com/eVAL-Agency/MarkdownMasterCMS/blob/main/docs/upgrade-notes/upgrade-2.x-to-3.0.md)

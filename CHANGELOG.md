@@ -16,6 +16,8 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Add support for opengraph URL tags
 * Add support for opengraph type tags
 * Add support for backend hooks
+* Add limit attribute to cms-tags to restrict number of tags shown
+* Add support for blocks in cms-tags
 
 ### Changes
 
@@ -31,6 +33,8 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Add support for content to be injected at the end of the body
 * Add support for backend Config::GetExtraParameter to mimic frontend functionality
 * Matomo plugin can how handle tracking code injection automatically
+* Upgrade fslightbox to 2.7.4
+* Change rendering of cms-tags to allow for CSS to handle layout
 
 ### Fixes
 
