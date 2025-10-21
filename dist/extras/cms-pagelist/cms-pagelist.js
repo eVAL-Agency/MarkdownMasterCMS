@@ -36,6 +36,7 @@ class CMSPagelistElement extends HTMLElement {
 			sort = this.getAttribute('sort'),
 			limit = this.getAttribute('limit'),
 			related = this.getAttribute('related'),
+			fulltext = this.getAttribute('fulltext') || false,
 			filters = {},
 			has_filters = false,
 			collection;
@@ -143,22 +144,32 @@ class CMSPagelistElement extends HTMLElement {
 			collection.paginate(parseInt(limit), 1);
 		}
 
-		window.CMS.fetchLayout(layout, collection)
-			.then(html => {
-				this.innerHTML = html;
-
-				document.dispatchEvent(
-					new CustomEvent(
-						'cms:pagelist:loaded',
-						{
-							detail: {type, layout, sort, limit, result: this}
-						}
-					)
-				);
-			})
-			.catch(error => {
-				console.error('Unable to render <cms-pagelist> template [' + layout + ']', error);
+		let promises = [];
+		if (fulltext !== false && fulltext !== '0') {
+			// If full text is requested, ensure files will populate all content
+			collection[type].forEach((file) => {
+				promises.push(file.parseBody());
 			});
+		}
+
+		Promise.allSettled(promises).then(() => {
+			window.CMS.fetchLayout(layout, collection)
+				.then(html => {
+					this.innerHTML = html;
+
+					document.dispatchEvent(
+						new CustomEvent(
+							'cms:pagelist:loaded',
+							{
+								detail: {type, layout, sort, limit, result: this}
+							}
+						)
+					);
+				})
+				.catch(error => {
+					console.error('Unable to render <cms-pagelist> template [' + layout + ']', error);
+				});
+		});
 	}
 }
 

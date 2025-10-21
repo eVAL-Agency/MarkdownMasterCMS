@@ -55,6 +55,7 @@ Note, when used in Markdown files, the directive must be on a single line.
 | limit     | no       | 5                       | Limit the number of results returned                           |
 | filter-*  | no       | "filter-tag"            | Filter results by a specific key                               |
 | related   | no       | "this"                  | Retrieve related content based on tags (also defines type)     |
+| fulltext  | no       | "1"                     | Enable full text retrieval for page content                    |
 
 
 #### Attribute Type
@@ -127,6 +128,13 @@ Using `related` will also set `type`, so defining that is not necessary when usi
 
 Related search will also default `sort` to `__match-r` to return results that
 most accurately match the tags of the reference page first.
+
+#### Attribute Fulltext (Added in v5.1.0)
+
+When enabled, the full content of pages will be retrieved and made available in the layout.
+By default, only metadata is retrieved to improve performance.
+
+This allows the use of `data.body` in layouts to render the full content of each retrieved page.
 
 ### Events (Added in v5.1.0)
 

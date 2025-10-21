@@ -18,6 +18,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Add support for backend hooks
 * Add limit attribute to cms-tags to restrict number of tags shown
 * Add support for blocks in cms-tags
+* Add support in pagelists to fetch full text of content
 
 ### Changes
 
