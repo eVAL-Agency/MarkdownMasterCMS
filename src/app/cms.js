@@ -243,7 +243,7 @@ class CMS {
 			}
 
 			this.route();
-			this.ready = true;
+			//this.ready = true;
 			document.dispatchEvent(new CustomEvent('cms:load', {detail: {cms: this}}));
 		});
 
@@ -411,7 +411,13 @@ class CMS {
 					file = collection.getFileByPermalink([type, filename.trim()].join('/'));
 					mode = 'single';
 					this.currentPage = file;
-					renderer = file.render();
+					renderer = file.render(
+						() => {
+							// At this stage, the core application is ready
+							// Set this before the first page load so calls on that page will know the CMS is ready.
+							this.ready = true;
+						}
+					);
 				} catch (e) {
 					mode = 'error';
 					this.currentPage = 'error';

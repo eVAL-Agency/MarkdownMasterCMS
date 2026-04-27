@@ -24,7 +24,7 @@ document.addEventListener('cms:route', () => {
 				}
 
 				// Process external links
-				if (el.target == '') {
+				if (el.target === '') {
 					el.target = '_blank';
 				}
 				el.rel = 'external noopener';
@@ -32,31 +32,11 @@ document.addEventListener('cms:route', () => {
 				el.classList.add('external');
 
 				if (icons && !el.querySelector('i')) {
-					let icon = 'external-link';
-					let icon_map = {
-						'https://amzn.to': 'amazon',
-						'https://www.amazon.com': 'amazon',
-						'https://amazon.com': 'amazon',
-						'https://discord.gg': 'discord',
-						'https://github.com': 'github',
-						'https://gitlab.com': 'gitlab',
-						'https://en.wikipedia.org': 'wikipedia',
-					};
-					for (let key in icon_map) {
-						if (el.href.startsWith(key)) {
-							icon = icon_map[key];
-							break;
-						}
-					}
-
-					if (icon) {
-						let iconEl = document.createElement('i', {is: 'cms-icon'});
-						iconEl.setAttribute('part', 'icon');
-						iconEl.setAttribute('icon', icon);
-						iconEl.classList.add('inline-icon');
-						iconEl.title = icon;
-						el.appendChild(iconEl);
-					}
+					let iconEl = document.createElement('i', {is: 'cms-icon'});
+					iconEl.setAttribute('part', 'icon');
+					iconEl.setAttribute('href', el.href);
+					iconEl.classList.add('inline-icon');
+					el.appendChild(iconEl);
 				}
 			}
 		});

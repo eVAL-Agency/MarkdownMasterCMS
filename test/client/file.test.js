@@ -44,7 +44,7 @@ describe('File', () => {
 
 	const default_config = () => {
 		let c = new Config();
-		c.markdownEngine = remarkable;
+		c.markdownParser = remarkable;
 		return c;
 	}
 
@@ -350,7 +350,7 @@ date: 2023-04-10
 		 */
 		it('no markdown engine', () => {
 			let f = new File('/posts/topic/test.md', 'test', 'test', default_config());
-			f.config.markdownEngine = null;
+			f.config.markdownParser = null;
 			f.content = generic_contents;
 			expect(f.bodyLoaded).toEqual(false);
 			expect(f.body).toBeNull();

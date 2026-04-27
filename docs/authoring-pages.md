@@ -462,3 +462,49 @@ if you run into issues or quirks.
     console.log('I am running inside your Markdown!');
 </script>
 ```
+
+### Code Blocks
+
+Code blocks are useful for rendering source code or command line output.
+
+The language can be specified by prefixing the code block with the language name,
+for example:
+
+```markdown
+# ```js
+# console.log('some event occurred');
+# ```
+```
+
+(exclude the '#' character, that's just because this is written in markdown already...)
+
+### Fence Blocks (new in 5.1.0)
+
+Beyond full HTML support in Markdown content files, the shorthand for block fences is also supported.
+
+```markdown
+::: .blocks-2
+::: .block
+This is a block
+
+:::
+::: .block
+This is another block
+
+:::
+:::
+```
+
+HTML blocks are defined by using ':::' at the start of the line, followed
+by the tag name (defaults to div), class name, and ID.
+
+To define different type of blocks, just include the tag name as the first parameter.
+
+```markdown
+::: section .i-am-pink #my-section
+this is a section that is pink with the id of "my-section"
+
+:::
+```
+
+Note that blocks **must** be closed with an empty ':::' and a newline between the last content.

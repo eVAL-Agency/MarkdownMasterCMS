@@ -27,6 +27,7 @@ import link from './remarkable.links';
 import heading from './remarkable.heading';
 import html from './remarkable.html';
 import tasklist from './remarkable.tasklist';
+import container from './remarkable.container';
 
 let lib = new Remarkable('full', {
 	html: true,        // Enable HTML tags in source
@@ -54,10 +55,11 @@ lib.use(link);
 lib.use(heading);
 lib.use(html);
 lib.use(tasklist);
+lib.use(container);
 
 
 // Export the renderer function
 export default (markdown) => { return lib.render(markdown); };
 
 // Export the core library for reference if needed
-export {lib};
+export {lib, Remarkable};

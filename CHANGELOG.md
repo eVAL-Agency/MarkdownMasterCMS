@@ -19,6 +19,9 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Add limit attribute to cms-tags to restrict number of tags shown
 * Add support for blocks in cms-tags
 * Add support in pagelists to fetch full text of content
+* Add support for fence block syntax (':::')
+* Add markdownEngine for raw access to the markdown parser engine
+* Add chroma extra for playing with colors
 
 ### Changes
 
@@ -36,6 +39,8 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Matomo plugin can how handle tracking code injection automatically
 * Upgrade fslightbox to 2.7.4
 * Change rendering of cms-tags to allow for CSS to handle layout
+* Move domain to icon resolution from external-links to icon
+* Move markdownEngine to markdownParser in Config
 
 ### Fixes
 

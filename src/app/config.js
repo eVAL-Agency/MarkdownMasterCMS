@@ -33,8 +33,15 @@ export class Config extends Object {
 		this.webpath = '/';
 
 		/**
-		 * Markdown engine to use for parsing into HTML
+		 * Parsing function to use for rendering Markdown into HTML
+		 *
 		 * @type {function|null}
+		 */
+		this.markdownParser = null;
+
+		/**
+		 * Raw markdown engine to use for parsing into HTML
+		 * @type {Object|null}
 		 */
 		this.markdownEngine = null;
 

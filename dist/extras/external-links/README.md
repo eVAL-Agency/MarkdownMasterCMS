@@ -70,3 +70,12 @@ Will be rendered as:
 <a href="https://example.com" target="_blank" rel="external noopener" class="external">Example Site</a>
 ```
 
+## Changelog
+
+### NEXT - NEXT
+
+Migrated icon resolution for external links to CMS-Icon
+
+### 5.0.4 - 2025-08-09
+
+Initial release of this plugin

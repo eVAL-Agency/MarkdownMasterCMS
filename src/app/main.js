@@ -32,9 +32,10 @@ import CMS from './cms';
 
 // Import system plugins
 import DynamicBodyClass from './addons/dynamicbodyclass';
-import remarkable from './addons/loader-remarkable';
+import parser, {Remarkable} from './addons/loader-remarkable';
 
 // Initialize the core and all system plugins
 new CMS(window);
 (new DynamicBodyClass).init();
-window.CMS.config.markdownEngine = remarkable;
+window.CMS.config.markdownParser = parser;
+window.CMS.config.markdownEngine = Remarkable;

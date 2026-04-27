@@ -13,11 +13,10 @@
  * Provides `<i is="cms-icon">` tag functionality.
  */
 class CMSIconElement extends HTMLElement {
-
-	static observedAttributes = ['icon'];
-
 	constructor() {
 		super();
+
+		this._attached = false;
 
 		// If other icon libraries are available, add support for them.
 		// Currently only fontawesome is supported.
@@ -31,7 +30,19 @@ class CMSIconElement extends HTMLElement {
 	 * Called when the element is added to the DOM.
 	 */
 	connectedCallback() {
+		this._attached = true;
 		this.render();
+	}
+
+	disconnectedCallback() {
+		this._attached = false;
+	}
+
+	/**
+	 * Called when an observed attribute changes.
+	 */
+	static get observedAttributes() {
+		return ['icon', 'href'];
 	}
 
 	/**
@@ -49,8 +60,39 @@ class CMSIconElement extends HTMLElement {
 	 * Execute the plugin on a given node to render the requested content inside it
 	 */
 	render() {
+		if (!this._attached) {
+			return;
+		}
+
 		let icon = this.getAttribute('icon'),
+			href = this.getAttribute('href'),
 			handler = 'fontawesome';
+
+		if (!icon && href) {
+			// Allow an HREF to be set to automatically generate an icon based on the URL.
+			// This will render a youtube icon for a Youtube link, Discord for Discord, etc.
+
+			// Default if not available
+			icon = 'external-link';
+			let icon_map = {
+				'https://amzn.to': 'amazon',
+				'https://www.amazon.com': 'amazon',
+				'https://amazon.com': 'amazon',
+				'https://discord.gg': 'discord',
+				'https://github.com': 'github',
+				'https://gitlab.com': 'gitlab',
+				'https://www.instagram.com': 'instagram',
+				'https://www.linkedin.com': 'linkedin',
+				'https://www.youtube.com': 'youtube',
+				'https://en.wikipedia.org': 'wikipedia',
+			};
+			for (let key in icon_map) {
+				if (href.startsWith(key)) {
+					icon = icon_map[key];
+					break;
+				}
+			}
+		}
 
 		if (!icon) {
 			return;
@@ -61,6 +103,20 @@ class CMSIconElement extends HTMLElement {
 		CMS.loadExtra(handler).then(() => {
 			fontawesome_icon(this, icon);
 		});
+	}
+
+	set icon(value) {
+		this.setAttribute('icon', value);
+	}
+	get icon() {
+		return this.getAttribute('icon');
+	}
+
+	set href(value) {
+		this.setAttribute('href', value);
+	}
+	get href() {
+		return this.getAttribute('href');
 	}
 }
 

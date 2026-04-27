@@ -411,8 +411,8 @@ class File extends TemplateObject {
 						html = content;
 					}
 
-					if (this.config.markdownEngine) {
-						this.body = this.config.markdownEngine(html);
+					if (this.config.markdownParser) {
+						this.body = this.config.markdownParser(html);
 
 						// Scripts being loaded from within a script can be tricky,
 						// extract out any embedded scripts and process them separately.
@@ -556,7 +556,7 @@ class File extends TemplateObject {
 	 * @returns {Promise}
 	 * @throws {Error}
 	 */
-	async render() {
+	async render(preRenderCallback = null) {
 		document.title = 'Loading ' + this.url + '...';
 
 		return new Promise((resolve, reject) => {
@@ -568,6 +568,11 @@ class File extends TemplateObject {
 					document.title = this.title;
 				} else {
 					document.title = 'Page';
+				}
+
+				if (preRenderCallback && typeof preRenderCallback === 'function') {
+					// Allow a callback to be provided to modify the file before rendering.
+					preRenderCallback(this);
 				}
 
 				renderLayout(this.layout, this).then(() => {
