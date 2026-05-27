@@ -65,3 +65,4 @@ nbdist/
 /.phpunit.cache/test-results
 /.idea/developer-tools.xml
 .idea/copilot*.xml
+/.idea/deployment.xml

@@ -125,6 +125,16 @@ class CMSPagelistElement extends HTMLElement {
 			}
 		}
 
+		if (this.querySelectorAll('a').length > 0) {
+			// If there are links inside, use them as filters.
+			has_filters = true;
+			filters['permalink'] = [];
+			this.querySelectorAll('a').forEach(link => {
+				let href = link.getAttribute('href');
+				filters['permalink'].push(href);
+			});
+		}
+
 		if (layout === null) {
 			// Default for this collection
 			layout = collection.layout.list;

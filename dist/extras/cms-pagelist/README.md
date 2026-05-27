@@ -44,6 +44,22 @@ Note, when used in Markdown files, the directive must be on a single line.
 <cms-pagelist type="posts" sort="recent" limit="4"></cms-pagelist>
 ```
 
+**New in v5.1.0:**
+
+URLs can also be specified inside the pagelist directly as `<a/>` tags.
+This provides SEO links to the content and serves as a basis of what pages to pull.
+
+Renders two specified posts with the 'posts-embed' layout:
+
+```markdown
+<cms-pagelist type="posts" layout="posts-embed">
+    <a href="/posts/example-cats.html"></a>
+    <a href="/posts/example-snakes.html"></a>
+</cms-pagelist>
+```
+
+This is a shortcut to specify the `permalink` filter attribute for the collection.
+
 ### Attributes
 
 

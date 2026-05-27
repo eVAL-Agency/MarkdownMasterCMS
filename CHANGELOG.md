@@ -1,10 +1,10 @@
 ---
 title: Change History
 seotitle: MarkdownMaster CMS Change History
-description: Compiled list of changes to the MarkdownMaster CMS application and archived download links.
+description: List of changes to the MarkdownMaster CMS application and archived download links.
 ---
 
-## MarkdownMaster CMS 5.1.0 - YYYY.MM.DD
+## [MarkdownMaster CMS 5.1.0] - 2026-05-26
 
 ### New Features
 
@@ -50,7 +50,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Server-generated pages handle mailto: and other non-HTTP links correctly
 
 
-## [MarkdownMaster CMS 5.0.4 - 2025.08.09](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.4)
+## [MarkdownMaster CMS 5.0.4] - 2025-08-09
 
 ### New Features
 
@@ -76,7 +76,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Fix '&' and other non-XML friendly characters in titles
 
 
-## [MarkdownMaster CMS 5.0.3 - 2025.04.27](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.3)
+## [MarkdownMaster CMS 5.0.3] - 2025-04-27
 
 ### New Features
 
@@ -103,7 +103,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Fix integration between cms-button and cms-icon
 
 
-## [MarkdownMaster CMS 5.0.2 - 2025.04.13](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.2)
+## [MarkdownMaster CMS 5.0.2] - 2025-04-13
 
 ### New Features
 
@@ -122,7 +122,7 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Change cms-pagelist to use `getCollectionClone` to support multiple tags on the same page
 
 
-## [MarkdownMaster CMS 5.0.1 - 2025-04-03](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.1)
+## [MarkdownMaster CMS 5.0.1] - 2025-04-03
 
 ### New Features
 
@@ -145,12 +145,9 @@ description: Compiled list of changes to the MarkdownMaster CMS application and 
 * Fix for hosting on nginx
 
 
-## [MarkdownMaster CMS 5.0.0 - 2025-03-08](https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.0)
+## [MarkdownMaster CMS 5.0.0] - 2025-03-08
 
 New architecture, new features, new plugins, new everything!
-
-
-## MarkdownMaster CMS 4.1.0 - (UNRELEASED)
 
 ### New Features
 
@@ -171,7 +168,7 @@ New architecture, new features, new plugins, new everything!
 * Switch to `is=...` for all custom elements
 
 
-## [MarkdownMaster CMS 4.0.2 - 2023-10-23](https://github.com/cdp1337/markdownmaster/releases/tag/v4.0.2)
+## [MarkdownMaster CMS 4.0.2] - 2023-10-23
 
 ### New Features
 
@@ -183,7 +180,7 @@ New architecture, new features, new plugins, new everything!
 * Fix support for Apache web servers
 
 
-## [MarkdownMaster CMS 4.0.1 - 2023-06-03](https://github.com/cdp1337/markdownmaster/releases/tag/v4.0.1)
+## [MarkdownMaster CMS 4.0.1] - 2023-06-03
 
 ### New Features
 
@@ -196,7 +193,7 @@ New architecture, new features, new plugins, new everything!
 * #21 hash URLs were taking over route events
 
 
-## [MarkdownMaster CMS 4.0.0 - 2023-06-03](https://github.com/cdp1337/markdownmaster/releases/tag/v4.0.0)
+## [MarkdownMaster CMS 4.0.0] - 2023-06-03
 
 ### New Features
 
@@ -248,7 +245,7 @@ New architecture, new features, new plugins, new everything!
 * Switched default markdown renderer from marked to remarkable
 
 
-## [CMS.js 3.1.0 - 2022-11-24](https://github.com/cdp1337/markdownmaster/releases/tag/v3.1.0)
+## [CMS.js 3.1.0] - 2022-11-24
 
 author: cdp1337
 
@@ -269,7 +266,7 @@ The two included server scripts are sitemap generator and a crawler-friendly sit
 * Refactor internal method names to be more consistent to their actions
 
 
-## [CMS.js 3.0.0 - 2022-11-22](https://github.com/cdp1337/markdownmaster/releases/tag/v3.0.0)
+## [CMS.js 3.0.0] - 2022-11-22
 
 author: cdp1337
 
@@ -320,3 +317,16 @@ author: chrisdiana
 author: chrisdiana
 
 * Initial release
+
+
+[MarkdownMaster CMS 5.1.0]: https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.1.0
+[MarkdownMaster CMS 5.0.4]: https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.4
+[MarkdownMaster CMS 5.0.3]: https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.3
+[MarkdownMaster CMS 5.0.2]: https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.2
+[MarkdownMaster CMS 5.0.1]: https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.1
+[MarkdownMaster CMS 5.0.0]: https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.0
+[MarkdownMaster CMS 4.0.2]: https://github.com/cdp1337/markdownmaster/releases/tag/v4.0.2
+[MarkdownMaster CMS 4.0.1]: https://github.com/cdp1337/markdownmaster/releases/tag/v4.0.1
+[MarkdownMaster CMS 4.0.0]: https://github.com/cdp1337/markdownmaster/releases/tag/v4.0.0
+[CMS.js 3.1.0]: https://github.com/cdp1337/markdownmaster/releases/tag/v3.1.0
+[CMS.js 3.0.0]: https://github.com/cdp1337/markdownmaster/releases/tag/v3.0.0

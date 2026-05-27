@@ -53,5 +53,5 @@ genTarball() {
 [ -d release ] || mkdir release
 
 # Create the archives
-genTarball "app" app/ backend/ extras/ .htaccess.example config.example.js config.example.php index.php robots.example.txt
-genTarball "full" app/ backend/ extras/ .htaccess.example config.example.js config.example.php index.php wiki/ authors/ pages/ posts/ themes/ robots.example.txt images/
+genTarball "app" app/ backend/ extras/ .htaccess.example config.example.js config.example.php index.php robots.example.txt dev-router.php
+genTarball "full" app/ backend/ extras/ .htaccess.example config.example.js config.example.php index.php wiki/ authors/ pages/ posts/ themes/ robots.example.txt images/ dev-router.php

@@ -28,19 +28,24 @@ Welcome to an example website!
 This is a landing page that you can use to introduce yourself, your website, or your project.
 You can customize this page by editing the Markdown file at `pages/home.md`.
 
-<div class="blocks-2">
+::: .blocks-2
+
+::: .block
 
 ![Example image of feathers](media/pexels-evie-shaffer-1259279-4004374.webp)
-{.block}
+
+:::
+::: .block
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla sint zzril nobis tempor vel est, 
 elit minim adipiscing labore exercitation obcaecat laboris magna consectetur. 
 Tempor lorem, quis pariatur eiusmod imperdiet volutpat eu laboris vulputate placerat ea aute facilisis cum doming. 
 Consectetuer officia nonummy commodo. 
 Nisi enim incidunt voluptua duis qui iriure aliquam est amet. Adipiscing incidunt nostrud.
-{.block}
 
-</div>
+:::
+:::
+
 
 Nisi magna nonummy tincidunt eirmod aliquyam dolor gubergren. Clita cupiditat eiusmod anim ea accusam justo et eleifend laborum. Eros nisl sea. Laboris amet duis.
 
