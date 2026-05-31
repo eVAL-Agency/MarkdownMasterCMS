@@ -31,64 +31,31 @@
  */
 
 use MarkdownMaster\Config;
+use MarkdownMaster\Route;
 
-$routes = [
-	// Default index page; re-routes to the defaultView internally
-	// and returns that content along with the resolved canonical URL.
-	[
-		'uri' => '/',
-		'class' => 'MarkdownMaster\\Controllers\\PageController',
-		'params' => '__DEFAULT__',
-	],
-	// Sitemap route
-	[
-		'uri' => '/sitemap.xml',
-		'class' => 'MarkdownMaster\\Controllers\\SitemapController',
-        'params' => null,
-	],
-	// Meta content route, provides information about pages
-	[
-		'uri' => '/meta.json',
-		'class' => 'MarkdownMaster\\Controllers\\MetaController',
-        'params' => null,
-	],
-	// Form submission route, handles all forms
-	[
-		'uri' => '/form',
-		'class' => 'MarkdownMaster\\Controllers\\FormController',
-		'params' => null,
-	],
-	// Search content route, provides full text searches
-	[
-		'uri' => '/search.json',
-		'class' => 'MarkdownMaster\\Controllers\\SearchController',
-		'params' => null,
-	],
-];
+// Default index page; re-routes to the defaultView internally
+// and returns that content along with the resolved canonical URL.
+Route::RegisterRoute('/', 'MarkdownMaster\\Controllers\\PageController', '__DEFAULT__');
+
+// Sitemap route
+Route::RegisterRoute('/sitemap.xml', 'MarkdownMaster\\Controllers\\SitemapController');
+
+// Meta content route, provides information about pages
+Route::RegisterRoute('/meta.json', 'MarkdownMaster\\Controllers\\MetaController');
+
+// Form submission route, handles all forms
+Route::RegisterRoute('/form', 'MarkdownMaster\\Controllers\\FormController');
+
+// Search content route, provides full text searches
+Route::RegisterRoute('/search.json', 'MarkdownMaster\\Controllers\\SearchController');
 
 // Add any routes for each content type configured
 $types = Config::GetTypes();
 foreach($types as $type) {
 	// Route for the listing page
-	$routes[] = [
-		'uri' => '/' . $type . '.html',
-		'class' => 'MarkdownMaster\\Controllers\\ListingController',
-		'params' => $type
-	];
-
-	$routes[] = [
-		'uri' => '/' . $type . '.rss',
-		'class' => 'MarkdownMaster\\Controllers\\RssController',
-		'params' => $type
-	];
+	Route::RegisterRoute("/$type.html", 'MarkdownMaster\\Controllers\\ListingController', $type);
+	Route::RegisterRoute("/$type.rss", 'MarkdownMaster\\Controllers\\RssController', $type);
 
 	// Route for the individual page
-	$routes[] = [
-		'uri' => '#/' . $type . '/.*\.html#',
-		'regex' => true,
-		'class' => 'MarkdownMaster\\Controllers\\PageController',
-		'params' => $type
-	];
+	Route::RegisterRegexRoute("#/$type/.*\.html#", 'MarkdownMaster\\Controllers\\PageController', $type);
 }
-
-return $routes;

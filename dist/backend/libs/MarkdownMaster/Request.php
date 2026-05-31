@@ -130,24 +130,15 @@ class Request {
 	 * @return Controller|null
 	 */
 	public function getController(): ?Controller {
-		$routes = require BASE_DIR . '/backend/routes.php';
 		$webPath = Config::GetWebPath();
 		$checkUri = '/' . substr($this->uri, strlen($webPath));
-
-		foreach ($routes as $route) {
-			if (
-				isset($route['regex']) &&
-				$route['regex'] === true &&
-				preg_match($route['uri'], $checkUri)
-			) {
-				return new $route['class']($this, $route['params']);
-			}
-			elseif ($route['uri'] === $checkUri) {
-				return new $route['class']($this, $route['params']);
-			}
+		$route = Route::ResolveRoute($checkUri);
+		if ($route) {
+			return new $route['class']($this, $route['params']);
 		}
-
-		$this->replyError('No route found for /' . substr($this->uri, strlen($webPath)), 404);
+		else {
+			$this->replyError('No route found for /' . substr($this->uri, strlen($webPath)), 404);
+		}
 	}
 
 	/**

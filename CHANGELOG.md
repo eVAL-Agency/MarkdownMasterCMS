@@ -4,6 +4,39 @@ seotitle: MarkdownMaster CMS Change History
 description: List of changes to the MarkdownMaster CMS application and archived download links.
 ---
 
+## [MarkdownMaster CMS X.Z.Y] - YYYY-MM-DD
+
+### New Features
+
+### Changes
+
+### Fixes
+
+### Security
+
+### Deprecated
+
+### Performance
+
+
+## [MarkdownMaster CMS 5.1.1] - YYYY-MM-DD
+
+### New Features
+
+- Dynamic routes that can be extended by plugins
+- Support for server-side only plugins 
+
+### Changes
+
+### Fixes
+
+### Security
+
+### Deprecated
+
+### Performance
+
+
 ## [MarkdownMaster CMS 5.1.0] - 2026-05-26
 
 ### New Features

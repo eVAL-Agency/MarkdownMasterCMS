@@ -334,6 +334,14 @@ class Config {
 			$extras['cms-form'] = $formClientConfig;
 		}
 
+		// Only include extras which include a javascript file in their root directory.
+		// This allows for server-side only plugins, (just like there are client-side only plugins).
+		foreach ($extras as $extraName => $extraConfig) {
+			if (!file_exists(BASE_DIR . "/extras/$extraName/$extraName.js")) {
+				unset($extras[$extraName]);
+			}
+		}
+
 		$config = [
 			'defaultView' => self::GetDefaultView(),
 			'elementId' => self::GetElementId(),

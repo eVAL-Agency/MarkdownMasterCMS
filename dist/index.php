@@ -45,6 +45,11 @@ set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/backend/libs'
 use MarkdownMaster\Config;
 use MarkdownMaster\Request;
 use MarkdownMaster\Hooks;
+use MarkdownMaster\Route;
+
+
+// Hooks are supported as of 5.1
+Hooks::Register('render_page_view', 'Modify the page view before rendering, provides the arguments File and HTMLTemplateView.');
 
 
 // As of 5.1, allow plugins to load server-side code to provide additional functionality
@@ -54,8 +59,8 @@ foreach(array_keys(Config::GetExtras()) as $extra) {
 	}
 }
 
-// Hooks are supported as of 5.1
-Hooks::Register('render_page_view', 'Modify the page view before rendering, provides the arguments File and HTMLTemplateView.');
+// Load the default routes for this application
+require BASE_DIR . '/backend/routes.php';
 
 
 $request = new Request();
