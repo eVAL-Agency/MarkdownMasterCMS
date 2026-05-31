@@ -25,10 +25,14 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 
 - Dynamic routes that can be extended by plugins
 - Support for server-side only plugins 
+- Add support for text/plain content types
 
 ### Changes
 
 ### Fixes
+
+- Fix controllers returning plain text or raw data
+- Fix support for scripts omitting Accept and Content-Type headers
 
 ### Security
 

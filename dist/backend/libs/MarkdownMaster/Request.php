@@ -158,7 +158,7 @@ class Request {
 	 * @return bool
 	 */
 	public function accepts(string $type): bool {
-		$accept = $this->getHeader('Accept');
+		$accept = $this->getHeader('Accept') ?? '*/*';
 		return str_contains($accept, $type) || str_contains($accept, '*/*');
 	}
 
@@ -196,8 +196,8 @@ class Request {
 	 * @return bool
 	 */
 	public function prefers(string $type): bool {
-		$accept = $this->getHeader('Accept');
-		$contentType = $this->getHeader('Content-Type');
+		$accept = $this->getHeader('Accept') ?? '*/*';
+		$contentType = $this->getHeader('Content-Type') ?? 'text/html';
 
 		if ($accept == '*/*') {
 			// No content type preferred, try the filename to match the type

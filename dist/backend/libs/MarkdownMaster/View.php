@@ -28,6 +28,8 @@
 
 namespace MarkdownMaster;
 
+use Exception;
+
 class View {
 	public int $status = 200;
 

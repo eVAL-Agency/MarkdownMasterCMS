@@ -28,35 +28,78 @@
 
 namespace MarkdownMaster;
 
+use Exception;
+use MarkdownMaster\Views\HTMLTemplateView;
+use MarkdownMaster\Views\JSONView;
+use MarkdownMaster\Views\TextView;
+use MarkdownMaster\Views\XMLView;
+
+
 class Controller {
 	protected $request;
 	protected $params;
 
+	/**
+	 * Create the instance of this Controller request
+	 *
+	 * Passes the original request along with any parameters set by the route configuration
+	 *
+	 * @param Request $request
+	 * @param $params
+	 */
 	public function __construct(Request $request, $params) {
 		$this->request = $request;
 		$this->params = $params;
 	}
 
-	public function run() {
-		switch ($this->request->method) {
-			case 'GET':
-				return $this->get();
-				break;
-			case 'POST':
-				return $this->post();
-				break;
-			case 'PUT':
-				return $this->put();
-				break;
-			case 'DELETE':
-				return $this->delete();
-				break;
-			default:
-				throw new Exception('Method not allowed', 405);
+	/**
+	 * Execute the appropriate method based on the request type
+	 *
+	 * @return View
+	 * @throws Exception
+	 */
+	public function run(): View {
+		$view = match ($this->request->method) {
+			'GET' => $this->get(),
+			'POST' => $this->post(),
+			'PUT' => $this->put(),
+			'DELETE' => $this->delete(),
+			default => throw new Exception('Method not allowed', 405),
+		};
+
+		if ($view instanceof View) {
+			// Fully polished View returned by the Controller; we can return this directly.
+			return $view;
+		}
+		else {
+			// Controller returned a string, that's not recommended though allowed for simple APIs.
+			// We have to guess what the View should be.
+			if ($this->request->prefersHTML()) {
+				$newView = new HTMLTemplateView();
+				$newView->body = is_scalar($view) ? $view : print_r($view, true);
+				return $newView;
+			}
+			elseif ($this->request->prefersJSON()) {
+				$newView = new JSONView();
+				$newView->data = $view;
+				return $newView;
+			}
+			elseif ($this->request->prefersXML()) {
+				$newView = new XMLView();
+				$newView->data = is_scalar($view) ? ['message' => $view] : $view;
+				return $newView;
+			}
+			else {
+				$newView = new TextView();
+				$newView->body = is_scalar($view) ? $view : print_r($view, true);
+				return $newView;
+			}
 		}
 	}
 
 	/**
+	 * Perform a GET request to this controller
+	 *
 	 * @throws Exception
 	 */
 	public function get() {
@@ -64,6 +107,8 @@ class Controller {
 	}
 
 	/**
+	 * Perform a POST request to this controller
+	 *
 	 * @throws Exception
 	 */
 	public function post() {
@@ -71,6 +116,8 @@ class Controller {
 	}
 
 	/**
+	 * Perform a PUT request to this controller
+	 *
 	 * @throws Exception
 	 */
 	public function put() {
@@ -78,6 +125,8 @@ class Controller {
 	}
 
 	/**
+	 * Perform a DELETE request to this controller
+	 *
 	 * @throws Exception
 	 */
 	public function delete() {

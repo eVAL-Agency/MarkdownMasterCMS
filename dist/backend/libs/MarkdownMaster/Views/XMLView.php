@@ -31,6 +31,9 @@ namespace MarkdownMaster\Views;
 use MarkdownMaster\View;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 
+/**
+ * View responsible for rendering XML responses.
+ */
 class XMLView extends View {
 	public $encoding = 'UTF-8';
 	public $root = 'response';

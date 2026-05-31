@@ -31,14 +31,16 @@ namespace MarkdownMaster\Views;
 use MarkdownMaster\View;
 
 /**
- * View responsible for rendering JSON responses.
+ * View responsible for rendering text/plain responses.
+ *
+ * Not generally used, though supported.
  */
-class JSONView extends View {
-	public $data = [];
+class TextView extends View {
+	public $body = '';
 
 	public function render() {
 		http_response_code($this->status);
-		header('Content-Type: application/json');
-		echo json_encode($this->data);
+		header('Content-Type: text/plain');
+		echo $this->body;
 	}
 }
