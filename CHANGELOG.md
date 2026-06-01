@@ -19,7 +19,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 ### Performance
 
 
-## [MarkdownMaster CMS 5.1.1] - YYYY-MM-DD
+## [MarkdownMaster CMS 5.1.1] - 2026-05-31
 
 ### New Features
 
@@ -27,18 +27,10 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Support for server-side only plugins 
 - Add support for text/plain content types
 
-### Changes
-
 ### Fixes
 
 - Fix controllers returning plain text or raw data
 - Fix support for scripts omitting Accept and Content-Type headers
-
-### Security
-
-### Deprecated
-
-### Performance
 
 
 ## [MarkdownMaster CMS 5.1.0] - 2026-05-26
@@ -356,6 +348,7 @@ author: chrisdiana
 * Initial release
 
 
+[MarkdownMaster CMS 5.1.1]: https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.1.1
 [MarkdownMaster CMS 5.1.0]: https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.1.0
 [MarkdownMaster CMS 5.0.4]: https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.4
 [MarkdownMaster CMS 5.0.3]: https://github.com/eVAL-Agency/MarkdownMasterCMS/releases/tag/v5.0.3
