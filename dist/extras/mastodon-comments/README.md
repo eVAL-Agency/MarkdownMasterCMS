@@ -64,8 +64,11 @@ Inside the page/post layout template:
 <% if(data.fediverse) { %>
     <section class="post-comments">
         <h2>Comments</h2>
-
-        <mastodon-comments post-id="<%= data.fediverse %>"></mastodon-comments>
+        <% if (data.draft) { %>
+			<p>Comments are disabled while post is in DRAFT</p>
+		<% } else { %>
+			<mastodon-comments post-id="<%= data.fediverse %>"></mastodon-comments>
+		<% } %>
     </section>
 <% } %>
 ```
