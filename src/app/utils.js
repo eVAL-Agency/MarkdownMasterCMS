@@ -37,6 +37,12 @@ export function getDatetime(dateStr) {
 		dt = new Date(dateStr);
 	}
 
+	// If an invalid date was passed, don't return an invalid Date object.
+	if (isNaN(dt.getTime())) {
+		console.debug('Invalid date passed to getDatetime', dateStr);
+		return null;
+	}
+
 	return new Date(dt.getTime() + dt.getTimezoneOffset() * 60000);
 }
 

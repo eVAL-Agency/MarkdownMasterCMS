@@ -69,7 +69,7 @@ export class Config extends Object {
 		/**
 		 * Function to call when rendering dates to the page, useful for modifying how dates display
 		 *
-		 * @param {Date} date
+		 * @param {Date|null} date
 		 *
 		 * Common option parameters:
 		 *
@@ -104,6 +104,10 @@ export class Config extends Object {
 				month: 'short',
 				day: 'numeric',
 			};
+
+			if (!(date instanceof Date)) {
+				return '';
+			}
 
 			// Default lang to en/us, useful in tests
 			let lang = 'en-US';

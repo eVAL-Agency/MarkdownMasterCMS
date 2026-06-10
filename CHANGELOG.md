@@ -19,6 +19,25 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 ### Performance
 
 
+## [MarkdownMaster CMS 5.Z.Y] - YYYY-MM-DD
+
+### New Features
+
+### Changes
+
+- Upgrade FontAwesome from 6.2.1 to 7.2.0
+
+### Fixes
+
+- Handle missing or invalid dates by returning null instead of an invalid Date
+
+### Security
+
+### Deprecated
+
+### Performance
+
+
 ## [MarkdownMaster CMS 5.1.1] - 2026-05-31
 
 ### New Features
