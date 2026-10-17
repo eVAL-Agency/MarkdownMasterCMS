@@ -328,6 +328,10 @@ class Config {
 					'fields' => [],
 				];
 				foreach ($form['fields'] as $fieldName => $field) {
+					$fieldType = $field['type'] ?? 'text';
+					if ($fieldType === 'honeypot') {
+						$field['type'] = 'text';
+					}
 					$formClientConfig[$name]['fields'][$fieldName] = $field;
 				}
 			}

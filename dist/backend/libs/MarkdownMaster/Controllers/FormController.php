@@ -167,6 +167,7 @@ class FormController extends Controller {
 			'ip' => $this->request->getIP(),
 			'user_agent' => $this->request->getUserAgent(),
 		];
+		$view = new JSONView();
 
 		// Validate the form data and assign all keys to the form data
 		$errors = [];
@@ -177,6 +178,13 @@ class FormController extends Controller {
 
 			if ($required && $value === '') {
 				$errors[$field] = 'Field is required';
+			}
+
+			if ($type === 'honeypot' && $value) {
+				// If the honeypot is populated with content, immediately bail out with a "successful" response
+				$view->data['success'] = true;
+				$view->data['message'] = 'Processed form successfully';
+				return $view;
 			}
 
 			if ($type === 'email') {
@@ -192,7 +200,7 @@ class FormController extends Controller {
 			$formData[$field] = $data[$field] ?? '';
 		}
 
-		$view = new JSONView();
+
 		if (count($errors)) {
 			$view->status = 400;
 			$view->data['success'] = false;
