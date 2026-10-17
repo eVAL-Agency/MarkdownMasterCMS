@@ -23,6 +23,9 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 
 ### New Features
 
+- Chart support in markdown!
+- Basic honeypot support in forms
+
 ### Changes
 
 - Upgrade FontAwesome from 6.2.1 to 7.2.0
