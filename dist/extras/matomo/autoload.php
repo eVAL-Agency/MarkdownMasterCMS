@@ -4,8 +4,9 @@ use MarkdownMaster\Hooks;
 use MarkdownMaster\File;
 use MarkdownMaster\Views\HTMLTemplateView;
 use MarkdownMaster\Config;
+use MarkdownMaster\Request;
 
-Hooks::Add('render_page_view', function(File $file, HTMLTemplateView $view) {
+Hooks::Add('render_page_view', function(File $file, HTMLTemplateView $view, Request $request) {
 	// Add the necessary Matomo tracking code into the page header
 	$host = Config::GetExtraParameter('matomo', 'host', null);
 	$site = Config::GetExtraParameter('matomo', 'siteId', null);
