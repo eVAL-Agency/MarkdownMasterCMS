@@ -65,7 +65,7 @@ class Hooks {
 	 * @param ...$args
 	 * @return void
 	 */
-	public static function Run(string $hook, ...$args) {
+	public static function Run(string $hook, ...$args): void {
 		$hooks = &self::$hooks;
 		if (isset($hooks[$hook])) {
 			foreach($hooks[$hook]['functions'] as $function) {

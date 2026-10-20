@@ -49,6 +49,12 @@ Route::RegisterRoute('/form', 'MarkdownMaster\\Controllers\\FormController');
 // Search content route, provides full text searches
 Route::RegisterRoute('/search.json', 'MarkdownMaster\\Controllers\\SearchController');
 
+// Install route for performing initial setup and database upgrades
+Route::RegisterRoute('/install', 'MarkdownMaster\\Controllers\\InstallController');
+
+// Register the webcron
+Route::RegisterRoute('/cron', 'MarkdownMaster\\Controllers\\CronController');
+
 // Add any routes for each content type configured
 $types = Config::GetTypes();
 foreach($types as $type) {

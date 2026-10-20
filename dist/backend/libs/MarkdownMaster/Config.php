@@ -31,7 +31,7 @@ namespace MarkdownMaster;
 use Exception;
 
 class Config {
-	private static $_config = null;
+	private static ?array $_config = null;
 
 	/**
 	 * Load the configuration file
@@ -290,13 +290,30 @@ class Config {
 	}
 
 	/**
-	 * Get a plugin configuration parameter
+	 * Get the database path for the popularity feature
 	 *
-	 * @param string $extra Plugin name
-	 * @param string $key Parameter key
+	 * @return string
+	 */
+	public static function GetDatabasePath(): string {
+		return self::GetSetting('database', 'path') ?? self::GetRootPath() . 'data/cms.sqlite';
+	}
+
+	/**
+	 * Get a setting from a block
+	 *
+	 * @param string $block Block name (e.g. 'popularity', 'webcron')
+	 * @param string $key Key to lookup
 	 * @param mixed $default Default value if not found
 	 * @return mixed
 	 */
+	public static function GetSetting(string $block, string $key, $default = null): mixed {
+		$config = self::_Get($block);
+		if (!$config || !is_array($config)) {
+			return $default;
+		}
+		return $config[$key] ?? $default;
+	}
+
 	public static function GetExtraParameter(string $extra, string $key, $default = null): mixed {
 		$extras = self::GetExtras();
 		if (!isset($extras[$extra]) || !is_array($extras[$extra])) {

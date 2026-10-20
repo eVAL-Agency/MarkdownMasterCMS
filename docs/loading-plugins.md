@@ -2,6 +2,9 @@
 title: Loading Plugins
 ---
 
+The database layer is a first-party core facility that can be used by extras.
+See [database documentation](https://markdownmaster.com/docs/database.html) for details.
+
 Plugins, (also called "extras"), can be loaded by the CMS to add additional functionality to your site.
 
 ## Installing Plugins

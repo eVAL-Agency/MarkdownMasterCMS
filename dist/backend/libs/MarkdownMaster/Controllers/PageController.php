@@ -32,6 +32,8 @@ use MarkdownMaster\Config;
 use MarkdownMaster\Controller;
 use MarkdownMaster\FileCollection;
 use MarkdownMaster\Hooks;
+use MarkdownMaster\Model;
+use MarkdownMaster\Route;
 use MarkdownMaster\Views\HTMLTemplateView;
 use Exception;
 
@@ -203,12 +205,29 @@ class PageController extends Controller {
 		];
 
 		// Allow external plugins to tap into the view prior to rendering
-		Hooks::Run('render_page_view', $page, $view);
+		Hooks::Run('render_page_view', $page, $view, $this->request);
 
 		// Add debug information if enabled
 		if (Config::GetDebug()) {
-			$view->footScripts[] = 'console.log("Backend Hooks:", ' . json_encode(Hooks::GetDebugInfo()) . ');';
+			$view->footScripts[] = 'console.debug("Backend Hooks:", ' . json_encode(Hooks::GetDebugInfo()) . ');';
+			$view->footScripts[] = 'console.debug("Routes:", ' . json_encode(Route::GetRoutes()) . ');';
+			$view->footScripts[] = 'console.debug("Database:", ' . json_encode(Model::GetDebugInfo()) . ');';
+			$databasesOk = true;
+			foreach(Model::GetRegisteredModels() as $modelClass) {
+				$res = $modelClass::GetTableState();
+				if ($res !== 'OK') {
+					$databasesOk = false;
+					$view->footScripts[] = 'console.error("Database Error: ' . str_replace('\\', '/', $modelClass) . '", ' . json_encode($res) . ');';
+				}
+			}
+			if ($databasesOk) {
+				$view->footScripts[] = 'console.log("%c Database OK ", "background-color: lightgreen; color: darkgreen;");';
+			}
 		}
+
+		// Add a request for the agent to call the cron once for a full view.
+		// This is to support a lazy webcron.
+		$view->footScripts[] = 'window.requestIdleCallback(() => { fetch("' . Config::GetHost() . Config::GetWebPath() . 'cron"); });';
 
 		return $view;
 	}

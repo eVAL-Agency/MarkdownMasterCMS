@@ -1,0 +1,6 @@
+# Local development files
+.env
+*.log
+
+# Data directory for SQLite database
+data/

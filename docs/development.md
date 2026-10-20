@@ -37,20 +37,16 @@ npm run prepare
 Follow the instructions for 
 [Apache](INSTALL.apache.md) and point a target to dist/.
 
-If setting up a dedicated web server locally is not preferred, `serve` is provided
-in the development packages, though when using this method you must browse to the root index
-page directly as it tries to remove '.html' from the requests and incorrectly routes.
+If setting up a dedicated web server locally is not preferred two development serve operations are provided:
 
-example of serve issue: 
+**npm run serve_full** - Serve the application along with the full PHP backend
 
-1. Run `npm run dev` to start serve http server
-2. Browse to 'localhost:3000' and it works.
-3. Browse to Posts, URL changes to 'localhost:3000/posts.html', still works
+This emulates a full production server, with support for server-side rendering,
+databases, and other server features.
 
-This is because the application intercepts the click event and dynamically changes the URL.
+**npm run serve_static** - Serve the application without the PHP backend
 
-If you enter `localhost:3000/posts.html` in the browser and try to open the page,
-serve will redirect you to `localhost:3000/posts/` and display a directory listing.
+This emulates an entirely simple static site with no backend support.
 
 
 ### Node Commands
@@ -63,12 +59,6 @@ Watch for updates within src and compile dist/app/cms.js.
 This one will be your most commonly run command if you use Nginx or Apache.
 
 `npm run watch`
-
----
-
-Watch for updates within src and start the HTTP server for local development.
-
-`npm run dev`
 
 ---
 

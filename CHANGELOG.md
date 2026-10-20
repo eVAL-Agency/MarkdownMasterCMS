@@ -25,10 +25,18 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 
 - Chart support in markdown!
 - Basic honeypot support in forms
+- Add support for simple webcron
+- Add rudimentary database (sqlite3) support
 
 ### Changes
 
 - Upgrade FontAwesome from 6.2.1 to 7.2.0
+- Add additional debug information in console
+- New method, Config:GetSetting for retrieving a nested key
+- Add File->setMeta for setting meta fields on a File
+- Add file_parsed hook for manipulating raw File on parse
+- New sanity check to completely ignore any FileCollection type not explictly enabled
+- Add second serve option in package; one for static one for full
 
 ### Fixes
 

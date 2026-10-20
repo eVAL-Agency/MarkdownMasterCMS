@@ -52,6 +52,7 @@ Aside from business support, you can also help support this project by donating 
 * Automatic sitemap.xml generation
 * Theme support
 * RSS 2.0 feed support
+* **Page popularity tracking** - server-side view logging with decayed scoring
 
 
 ## Demo

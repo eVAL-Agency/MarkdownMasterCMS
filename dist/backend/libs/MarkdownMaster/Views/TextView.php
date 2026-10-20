@@ -36,7 +36,7 @@ use MarkdownMaster\View;
  * Not generally used, though supported.
  */
 class TextView extends View {
-	public $body = '';
+	public string $body = '';
 
 	public function render() {
 		http_response_code($this->status);

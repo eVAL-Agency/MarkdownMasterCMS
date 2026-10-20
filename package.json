@@ -24,7 +24,8 @@
     "action_backend_headers": "./update_file_headers.sh",
     "action_backend_test": "XDEBUG_MODE=coverage php test/phpunit.phar -c phpunit.xml",
     "dev": "npm-run-all --parallel serve watch",
-    "serve": "serve ./dist/",
+    "serve_static": "serve ./dist/",
+    "serve_full": "cd dist/ && php -S localhost:8000 dev-router.php",
     "prepare": "husky",
     "lint": "npx eslint src/"
   },

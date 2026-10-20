@@ -179,6 +179,17 @@ class File {
 	}
 
 	/**
+	 * Set a meta value
+	 *
+	 * @param string $key
+	 * @param mixed $value
+	 * @return void
+	 */
+	public function setMeta(string $key, mixed $value): void {
+		$this->meta[$key] = $value;
+	}
+
+	/**
 	 * Get this file as its full HTML version
 	 *
 	 * @return string
@@ -353,6 +364,9 @@ class File {
 		}
 
 		$this->meta = $meta;
+
+		// Allow scripts to hook into file parsing
+		Hooks::Run('file_parsed', $this);
 	}
 
 	/**

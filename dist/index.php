@@ -45,11 +45,16 @@ set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/backend/libs'
 use MarkdownMaster\Config;
 use MarkdownMaster\Request;
 use MarkdownMaster\Hooks;
-use MarkdownMaster\Route;
+use MarkdownMaster\Model;
+
+
+// Load system models
+Model::RegisterModel('MarkdownMaster\Models\CronModel');
 
 
 // Hooks are supported as of 5.1
-Hooks::Register('render_page_view', 'Modify the page view before rendering, provides the arguments File and HTMLTemplateView.');
+Hooks::Register('render_page_view', 'Modify the page view before rendering, provides the arguments File, View, and Request.');
+Hooks::Register('file_parsed', 'Modify the file after it has been parsed, provides the File object.');
 
 
 // As of 5.1, allow plugins to load server-side code to provide additional functionality

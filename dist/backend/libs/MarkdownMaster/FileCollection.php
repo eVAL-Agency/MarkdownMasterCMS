@@ -35,6 +35,12 @@ class FileCollection {
 	public $type;
 
 	public function __construct(string $type) {
+		// Sanity/security check
+		$types = Config::GetTypes();
+		if (!in_array($type, $types)) {
+			return;
+		}
+
 		$this->type = $type;
 		$this->url = Config::GetHost() . Config::GetWebPath() . $type . '.html';
 		$pDir = Config::GetRootPath();
