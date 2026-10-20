@@ -63,7 +63,7 @@ export default (remarkable) => {
 		let checked = '✅',
 			unchecked = '⬜';
 
-		if (typeof window.CMS !== 'undefined') {
+		if (typeof window !== 'undefined' && typeof window.CMS !== 'undefined') {
 			// Allow the CMS to define the tasklist icons
 			checked = window.CMS.config.tasklistChecked;
 			unchecked = window.CMS.config.tasklistUnchecked;

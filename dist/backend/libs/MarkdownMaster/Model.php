@@ -32,7 +32,7 @@ use Error;
 use PDO;
 use Exception;
 use PDOException;
-use ReflectionObject;
+use ReflectionClass;
 
 /**
  * Core database layer for MarkdownMaster CMS
@@ -147,7 +147,24 @@ class Model {
 		}
 
 		if (!file_exists($path)) {
-			return null;
+			// Try to auto-create the directory and file to store the database
+			// If auto creation fails, return NULL to indicate no database is available.
+			$dir = dirname($path);
+
+			try {
+				if (!is_dir($dir)) {
+					mkdir($dir, 0755, true);
+				}
+				if (!is_writable($dir)) {
+					return null;
+				}
+				if (!file_exists($path)) {
+					touch($path);
+				}
+			}
+			catch (Exception|Error) {
+				return null;
+			}
 		}
 
 		try {
@@ -162,6 +179,15 @@ class Model {
 			error_log("Failed to initialize database: " . $e->getMessage());
 			return null;
 		}
+	}
+
+	/**
+	 * Reset the application state; useful in tests
+	 *
+	 * @return void
+	 */
+	public static function Reset(): void {
+		Model::$_db = null;
 	}
 
 	/**
@@ -236,7 +262,7 @@ class Model {
 	public static function GetTableState(): string {
 		try {
 			$schema = static::DescribeTable();
-			$columns = (new static())->getColumnNames();
+			$columns = static::GetColumnNames();
 
 			// Flatten the schema names to compare against expected columns
 			$schemaNames = array_map(function($col) { return $col['name']; }, $schema);
@@ -307,8 +333,8 @@ class Model {
 	 *
 	 * @return array<string>
 	 */
-	public function getColumnNames(): array {
-		$reflection = new ReflectionObject($this);
+	public static function GetColumnNames(): array {
+		$reflection = new ReflectionClass(static::class);
 		$properties = $reflection->getProperties();
 		$columns = [];
 		foreach($properties as $property) {
@@ -338,7 +364,7 @@ class Model {
 			return;
 		}
 
-		$columns = $this->getColumnNames();
+		$columns = static::GetColumnNames();
 		$sql = "INSERT OR REPLACE INTO " . static::$table;
 		$sql .= ' (' . implode(',', $columns) . ')';
 		$sql .= ' VALUES (' . str_repeat('?,', count($columns) - 1) . '?)';
@@ -371,7 +397,7 @@ class Model {
 			return;
 		}
 
-		$columns = $this->getColumnNames();
+		$columns = static::GetColumnNames();
 
 
 		$data = [];
