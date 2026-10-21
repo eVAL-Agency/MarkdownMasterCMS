@@ -26,17 +26,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace MarkdownMaster;
+namespace MarkdownMaster\Services;
+
+use MarkdownMaster\Config;
 
 /**
  * Simple hooks system to allow plugins to extend functionality
  *
  * Usage:
- * Hooks::Register('hook_name', 'Description of the hook');
- * Hooks::Add('hook_name', function($arg1, $arg2) { ... });
- * Hooks::Run('hook_name', $arg1, $arg2);
+ * HookService::Register('hook_name', 'Description of the hook');
+ * HookService::Add('hook_name', function($arg1, $arg2) { ... });
+ * HookService::Run('hook_name', $arg1, $arg2);
  */
-class Hooks {
+class HookService {
 
 	private static $hooks = [];
 

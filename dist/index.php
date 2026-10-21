@@ -44,7 +44,7 @@ set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/backend/libs'
 
 use MarkdownMaster\Config;
 use MarkdownMaster\Request;
-use MarkdownMaster\Hooks;
+use MarkdownMaster\Services\HookService;
 use MarkdownMaster\Model;
 
 
@@ -53,8 +53,8 @@ Model::RegisterModel('MarkdownMaster\Models\CronModel');
 
 
 // Hooks are supported as of 5.1
-Hooks::Register('render_page_view', 'Modify the page view before rendering, provides the arguments File, View, and Request.');
-Hooks::Register('file_parsed', 'Modify the file after it has been parsed, provides the File object.');
+HookService::Register('render_page_view', 'Modify the page view before rendering, provides the arguments File, View, and Request.');
+HookService::Register('file_parsed', 'Modify the file after it has been parsed, provides the File object.');
 
 
 // As of 5.1, allow plugins to load server-side code to provide additional functionality
@@ -81,7 +81,11 @@ try {
 	$view->render();
 }
 catch (Exception $e) {
-	$request->replyError($e->getMessage(), $e->getCode(), $e->getTraceAsString());
+	$code = $e->getCode();
+	if (!is_int($code)) {
+		$code = 500;
+	}
+	$request->replyError($e->getMessage(), $code, $e->getTraceAsString());
 }
 catch (Error $e) {
 	$request->replyError($e->getMessage(), 500, $e->getTraceAsString());

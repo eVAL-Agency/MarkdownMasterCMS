@@ -113,14 +113,20 @@ class PopularityDailyModel extends Model {
 		}
 
 		$ret = [];
-		$stmt = $db->query("
+		try {
+			$stmt = $db->query("
 			SELECT page, SUM(score) total_score 
 			FROM popularity_daily
 			GROUP BY page
 		");
-		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-			$ret[$row['page']] = $row['total_score'];
+			while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+				$ret[$row['page']] = $row['total_score'];
+			}
 		}
+		catch (PDOException $e) {
+			error_log("Failed to get daily scores: " . $e->getMessage());
+		}
+
 		return $ret;
 	}
 }

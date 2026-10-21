@@ -6,7 +6,7 @@ use MarkdownMaster\Services\CronService;
 use MarkdownMaster\File;
 use MarkdownMaster\View;
 use MarkdownMaster\Request;
-use MarkdownMaster\Hooks;
+use MarkdownMaster\Services\HookService;
 use MarkdownMaster\Model;
 use MarkdownMaster\Route;
 use Popularity\Services\PopularityService;
@@ -15,12 +15,12 @@ use Popularity\Services\PopularityService;
 Model::RegisterModel('Popularity\Models\PopularityViewsModel');
 Model::RegisterModel('Popularity\Models\PopularityDailyModel');
 
-Hooks::Add('render_page_view', function(File $file, View $view, Request $request) {
+HookService::Add('render_page_view', function(File $file, View $view, Request $request) {
 	// Record this page view into the local database
 	PopularityService::Record($file, $request);
 });
 
-Hooks::Add('file_parsed', function(File $file) {
+HookService::Add('file_parsed', function(File $file) {
 	$score = PopularityService::GetScoreFor($file->rel);
 	$file->setmeta('popularity', $score);
 });
