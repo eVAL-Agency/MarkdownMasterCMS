@@ -134,3 +134,11 @@ Raw SQL queries should **only** be defined within Models.
 
 Any business logic should be performed within the Controller or Service layer.
 See the [Services Layer documentation](services.md) for more information about service classes.
+
+### Exception Handling
+
+All database exceptions should be handled internally within the Model
+and gracefully return the necessary response back to the calling application.
+
+This is because databases are **optional** in MarkdownMaster CMS and
+corresponding functionality should gracefully degrade when not available.

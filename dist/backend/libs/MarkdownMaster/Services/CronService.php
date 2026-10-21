@@ -28,8 +28,8 @@
 
 namespace MarkdownMaster\Services;
 
+use Exception;
 use MarkdownMaster\Models\CronModel;
-use PDOException;
 
 class CronService {
 	private static array $jobs = [];
@@ -54,46 +54,68 @@ class CronService {
 	 */
 	public static function RunDue(): void {
 
-		try {
-			// Get a list of all jobs currently in the database
-			// This is done with a bulk lookup to save queries
-			$existingJobs = [];
-			foreach (CronModel::GetAll() as $job) {
-				$existingJobs[$job->job] = $job;
+		$db = CronModel::Db();
+		if (!$db) {
+			// Database is not available, skip out
+			return;
+		}
+
+		// Only run crons if the cron schema is up to date
+		if (CronModel::GetTableState() !== 'OK') {
+			return;
+		}
+
+		// Get a list of all jobs currently in the database
+		// This is done with a bulk lookup to save queries
+		$existingJobs = [];
+		foreach (CronModel::GetAll() as $job) {
+			$existingJobs[$job->job] = $job;
+		}
+
+		// Get all registered jobs that are due
+		foreach (self::$jobs as $jobName => $jobInfo) {
+			$interval = $jobInfo['interval'];
+			$handler = $jobInfo['handler'];
+			$now = date('c');
+			$run = false;
+
+			if (isset($existingJobs[$jobName])) {
+				// Job already in the database, check if it needs to be run
+				$lastRun = $existingJobs[$jobName]->last_run;
+				if (strtotime($lastRun) < (time() - $interval)) {
+					// Mark job as started BEFORE calling handler to prevent race condition
+					$existingJobs[$jobName]->last_run = $now;
+					$existingJobs[$jobName]->upsert();
+					$run = true;
+				}
+			}
+			else {
+				// Job not registered in the database yet, create a new one and run the job.
+				$jobEntry = new CronModel();
+				// Mark job as started BEFORE calling handler to prevent race condition
+				$jobEntry->job = $jobName;
+				$jobEntry->last_run = $now;
+				$jobEntry->upsert();
+				$run = true;
 			}
 
-			// Get all registered jobs that are due
-			foreach (self::$jobs as $jobName => $jobInfo) {
-				$interval = $jobInfo['interval'];
-				$handler = $jobInfo['handler'];
-				$now = date('c');
-
-				if (isset($existingJobs[$jobName])) {
-					// Job already in the database, check if it needs to be run
-					$lastRun = $existingJobs[$jobName]->last_run;
-					if (strtotime($lastRun) < (time() - $interval)) {
-						// Mark job as started BEFORE calling handler to prevent race condition
-						$existingJobs[$jobName]->last_run = $now;
-						$existingJobs[$jobName]->upsert();
-
-						// Run the job
-						$handler();
-					}
-				}
-				else {
-					// Job not registered in the database yet, create a new one and run the job.
-					$jobEntry = new CronModel();
-					// Mark job as started BEFORE calling handler to prevent race condition
-					$jobEntry->job = $jobName;
-					$jobEntry->last_run = $now;
-					$jobEntry->upsert();
-
+			if ($run) {
+				try {
 					// Run the job
 					$handler();
 				}
+				catch (Exception $e) {
+					error_log("Failed to run cron job [$jobName]:" . $e->getMessage());
+				}
 			}
-		} catch (PDOException $e) {
-			error_log("Failed to run cron jobs: " . $e->getMessage());
+		}
+
+		// Cleanup phase: Remove any crons from the database that are not in the registry
+		// Get all job names currently in the database
+		foreach (CronModel::GetAll() as $job) {
+			if (!isset(self::$jobs[$job->job])) {
+				$job->delete();
+			}
 		}
 	}
 }

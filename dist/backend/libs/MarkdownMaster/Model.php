@@ -296,6 +296,9 @@ class Model {
 	/**
 	 * Get the table state, useful for debugging
 	 *
+	 * Returns 'OK' if the schema is up to date with the code
+	 * or a message describing the mismatch.
+	 *
 	 * @return string
 	 */
 	public static function GetTableState(): string {
