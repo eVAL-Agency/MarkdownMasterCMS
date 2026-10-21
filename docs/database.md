@@ -133,3 +133,4 @@ and no business logic should be performed in the Model.
 Raw SQL queries should **only** be defined within Models.
 
 Any business logic should be performed within the Controller or Service layer.
+See the [Services Layer documentation](services.md) for more information about service classes.

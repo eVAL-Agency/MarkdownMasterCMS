@@ -2,7 +2,7 @@
 
 set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__);
 
-use MarkdownMaster\Cron;
+use MarkdownMaster\Services\CronService;
 use MarkdownMaster\File;
 use MarkdownMaster\View;
 use MarkdownMaster\Request;
@@ -25,6 +25,6 @@ Hooks::Add('file_parsed', function(File $file) {
 	$file->setmeta('popularity', $score);
 });
 
-Cron::Register('popularity-rollup', 3600, function() { PopularityService::Rollup(); });
+CronService::Register('popularity-rollup', 3600, function() { PopularityService::Rollup(); });
 
 Route::RegisterRoute('/popularity.json', 'Popularity\Controllers\PopularityController');

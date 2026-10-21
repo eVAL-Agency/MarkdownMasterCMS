@@ -29,7 +29,7 @@
 namespace MarkdownMaster\Controllers;
 
 use MarkdownMaster\Controller;
-use MarkdownMaster\Cron;
+use MarkdownMaster\Services\CronService;
 use MarkdownMaster\Views\TextView;
 
 /**
@@ -56,7 +56,7 @@ class CronController extends Controller {
 		$view->body = 'OK';
 
 		// Run all due jobs
-		Cron::RunDue();
+		CronService::RunDue();
 
 		return $view;
 	}

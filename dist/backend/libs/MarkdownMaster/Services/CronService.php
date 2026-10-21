@@ -26,12 +26,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-namespace MarkdownMaster;
+namespace MarkdownMaster\Services;
 
 use MarkdownMaster\Models\CronModel;
 use PDOException;
 
-class Cron {
+class CronService {
 	private static array $jobs = [];
 
 	/**

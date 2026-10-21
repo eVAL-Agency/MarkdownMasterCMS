@@ -165,3 +165,7 @@ any future work does not introduce any regression bugs.
 
 All tests **MUST** pass before a commit can be accepted!  This is enforced from husky
 in a pre-commit hook.
+
+## Services Layer
+
+See the [Services Layer documentation](services.md) for information about middleware and business logic.
