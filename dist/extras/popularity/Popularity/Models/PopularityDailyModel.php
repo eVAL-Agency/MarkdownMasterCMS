@@ -28,15 +28,36 @@
 
 namespace Popularity\Models;
 
+use PDO;
 use PDOException;
 use MarkdownMaster\Model;
 
 class PopularityDailyModel extends Model {
 	public static string $table = 'popularity_daily';
 
+	/**
+	 * The page relative path, generally ends with .md
+	 * @var string
+	 */
 	public string $page;
+
+	/**
+	 * The date of the view, in YYYY-MM-DD format
+	 * @var string
+	 */
 	public string $day;
+
+	/**
+	 * Total number of page views for the day
+	 * @var int
+	 */
 	public int $views = 0;
+
+	/**
+	 * The calculated score for the page
+	 * @var int
+	 */
+	public int $score = 0;
 
 	/**
 	 * Synchronize the database schema with this table's expected definition
@@ -52,9 +73,14 @@ class PopularityDailyModel extends Model {
 				page TEXT NOT NULL,
 				day TEXT NOT NULL,
 				views INTEGER NOT NULL DEFAULT 0,
+				score INTEGER NOT NULL DEFAULT 0,
 				UNIQUE(page, day)
 			);
 		");
+
+		if (!self::HasColumn('score')) {
+			$db->exec("ALTER TABLE popularity_daily ADD COLUMN score INTEGER NOT NULL DEFAULT 0;");
+		}
 	}
 
 	/**
@@ -71,5 +97,30 @@ class PopularityDailyModel extends Model {
 		$dateLimit = date('Y-m-d', time() - 86400 * 90);
 		$stmt = $db->prepare("DELETE FROM popularity_daily WHERE day < :date_limit");
 		$stmt->execute(['date_limit' => $dateLimit]);
+	}
+
+	/**
+	 * Get an array of all daily scores for all pages.
+	 *
+	 * Returned array is keyed by page path, and each value is the score for that page.
+	 *
+	 * @return array<string,int>
+	 */
+	public static function GetDailyScores(): array {
+		$db = self::Db();
+		if (!$db) {
+			return [];
+		}
+
+		$ret = [];
+		$stmt = $db->query("
+			SELECT page, SUM(score) total_score 
+			FROM popularity_daily
+			GROUP BY page
+		");
+		while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+			$ret[$row['page']] = $row['total_score'];
+		}
+		return $ret;
 	}
 }

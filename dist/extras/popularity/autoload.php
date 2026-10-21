@@ -25,7 +25,6 @@ Hooks::Add('file_parsed', function(File $file) {
 	$file->setmeta('popularity', $score);
 });
 
-Cron::Register('popularity-rollup', 86400, function() { PopularityService::Rollup(); });
-Cron::Register('popularity-clear', 86400, function() { PopularityService::CleanupOldDaily(); });
+Cron::Register('popularity-rollup', 3600, function() { PopularityService::Rollup(); });
 
 Route::RegisterRoute('/popularity.json', 'Popularity\Controllers\PopularityController');

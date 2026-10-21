@@ -38,6 +38,17 @@ use Popularity\Models\PopularityViewsModel;
 class PopularityService {
 	private static ?array $_Scores = null;
 
+	private static function _CalculateScore(string $day, int $views): int {
+		// The half-life of views in days (how quickly score decays)
+		$halfLifeDays = 7;
+
+		// Calculate age in days
+		$age_days = max(0, (time() - strtotime($day)) / 86400);
+		$weighted = $views * (0.5 ** ($age_days / $halfLifeDays));
+		$weighted = (int)(round(log10(1 + $weighted), 1) * 10);
+		return $weighted;
+	}
+
 	/**
 	 * Records a page view in the database
 	 *
@@ -63,14 +74,31 @@ class PopularityService {
 	 * @return void
 	 */
 	public static function Rollup(): void {
+		// How long records should persist in the daily table
+		$dateLimit = date('Y-m-d', time() - 86400 * 90);
+
 		// Get the raw view counts from the previous day
 		$views = PopularityViewsModel::GetUniquePageViews();
+
+		// Update all daily records with the updated score
+		// or remove old records
+		$dailies = PopularityDailyModel::GetAll();
+		foreach($dailies as $daily) {
+			if ($daily->day < $dateLimit) {
+				$daily->delete();
+			}
+			else {
+				$daily->score = self::_CalculateScore($daily->day, $daily->views);
+				$daily->upsert();
+			}
+		}
 
 		foreach ($views as $view) {
 			$daily = new PopularityDailyModel();
 			$daily->page = $view['page'];
 			$daily->day = $view['day'];
 			$daily->views = $view['unique_views'];
+			$daily->score = self::_CalculateScore($view['day'], $view['unique_views']);
 			$daily->upsert();
 		}
 
@@ -89,34 +117,9 @@ class PopularityService {
 			return self::$_Scores;
 		}
 
-		// The half-life of views in days (how quickly score decays)
-		$halfLifeDays = 7;
-		$rows = PopularityDailyModel::GetAllRaw();
+		self::$_Scores = PopularityDailyModel::GetDailyScores();
 
-		// Compute weighted score for each page
-		$scores = [];
-		foreach ($rows as $row) {
-			$page = $row['page'];
-			$day = $row['day'];
-			$views = $row['views'];
-
-			if (!isset($scores[$page])) {
-				$scores[$page] = 0;
-			}
-
-			// Calculate age in days
-			$age_days = max(0, (time() - strtotime($day)) / 86400);
-			$weighted = $views * (0.5 ** ($age_days / $halfLifeDays));
-			$scores[$page] += $weighted;
-		}
-
-		// Convert to final scores using log10(1 + weighted)
-		foreach ($scores as &$score) {
-			$score = (int)(round(log10(1 + $score), 3) * 1000);
-		}
-
-		self::$_Scores = $scores;
-		return $scores;
+		return self::$_Scores;
 	}
 
 	/**
@@ -128,14 +131,5 @@ class PopularityService {
 	public static function GetScoreFor(string $page): int {
 		$scores = self::GetScores();
 		return $scores[$page] ?? 0;
-	}
-
-	/**
-	 * Cleanup old daily records to save space; we only care about recent data anyways
-	 *
-	 * @return void
-	 */
-	public static function CleanupOldDaily(): void {
-		PopularityDailyModel::RemoveOldViews();
 	}
 }
