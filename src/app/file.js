@@ -665,7 +665,6 @@ class File extends TemplateObject {
 	 * @private
 	 */
 	_compare(val, op, check) {
-
 		if (op === '~' || op === '!~') {
 			// Regex check
 			let re = new RegExp(check),
@@ -673,6 +672,18 @@ class File extends TemplateObject {
 				test = re.test(val.toString());
 
 			return invert ? !test : test;
+		}
+
+		if (op === '=' && (check === '*' || check === '!*')) {
+			// Wildcard check; just checks if the attribute contains a value
+			let invert = check === '!*';
+
+			if (invert) {
+				return val.toString() === '';
+			}
+			else {
+				return val.toString() !== '';
+			}
 		}
 
 		if (op === '=' || op === '!=') {

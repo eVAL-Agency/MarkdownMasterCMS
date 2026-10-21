@@ -30,9 +30,9 @@ namespace MarkdownMaster;
 
 class FileCollection {
 	/** @var File[] */
-	public $files = [];
-	public $url;
-	public $type;
+	public array $files = [];
+	public string $url;
+	public string $type;
 
 	public function __construct(string $type) {
 		// Sanity/security check

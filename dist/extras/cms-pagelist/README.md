@@ -132,6 +132,20 @@ All filter value modifiers include:
 * `!=` - Not equal to value (Added in v5.0.2)
 
 
+Filter shorthands are also supported as of v5.1.2 / v6.0.0:
+
+* `*`: Match any non-empty value
+* `!*`: Match empty or not present value
+
+These do not require a value modifier, as they are the value modifier themselves.
+
+```html
+<cms-pagelist
+    type="posts"
+    filter-review="*"
+>Loading...</cms-pagelist>
+```
+
 #### Attribute Related (Added in v5.0.3)
 
 Pull content related to the requested article, (based on matching tags).

@@ -466,6 +466,16 @@ This is test content about Zebras`;
 			expect(f.matchesAttributeSearch({author: null})).toEqual(false);
 			expect(f.matchesAttributeSearch({idonotexist: 'bob'})).toEqual(false);
 		});
+		it('wildcard comparisons', () => {
+			let f = new File('/posts/topic/test.md', 'test', 'test', default_config());
+			f.content = generic_contents;
+			f.parseContent();
+			// For convenience, the developer should be able to request just 'blah=*' as shorthand.
+			expect(f.matchesAttributeSearch({author: '*'})).toEqual(true);
+			expect(f.matchesAttributeSearch({author: '!*'})).toEqual(false);
+			expect(f.matchesAttributeSearch({idonotexist: '*'})).toEqual(false);
+			expect(f.matchesAttributeSearch({idonotexist: '!*'})).toEqual(true);
+		});
 	});
 
 	describe('_matchesAttribute', () => {
