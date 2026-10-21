@@ -80,6 +80,12 @@ class InstallController extends Controller {
 			return $view;
 		}
 
+		$db = Model::Db();
+		if (!$db) {
+			$this->_errorLog("Failed to initialize database!  Skipping install procedure", $view);
+			return $view;
+		}
+
 		foreach (Model::GetRegisteredModels() as $modelClass) {
 			try {
 				$modelClass::SyncTable();

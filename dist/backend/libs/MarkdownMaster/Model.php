@@ -233,12 +233,12 @@ class Model {
 	 *
 	 * Provides an array with:
 	 *
-	 * * cid (int) - The table's autoincrement ID
+	 * * cid (int) - The columns's autoincrement ID
 	 * * name (string) - The column name
 	 * * type (string) - The column type
-	 * * notnull (int) - 1 if the column is not null
-	 * * dflt_value (string) - The default value for the column
-	 * * pk (int) - 1 if the column is a primary key
+	 * * notnull (int) - 1 if the column is not null / 0 if it is nullable
+	 * * dflt_value (string|null) - The default value for the column
+	 * * pk (int) - 1/0 if the column is a primary key
 	 '
 	 *
 	 * @return array
@@ -252,6 +252,45 @@ class Model {
 		$stmt = $db->prepare("PRAGMA table_info(" . static::$table . ")");
 		$stmt->execute();
 		return $stmt->fetchAll(PDO::FETCH_ASSOC);
+	}
+
+	/**
+	 * Get the schema for a specific column
+	 *
+	 * Provides:
+	 *
+	 *  * cid (int) - The columns's autoincrement ID
+	 *  * name (string) - The column name
+	 *  * type (string) - The column type
+	 *  * notnull (int) - 1 if the column is not null / 0 if it is nullable
+	 *  * dflt_value (string|null) - The default value for the column
+	 *  * pk (int) - 1/0 if the column is a primary key
+	 *
+	 * @param string $column
+	 * @return array
+	 */
+	public static function GetColumnSchema(string $column): array {
+		$describe = static::DescribeTable();
+		foreach ($describe as $col) {
+			if ($col['name'] == $column) {
+				return $col;
+			}
+		}
+		return [];
+	}
+
+	/**
+	 * Check if the table has a specific column
+	 *
+	 * This checks the database schema, not the model class.
+	 *
+	 * @param string $column
+	 * @return bool
+	 */
+	public static function HasColumn(string $column): bool {
+		$describe = static::DescribeTable();
+		$names = array_map(function($col) { return $col['name']; }, $describe);
+		return in_array($column, $names);
 	}
 
 	/**
@@ -434,6 +473,30 @@ class Model {
 		catch (PDOException $e) {
 			$db->rollBack();
 			error_log("Failed to insert record: " . $e->getMessage());
+		}
+	}
+
+	public function delete(): void {
+		$db = self::Db();
+		if (!$db) {
+			return;
+		}
+		$sql = "DELETE FROM " . static::$table;
+		$sql .= ' WHERE ';
+		$sql .= implode(' AND ', array_map(function($key) { return "$key = ?"; }, static::$keys));
+		$sql .= ' LIMIT 1';
+
+		$pks = array_map(function($key) { return $this->$key; }, static::$keys);
+
+		try {
+			$stmt = $db->prepare($sql);
+			$db->beginTransaction();
+			$stmt->execute(array_values($pks));
+			$db->commit();
+		}
+		catch (PDOException $e) {
+			$db->rollBack();
+			error_log("Failed to remove record: " . $e->getMessage());
 		}
 	}
 }

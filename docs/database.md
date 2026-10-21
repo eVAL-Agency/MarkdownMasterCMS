@@ -85,3 +85,19 @@ For upserts, all keys, including primary keys, are expected to be set.
 
 `MyModel->insert()` will perform an INSERT to insert a new record.
 For inserts, the primary key may be omitted, notably for auto-incrementing keys.
+
+### Removing Records
+
+`MyModel->delete()` will perform a DELETE operation based on the primary key(s)
+associated with the Model.
+
+## Model Logic
+
+Each Model is responsible for its own database logic and ONLY database logic.
+
+All raw SQL queries must be performed within the associated Model
+and no business logic should be performed in the Model.
+
+Raw SQL queries should **only** be defined within Models.
+
+Any business logic should be performed within the Controller or Service layer.
