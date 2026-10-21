@@ -86,6 +86,38 @@ For upserts, all keys, including primary keys, are expected to be set.
 `MyModel->insert()` will perform an INSERT to insert a new record.
 For inserts, the primary key may be omitted, notably for auto-incrementing keys.
 
+### Schema Upgrades
+
+Models can upgrade their database schema by adding columns conditionally in `SyncTable()`.
+
+The `Model::HasColumn($column)` method checks if a column exists in the table's schema.
+Use this to add new columns only when they don't already exist:
+
+```php
+public static function SyncTable(): void {
+    $db = self::Db();
+
+    // Create table if it doesn't exist
+    $db->exec("
+        CREATE TABLE IF NOT EXISTS my_table (
+            id INTEGER PRIMARY KEY,
+            email TEXT,
+            name TEXT
+        );
+    ");
+
+    // Add new column only if it doesn't exist (schema upgrade)
+    if (!self::HasColumn('email')) {
+        $db->exec("ALTER TABLE my_table ADD COLUMN email TEXT;");
+    }
+}
+```
+
+This pattern ensures that:
+1. New installations get the full schema including all columns
+2. Existing installations are upgraded when new code is deployed
+3. No errors occur if a column already exists
+
 ### Removing Records
 
 `MyModel->delete()` will perform a DELETE operation based on the primary key(s)

@@ -29,9 +29,7 @@
 namespace MarkdownMaster;
 
 use MarkdownMaster\Models\CronModel;
-use PDO;
 use PDOException;
-use Exception;
 
 class Cron {
 	private static array $jobs = [];
@@ -74,19 +72,24 @@ class Cron {
 					// Job already in the database, check if it needs to be run
 					$lastRun = $existingJobs[$jobName]->last_run;
 					if (strtotime($lastRun) < (time() - $interval)) {
-						// Run the job
-						$handler();
+						// Mark job as started BEFORE calling handler to prevent race condition
 						$existingJobs[$jobName]->last_run = $now;
 						$existingJobs[$jobName]->upsert();
+
+						// Run the job
+						$handler();
 					}
 				}
 				else {
 					// Job not registered in the database yet, create a new one and run the job.
 					$jobEntry = new CronModel();
-					$handler();
+					// Mark job as started BEFORE calling handler to prevent race condition
 					$jobEntry->job = $jobName;
 					$jobEntry->last_run = $now;
 					$jobEntry->upsert();
+
+					// Run the job
+					$handler();
 				}
 			}
 		} catch (PDOException $e) {
