@@ -19,7 +19,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 ### Performance
 
 
-## [MarkdownMaster CMS 5.Z.Y] - YYYY-MM-DD
+## [MarkdownMaster CMS 6.0.0] - YYYY-MM-DD
 
 ### New Features
 
@@ -27,6 +27,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Basic honeypot support in forms
 - Add support for simple webcron
 - Add rudimentary database (sqlite3) support
+- Implement support for '*' and '!*' filter shorthands
 
 ### Changes
 

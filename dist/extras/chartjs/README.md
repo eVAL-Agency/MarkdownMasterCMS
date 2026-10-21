@@ -2,7 +2,8 @@
 title: Extra - Chart.js
 ---
 
-Renders data charts (bar / line / pie / donut) from a native Markdown table inside a `:::` container, using Chart.js v4 on the client.
+Renders data charts (bar / line / pie / donut) from a native Markdown table inside a `:::` container, 
+using Chart.js v4 on the client.
 
 ## Initialization
 

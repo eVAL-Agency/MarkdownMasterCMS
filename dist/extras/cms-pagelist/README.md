@@ -132,7 +132,7 @@ All filter value modifiers include:
 * `!=` - Not equal to value (Added in v5.0.2)
 
 
-Filter shorthands are also supported as of v5.1.2 / v6.0.0:
+Filter shorthands are also supported as of v6.0.0:
 
 * `*`: Match any non-empty value
 * `!*`: Match empty or not present value
