@@ -233,6 +233,7 @@ export default (remarkable) => {
 			atts.addAttribute('title', tokens[idx].title);
 		}
 		atts.addAttribute('alt', utils.unescapeMd(tokens[idx].alt));
+		atts.addAttribute('loading', 'lazy');
 
 		return '<img ' + atts.asString() + suffix + '>';
 	};

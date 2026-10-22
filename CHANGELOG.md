@@ -38,6 +38,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Add file_parsed hook for manipulating raw File on parse
 - New sanity check to completely ignore any FileCollection type not explictly enabled
 - Add second serve option in package; one for static one for full
+- Images rendered via markdown now include `loading="lazy"`
 
 ### Fixes
 
