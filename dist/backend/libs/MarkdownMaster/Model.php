@@ -152,11 +152,11 @@ class Model {
 			$dir = dirname($path);
 
 			try {
-				if (!is_dir($dir)) {
-					mkdir($dir, 0755, true);
-				}
 				if (!is_writable($dir)) {
 					return null;
+				}
+				if (!is_dir($dir)) {
+					mkdir($dir, 0755, true);
 				}
 				if (!file_exists($path)) {
 					touch($path);
