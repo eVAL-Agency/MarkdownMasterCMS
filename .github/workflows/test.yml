@@ -36,6 +36,10 @@ jobs:
       - run: npm run test
       # Generate docs (to be uploaded)
       - run: npm run docs
+
+      - name: Set file headers
+        run: bash update_file_headers.sh
+
       - name: Set SSH Key
         shell: bash
         run: |
@@ -45,5 +49,18 @@ jobs:
             ssh-keyscan -t rsa markdownmaster.com >> ~/.ssh/known_hosts
         env:
           SSH_PRIVATE_KEY: ${{secrets.PROD_DEPLOYMENT_KEY}}
+
       - name: Upload docs to Production
         run: bash upload_docs.sh latest
+
+      # Build the deployable tarball
+      # will set variable steps.archive.outputs.filename
+      - name: Generate Archive
+        id: archive
+        run: bash build_release.sh
+
+      - name: Upload Package (App)
+        run: rsync -avz release/${{ steps.archive.outputs.app }} markdownmaster@markdownmaster.com:/home/markdownmaster/public_html/build/markdownmaster-app-unstable.tgz
+
+      - name: Upload Package (Full)
+        run: rsync -avz release/${{ steps.archive.outputs.full }} markdownmaster@markdownmaster.com:/home/markdownmaster/public_html/build/markdownmaster-full-unstable.tgz
