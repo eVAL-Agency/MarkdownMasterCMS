@@ -21,7 +21,7 @@ HookService::Add('render_page_view', function(File $file, View $view, Request $r
 });
 
 HookService::Add('file_parsed', function(File $file) {
-	$score = PopularityService::GetScoreFor($file->rel);
+	$score = PopularityService::GetScoreFor($file->shortRel);
 	$file->setmeta('popularity', $score);
 });
 

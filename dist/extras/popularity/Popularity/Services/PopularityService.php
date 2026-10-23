@@ -62,7 +62,7 @@ class PopularityService {
 		$visitor = hash('sha256', $ip . '|' . trim(preg_replace('/\s+/', ' ', $userAgent)));
 
 		$view = new PopularityViewsModel();
-		$view->page = $page->rel;
+		$view->page = $page->shortRel;
 		$view->visitor = $visitor;
 		$view->day = date('Y-m-d');
 		$view->insert();

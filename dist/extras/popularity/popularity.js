@@ -1,6 +1,6 @@
 document.addEventListener('cms:route', e => {
 	if (e.detail.file && e.detail.collection) {
-		fetch('/popularity.json', {
+		fetch(`${CMS.config.webpath}popularity.json`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
@@ -11,7 +11,8 @@ document.addEventListener('cms:route', e => {
 			})
 		})
 			.then(res => res.text())
-			.then(res => console.debug(res))
+			.then(res => CMS.log.Debug('Popularity',  res))
 			.catch(err => console.error(err));
 	}
 });
+
