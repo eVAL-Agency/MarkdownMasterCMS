@@ -40,6 +40,8 @@ class File {
 	public string $url;
 	/** @var string Relative path to markdown file */
 	public string $rel;
+	/** @var string Short relative path, excludes web root */
+	public string $shortRel;
 	protected array $meta;
 	protected ?string $content = null;
 
@@ -80,6 +82,7 @@ class File {
 
 		$this->file = $real_path;
 		$this->rel = Config::GetWebPath() . $relative_path;
+        $this->shortRel = '/' . $relative_path;
 		$this->url = Config::GetHost() . Config::GetWebPath() . substr($relative_path, 0, -3) . '.html';
 		$this->path = Config::GetHost() . Config::GetWebPath() . dirname($relative_path) . '/';
 	}

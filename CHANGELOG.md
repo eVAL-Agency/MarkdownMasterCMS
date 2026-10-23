@@ -39,6 +39,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - New sanity check to completely ignore any FileCollection type not explictly enabled
 - Add second serve option in package; one for static one for full
 - Images rendered via markdown now include `loading="lazy"`
+- Add shortRel to Files to support staging sites with different base paths
 
 ### Fixes
 
