@@ -11,7 +11,7 @@
 	<meta name="description" content="The JavaScript Site Generator">
 	<meta name="author" content="">
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-	<link rel="stylesheet" href="{{theme_dir}}css/styles.css"/>
+	<link rel="stylesheet" href="{{theme_dir}}css/styles.css?v={{version}}"/>
 
 	<!-- Preload fonts to try to minimize content flickering -->
 	<link rel="preload" href="{{theme_dir}}fonts/roboto-v47-latin-100.woff2" as="font" type="font/woff2" crossorigin="anonymous"/>
@@ -92,7 +92,7 @@
 <!-- BEGIN: Body footer scripts -->
 
 <!-- CMS.js -->
-<script src="{{webpath}}app/cms.min.js"></script>
+<script src="{{webpath}}app/cms.min.js?v={{version}}"></script>
 
 <!-- Defaults from theme/server (only available when running in server+client mode) -->
 <script>

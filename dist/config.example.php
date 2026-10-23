@@ -40,6 +40,10 @@ return [
 	// Set to true to enable DEBUG mode on backend and frontend.
 	'debug' => false,
 
+	// Increase (or change) each time you do a major update to assets.
+	// This is used to invalidate browser caches.
+	'version' => '1',
+
 	// Uncomment and configure to enable email sending
 	/*
 	'email' => [

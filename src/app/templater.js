@@ -66,8 +66,14 @@ export async function loadTemplate(url, data) {
  * @throws {CMSError}
  */
 export async function fetchLayout(layout, data) {
+
+	let version = '1';
+	if (typeof data.config === 'object' && typeof data.config.version === 'string') {
+		version = data.config.version;
+	}
+
 	return new Promise((resolve, reject) => {
-		let url = pathJoin(layout_path, layout + '.html');
+		let url = pathJoin(layout_path, `${layout}.html?v=${version}`);
 		Log.Debug('fetchLayout', url);
 		loadTemplate(url, data)
 			.then(html => {

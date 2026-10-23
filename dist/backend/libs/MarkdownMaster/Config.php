@@ -367,6 +367,7 @@ class Config {
 			'defaultView' => self::GetDefaultView(),
 			'elementId' => self::GetElementId(),
 			'debug' => self::GetDebug(),
+			'version' => self::GetVersion(),
 			'webpath' => self::GetWebPath(),
 			'layoutDirectory' => self::GetWebPath() . 'themes/' . self::GetTheme() . '/layouts/',
 			'extras' => $extras,
@@ -391,5 +392,9 @@ class Config {
 	 */
 	public static function OverrideConfig(array $config) {
 		self::$_config = $config;
+	}
+
+	public static function GetVersion(): string {
+		return (string)self::_Get('version', 1);
 	}
 }

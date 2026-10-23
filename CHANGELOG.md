@@ -44,6 +44,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 ### Fixes
 
 - Handle missing or invalid dates by returning null instead of an invalid Date
+- Implement simple asset versions for cache busting in browsers
 
 ### Security
 

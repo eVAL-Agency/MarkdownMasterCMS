@@ -71,6 +71,7 @@ class HTMLTemplateView extends View {
 			'{{year}}' => date('Y'),
 			'{{config}}' => Config::GetClientConfig(),
 			'{{types}}' => json_encode(Config::GetTypesFull()),
+			'{{version}}' => Config::GetVersion(),
 		];
 		$contents = str_replace(array_keys($replacements), array_values($replacements), $contents);
 

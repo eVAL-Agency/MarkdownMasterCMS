@@ -180,6 +180,12 @@ export class Config extends Object {
 		 */
 		this.debug = false;
 
+		/**
+		 * Asset version, useful for cache busting
+		 * @type {string}
+		 */
+		this.version = '1';
+
 		// Allow options to be passed in by default for convenience
 		if (options) {
 			this.load(options);
