@@ -197,6 +197,57 @@ describe('FileCollection', () => {
 			let files = collection.filterTag('greek');
 			expect(files).toHaveLength(1);
 			expect(files[0].title).toEqual('Beta');
+			expect(collection.hasFilterTag('greek')).toEqual(true);
+			expect(collection.hasFilterTag('Test')).toEqual(false);
+		});
+
+		/**
+		 * Test that tags are case insensitive
+		 */
+		it('capitalization does not matter', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+
+			collection.resetFilters();
+			let files = collection.filterTag('GREEK');
+			expect(files).toHaveLength(1);
+			expect(files[0].title).toEqual('Beta');
+			expect(collection.hasFilterTag('GREEK')).toEqual(true);
+			expect(collection.hasFilterTag('TEST')).toEqual(false);
+		});
+
+		/**
+		 * Test filtering with multiple tags provided
+		 */
+		it('multiple tags', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			let files
+
+			collection.allFiles = good_files;
+
+			// No tags set yet, any check for 'hasFilterTag' should return false.
+			expect(collection.hasFilterTag('greek')).toEqual(false);
+			expect(collection.hasFilterTag('Test')).toEqual(false);
+
+			collection.resetFilters();
+			files = collection.filterTag('Test');
+			expect(files).toHaveLength(2); // There are 2 tests with "Test" as the tag
+			expect(files[0].title).toEqual('Beta');
+			expect(collection.hasFilterTag('greek')).toEqual(false);
+			expect(collection.hasFilterTag('Test')).toEqual(true);
+
+			collection.resetFilters();
+			files = collection.filterTag('greek,Test');
+			expect(files).toHaveLength(1); // Only 1 with both Test and Greek.
+			expect(files[0].title).toEqual('Beta');
+			expect(collection.hasFilterTag('greek')).toEqual(true);
+			expect(collection.hasFilterTag('Test')).toEqual(true);
+
+			collection.resetFilters();
+			files = collection.filterTag('greek|Test');
+			expect(files).toHaveLength(2); // 2 tests have either "Greek" or "Test"
+			expect(collection.hasFilterTag('greek')).toEqual(true);
+			expect(collection.hasFilterTag('Test')).toEqual(true);
 		});
 	});
 	describe('filterPermalink', () => {

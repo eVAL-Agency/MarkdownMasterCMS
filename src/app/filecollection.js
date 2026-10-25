@@ -132,6 +132,21 @@ class FileCollection extends TemplateObject {
 		 * @type {null|number}
 		 */
 		this.totalResults = null;
+
+		/**
+		 * Cached filter mode, not used by filtering but available for diagnostic checks
+		 * @type {string}
+		 * @private
+		 */
+		this._filterMode = 'AND';
+
+		/**
+		 * Cached filters applied to this collection
+		 *
+		 * @type {{}}
+		 * @private
+		 */
+		this._filters = {};
 	}
 
 	/**
@@ -402,6 +417,9 @@ class FileCollection extends TemplateObject {
 			file.__match = 0;
 			return !file.draft;
 		});
+
+		this._filters = {};
+		this._filterMode = 'AND';
 	}
 
 	/**
@@ -546,6 +564,8 @@ class FileCollection extends TemplateObject {
 		mode = mode || 'AND';
 
 		Log.Debug('FileCollection.filterAttributeSearch/' + this.type, 'Performing "' + mode + '" attribute search for files', search);
+		this._filterMode = mode;
+		this._filters = search;
 
 		this[this.type] = this[this.type].filter((file) => {
 			return file.matchesAttributeSearch(search, mode);
@@ -557,13 +577,51 @@ class FileCollection extends TemplateObject {
 	/**
 	 * Filter content to display by a tag (Convenience method)
 	 *
+	 * Simple usage is to pass a single tag name to filter by.
+	 * If a comma-separated string is provided, ALL tags in the string are matched.
+	 * If a pipe-separated string is provided, ANY tag in the string is matched.
+	 *
 	 * @see filterAttributeSearch
 	 *
-	 * @param {string} query - Search query.
+	 * @param {string|string[]} query - Search query.
 	 * @returns {File[]} Set of filtered files
 	 */
 	filterTag(query) {
-		return this.filterAttributeSearch({tags: query});
+		let tag = 'tags';
+
+		if (typeof query === 'string' && query.indexOf(',') !== -1) {
+			// When multiple tags are requested, set the key to include an 'AND' check
+			query = query.split(',').map(t => t.trim());
+			tag = '&tags';
+		}
+		else if (typeof query === 'string' && query.indexOf('|') !== -1) {
+			// Pipe-separated values result in an 'OR' check (default)
+			query = query.split('|').map(t => t.trim());
+		}
+
+		let search = {};
+		search[tag] = query;
+
+		return this.filterAttributeSearch(search);
+	}
+
+	/**
+	 * Check if the given tag is currently filtered
+	 *
+	 * @param {string} tag
+	 * @returns {boolean}
+	 */
+	hasFilterTag(tag) {
+		let tags = this._filters['tags'] || this._filters['&tags'] || '';
+
+		if (Array.isArray(tags)) {
+			// Check if the tag is in the list of tags
+			return tags.indexOf(tag) !== -1;
+		}
+		else {
+			// Allow single tags to be set; (filters may be an Array or an individual value
+			return tags === tag;
+		}
 	}
 
 	/**

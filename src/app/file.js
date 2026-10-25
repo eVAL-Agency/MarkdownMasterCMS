@@ -507,6 +507,9 @@ class File extends TemplateObject {
 	 *
 	 * // Match if this file is authored by Bob OR has the tag HR
 	 * file.matchesAttributeSearch({author: 'Bob', tags: 'HR'}, 'OR');
+	 *
+	 * // Match if this file has BOTH the tag HR and the tag Configuration
+	 * file.matchesAttributeSearch({'&tags': ['HR', 'Configuration']});
 	 */
 	matchesAttributeSearch(query, mode) {
 		let found = false,
@@ -517,19 +520,37 @@ class File extends TemplateObject {
 		mode = mode || 'AND';
 
 		for (let [key, value] of Object.entries(query)) {
+			let subset_mode = 'OR';
+			if (key.startsWith('&')) {
+				// Allow keys that start with an '&' to change the search mode to require ALL matches for subset values
+				// (only has a function when multiple values are provided for the same key)
+				subset_mode = 'AND';
+				key = key.substring(1);
+			}
+
 			if (Array.isArray(value)) {
 				// Multiple values, this grouping is an 'OR' automatically
-				let set_match = false;
+				let set_match_any = false;
+				let set_match_all = true;
+
 				for (let i = 0; i < value.length; i++) {
 					match_total += 1;
 					if (this._matchesAttribute(key, value[i])) {
-						set_match = true;
+						set_match_any = true;
 						match_count += 1;
 					}
+					else {
+						set_match_all = false;
+					}
 				}
-				if (set_match) {
+
+				if (subset_mode === 'OR' && set_match_any) {
 					found = true;
-				} else {
+				}
+				else if (subset_mode === 'AND' && set_match_all) {
+					found = true;
+				}
+				else {
 					matches_all = false;
 				}
 			} else {

@@ -28,6 +28,8 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Add support for simple webcron
 - Add rudimentary database (sqlite3) support
 - Implement support for '*' and '!*' filter shorthands
+- Tags support filtering modes AND and OR for multiple tags
+- Add FileCollection.hasFilterTag for checking if a collection has a specific tag filtered
 
 ### Changes
 
