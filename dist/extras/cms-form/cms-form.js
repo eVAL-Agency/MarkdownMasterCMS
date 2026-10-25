@@ -252,42 +252,6 @@ class CMSFormElement extends HTMLElement {
 		});
 
 		return inputs;
-
-		if (field.type === 'textarea') {
-			input = document.createElement('textarea');
-			if (field.value) {
-				input.setAttribute('value', field.value);
-			}
-		}
-		else if (field.type === 'select') {
-			input = document.createElement('select');
-
-		}
-		else {
-			input = document.createElement('input');
-			input.setAttribute('type', field.type ?? 'text');
-			if (field.value) {
-				input.setAttribute('value', field.value);
-			}
-		}
-
-		// Set client-side validation checks
-		if (field.type === 'email') {
-			input.addEventListener('blur', this.emailValidateEvent.bind(this));
-		}
-		else {
-			input.addEventListener('blur', this.genericValidateEvent.bind(this));
-		}
-
-
-		if (field.placeholder) {
-			input.setAttribute('placeholder', field.placeholder);
-		}
-		if (field.required) {
-			input.setAttribute('required', 'required');
-		}
-
-		return input;
 	}
 
 	/**
