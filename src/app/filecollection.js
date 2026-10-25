@@ -74,24 +74,60 @@ class FileCollection extends TemplateObject {
 
 	constructor(type, layout, config) {
 		super(config);
+
+		/**
+		 * Type of files, as defined by the configuration.
+		 *
+		 * Usually something like "pages" or "posts"
+		 *
+		 * @type {string}
+		 */
 		this.type = type;
+
+		/**
+		 * Layout to use for rendering this collection
+		 *
+		 * @type {string}
+		 */
 		this.layout = layout;
-		this.files = [];
+
+		/**
+		 * All raw files available in this collection
+		 *
+		 * @type {File[]}
+		 */
+		this.allFiles = [];
+
+		/**
+		 * List of directories to scan when server-side is not available
+		 * @type {string[]}
+		 */
 		this.directories = [];
-		this[type] = this.files;
+
+		/**
+		 * Filtered and sorted list of files matched
+		 *
+		 * Populates the dynamic property based on the type of file
+		 *
+		 * @type {File[]}
+		 */
+		this[type] = this.allFiles;
 
 		/**
 		 * @type {null|number}
 		 */
-		this.page = null;
+		this.currentPage = null;
+
 		/**
 		 * @type {null|number}
 		 */
 		this.totalPages = null;
+
 		/**
 		 * @type {null|number}
 		 */
 		this.resultsPerPage = null;
+
 		/**
 		 * @type {null|number}
 		 */
@@ -129,8 +165,8 @@ class FileCollection extends TemplateObject {
 	 */
 	clone() {
 		let clone = new FileCollection(this.type, this.layout, this.config);
-		clone.page = this.page;
-		clone.files = this.files;
+		clone.currentPage = this.currentPage;
+		clone.allFiles = this.allFiles;
 		clone.resultsPerPage = this.resultsPerPage;
 		clone.totalPages = this.totalPages;
 		clone.totalResults = this.totalResults;
@@ -154,8 +190,8 @@ class FileCollection extends TemplateObject {
 	getPreviousPageUrl() {
 		let url = this.getFileListUrl() + '.html',
 			u = new URLSearchParams(window.location.search);
-		if (this.page !== null && this.page > 1) {
-			u.set('page', (this.page - 1).toString());
+		if (this.currentPage !== null && this.currentPage > 1) {
+			u.set('page', (this.currentPage - 1).toString());
 		}
 		return url + '?' + u.toString();
 	}
@@ -168,8 +204,8 @@ class FileCollection extends TemplateObject {
 	getNextPageUrl() {
 		let url = this.getFileListUrl() + '.html',
 			u = new URLSearchParams(window.location.search);
-		if (this.page !== null && this.page < this.totalPages) {
-			u.set('page', (this.page + 1).toString());
+		if (this.currentPage !== null && this.currentPage < this.totalPages) {
+			u.set('page', (this.currentPage + 1).toString());
 		}
 		return url + '?' + u.toString();
 	}
@@ -270,7 +306,7 @@ class FileCollection extends TemplateObject {
 							f.parsePermalink();
 							f.parseFrontMatterData(file.meta);
 							f.parseDate();
-							this.files.push(f);
+							this.allFiles.push(f);
 						} catch (e) {
 							Log.Error('Failed to parse file', {file, e});
 						}
@@ -314,7 +350,7 @@ class FileCollection extends TemplateObject {
 						) {
 							// Regular markdown file
 							Log.Debug('FileCollection.scanDirectory/' + this.type, 'Found valid file, adding to collection', {directory, file, fileUrl});
-							this.files.push(new File(fileUrl, this.type, this.layout.single, this.config));
+							this.allFiles.push(new File(fileUrl, this.type, this.layout.single, this.config));
 						} else if (
 							// skip checking '?...' sort option links
 							fileUrl[fileUrl.length - 1] === '/' &&
@@ -347,7 +383,7 @@ class FileCollection extends TemplateObject {
 		return new Promise((resolve) => {
 			let promises = [];
 
-			this.files.forEach((file) => {
+			this.allFiles.forEach((file) => {
 				promises.push(file.loadContent());
 			});
 
@@ -362,8 +398,7 @@ class FileCollection extends TemplateObject {
 	 * Reset filters and sorting
 	 */
 	resetFilters() {
-		//this.entries = this.files;
-		this[this.type] = this.files.filter((file) => {
+		this[this.type] = this.allFiles.filter((file) => {
 			file.__match = 0;
 			return !file.draft;
 		});
@@ -585,7 +620,7 @@ class FileCollection extends TemplateObject {
 			source;
 
 		if (all) {
-			source = this.files;
+			source = this.allFiles;
 		}
 		else {
 			source = this[this.type];
@@ -643,7 +678,7 @@ class FileCollection extends TemplateObject {
 
 		Log.Debug('FileCollection.getFileByPermalink/' + this.type, 'Retrieving file by permalink', permalink);
 
-		let foundFiles = this.files.filter((file) => {
+		let foundFiles = this.allFiles.filter((file) => {
 			return file.permalink === permalink ||
 				file.permalink === this.config.webpath + permalink;
 		});
@@ -687,17 +722,17 @@ class FileCollection extends TemplateObject {
 			start, end;
 
 		this.resultsPerPage = results;
-		this.page = page || (u.has('page') ? parseInt(u.get('page')) : 1);
+		this.currentPage = page || (u.has('page') ? parseInt(u.get('page')) : 1);
 		this.totalResults = this[this.type].length;
 		this.totalPages = Math.ceil(this.totalResults / this.resultsPerPage);
 
-		if (this.page > this.totalPages) {
+		if (this.currentPage > this.totalPages) {
 			// Sanity check to limit to number of pages
-			this.page = this.totalPages;
+			this.currentPage = this.totalPages;
 		}
 
-		start = (this.page - 1) * this.resultsPerPage;
-		end = Math.min(this.page * this.resultsPerPage, this.totalResults);
+		start = (this.currentPage - 1) * this.resultsPerPage;
+		end = Math.min(this.currentPage * this.resultsPerPage, this.totalResults);
 
 		this[this.type] = this[this.type].slice(start, end);
 	}

@@ -49,3 +49,46 @@ Standard checks for `if...` can still use the direct property.
 
 This `.get()` can be used for **any** attribute on Files, not just dates.
 All values are converted to appropriate string values for use within templates.
+
+
+## FileCollection files -> allFiles
+
+The internal key `files` has been renamed to `allFiles`.
+This generally will not break most templates, but if you are using `files` in your templates,
+you will need to update to `allFiles`.
+
+
+## FileCollection page -> currentPage
+
+Update your templates to use `data.currentPage` instead of `data.page`.
+
+This change was implemented to allow the use of "page" as a file type,
+this is useful if you want the URL to be `/page/about.html` instead of `/pages/about.html`.
+
+_After this update, `currentPage` is now a reserved word and cannot be used as a file type._
+
+```html
+// Old code
+<% if (data.totalPages > 1) { %>
+    <% if (data.page > 1) { %>
+        <a href="<%= data.getPreviousPageUrl() %>" title="Previous Page">&laquo;</a>
+    <% } %>
+    Page <%= data.page %> of <%= data.totalPages %>
+    <% if (data.page < data.totalPages) { %>
+        <a href="<%= data.getNextPageUrl() %>" title="Next Page">&raquo;</a>
+    <% } %>
+<% } %>
+```
+
+```html
+// New code
+<% if (data.totalPages > 1) { %>
+    <% if (data.currentPage > 1) { %>
+        <a href="<%= data.getPreviousPageUrl() %>" title="Previous Page">&laquo;</a>
+    <% } %>
+    Page <%= data.currentPage %> of <%= data.totalPages %>
+    <% if (data.currentPage < data.totalPages) { %>
+        <a href="<%= data.getNextPageUrl() %>" title="Next Page">&raquo;</a>
+    <% } %>
+<% } %>
+```

@@ -90,11 +90,11 @@ describe('FileCollection', () => {
 
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
 			collection.getFiles().then(() => {
-				expect(collection.files).toHaveLength(4);
-				expect(collection.files[0].url).toEqual('/tests/topic.md');
-				expect(collection.files[1].url).toEqual('/tests/user.md');
-				expect(collection.files[2].url).toEqual('/tests/subtopics/topic1.md');
-				expect(collection.files[3].url).toEqual('/tests/subtopics/topic2.md');
+				expect(collection.allFiles).toHaveLength(4);
+				expect(collection.allFiles[0].url).toEqual('/tests/topic.md');
+				expect(collection.allFiles[1].url).toEqual('/tests/user.md');
+				expect(collection.allFiles[2].url).toEqual('/tests/subtopics/topic1.md');
+				expect(collection.allFiles[3].url).toEqual('/tests/subtopics/topic2.md');
 			});
 		});
 	});
@@ -110,9 +110,9 @@ describe('FileCollection', () => {
 
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
 			collection.scanDirectory('/tests/').then(more_directories => {
-				expect(collection.files).toHaveLength(2);
-				expect(collection.files[0].url).toEqual('/tests/topic.md');
-				expect(collection.files[1].url).toEqual('/tests/user.md');
+				expect(collection.allFiles).toHaveLength(2);
+				expect(collection.allFiles[0].url).toEqual('/tests/topic.md');
+				expect(collection.allFiles[1].url).toEqual('/tests/user.md');
 				expect(more_directories).toHaveLength(1);
 				expect(more_directories[0]).toEqual('/tests/subtopics/');
 			});
@@ -127,7 +127,7 @@ describe('FileCollection', () => {
 	describe('filterSort', () => {
 		it ('basic sort', () => {
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
-			collection.files = good_files;
+			collection.allFiles = good_files;
 
 			collection.resetFilters();
 			collection.filterSort('title');
@@ -139,7 +139,7 @@ describe('FileCollection', () => {
 		});
 		it ('reverse basic sort', () => {
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
-			collection.files = good_files;
+			collection.allFiles = good_files;
 
 			collection.resetFilters();
 			collection.filterSort('title-r');
@@ -151,7 +151,7 @@ describe('FileCollection', () => {
 		});
 		it ('feature #2 sticky sort', () => {
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
-			collection.files = good_files;
+			collection.allFiles = good_files;
 
 			collection.resetFilters();
 			collection.filterSort('sticky-r, title');
@@ -165,7 +165,7 @@ describe('FileCollection', () => {
 	describe('filterSearch', () => {
 		it('basic', () => {
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
-			collection.files = good_files;
+			collection.allFiles = good_files;
 
 			collection.resetFilters();
 			collection.filterSearch('zulu').then(files => {
@@ -177,7 +177,7 @@ describe('FileCollection', () => {
 	describe('filterAttributeSearch', () => {
 		it('basic', () => {
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
-			collection.files = good_files;
+			collection.allFiles = good_files;
 
 			collection.resetFilters();
 			let files = collection.filterAttributeSearch({title: 'zulu'});
@@ -186,9 +186,12 @@ describe('FileCollection', () => {
 		});
 	});
 	describe('filterTag', () => {
+		/**
+		 * Test basic single tag filtering
+		 */
 		it('basic', () => {
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
-			collection.files = good_files;
+			collection.allFiles = good_files;
 
 			collection.resetFilters();
 			let files = collection.filterTag('greek');
@@ -199,7 +202,7 @@ describe('FileCollection', () => {
 	describe('filterPermalink', () => {
 		it('basic', () => {
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
-			collection.files = good_files;
+			collection.allFiles = good_files;
 
 			collection.resetFilters();
 			let files = collection.filterPermalink('/tests/');
@@ -212,7 +215,7 @@ describe('FileCollection', () => {
 	describe('getTags', () => {
 		it('basic', () => {
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
-			collection.files = good_files;
+			collection.allFiles = good_files;
 
 			collection.resetFilters();
 
@@ -228,7 +231,7 @@ describe('FileCollection', () => {
 		 */
 		it('basic', () => {
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
-			collection.files = good_files;
+			collection.allFiles = good_files;
 
 			collection.resetFilters();
 			let file = collection.getFileByPermalink('/tests/test2.html');
@@ -242,7 +245,7 @@ describe('FileCollection', () => {
 		 */
 		it('not found', () => {
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
-			collection.files = good_files;
+			collection.allFiles = good_files;
 
 			collection.resetFilters();
 			let file = collection.getFileByPermalink('/tests/test-invalid.html');

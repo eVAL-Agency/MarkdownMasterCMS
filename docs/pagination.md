@@ -27,7 +27,7 @@ Renders `« Page 2 of 5 »`
 <% if (data.totalPages > 1) { %>
     <!-- Only render if there is more than 1 page, as available from `totalPages` -->
 
-    <% if (data.page > 1) { %>
+    <% if (data.currentPage > 1) { %>
         <!-- If current page is > 1, display previous -->
         <a href="<%= data.getPreviousPageUrl() %>" title="Previous Page">
             &laquo;
@@ -35,9 +35,9 @@ Renders `« Page 2 of 5 »`
     <% } %>
 
     <!-- Display current page and total number of pages -->
-    Page <%= data.page %> of <%= data.totalPages %>
+    Page <%= data.currentPage %> of <%= data.totalPages %>
 
-    <% if (data.page < data.totalPages) { %>
+    <% if (data.currentPage < data.totalPages) { %>
         <!-- If current page is < last page, display next -->
         <a href="<%= data.getNextPageUrl() %>" title="Next Page">
             &raquo;
@@ -57,7 +57,7 @@ Renders `1 2 3 4 5` (with current page being a span)
 
     <% for(let i = 1; i <= data.totalPages; i++) { %>
         <!-- Display 1 ... total with a link -->
-        <% if (data.page !== i) { %>
+        <% if (data.currentPage !== i) { %>
             <a href="<%= data.getPageUrl(i) %>" title="Go to page <%= i %>">
                 <%= i %>
             </a>

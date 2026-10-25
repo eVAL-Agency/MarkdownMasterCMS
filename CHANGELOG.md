@@ -48,6 +48,8 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Update dev dependency rollup from 4.34.9 to 4.59.0
 - Update dev dependency serialize-javascript from 6.0.2 to 7.1.4
 - Update dev dependency serve from 14.2.4 to 14.2.6
+- Rename FileCollection.files to FileCollection.allFiles **breaking change**
+- Rename FileCollection.page to FileCollection.currentPage **breaking change**
 
 ### Fixes
 

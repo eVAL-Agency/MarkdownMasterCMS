@@ -35,13 +35,13 @@
 		<% }) %>
 
 		<% if (data.totalPages > 1) { %>
-		<% if (data.page > 1) { %>
+		<% if (data.currentPage > 1) { %>
 		<a href="<%= data.getPreviousPageUrl() %>" title="Previous Page">
 			&laquo;
 		</a>
 		<% } %>
-		Page <%= data.page %> of <%= data.totalPages %>
-		<% if (data.page < data.totalPages) { %>
+		Page <%= data.currentPage %> of <%= data.totalPages %>
+		<% if (data.currentPage < data.totalPages) { %>
 		<a href="<%= data.getNextPageUrl() %>" title="Next Page">
 			&raquo;
 		</a>
