@@ -47,7 +47,7 @@ class File extends TemplateObject {
 	 * @param {Config} config Configuration from the CMS
 	 */
 	constructor(url, type, layout, config) {
-		super();
+		super(config);
 		// Common author-defined parameters
 
 		/**
@@ -55,11 +55,13 @@ class File extends TemplateObject {
 		 * @type {string|null}
 		 */
 		this.author = null;
+
 		/**
 		 * Banner alt/label and URL for this page, useful for pretty headers on pages
 		 * @type {{label: string, url: string}|null}
 		 */
 		this.banner = null;
+
 		/**
 		 * Date published - pulled from FrontMatter or URL
 		 * Will be converted into the requested format from Config.dateParser
@@ -68,42 +70,50 @@ class File extends TemplateObject {
 		 * @type {string|null}
 		 */
 		this.date = null;
+
 		/**
 		 * Date object holding the date published - pulled from Last-Modified header
 		 * if date is not set otherwise
 		 * @type {Date|null}
 		 */
 		this.datetime = null;
+
 		/**
 		 * Set to TRUE to flag this File as draft (and not rendered to the site)
 		 * @type {boolean}
 		 */
 		this.draft = false;
+
 		/**
 		 * Short excerpt or teaser about the page, useful on listing pages
 		 * @type {string|null}
 		 */
 		this.excerpt = null;
+
 		/**
 		 * Image alt/label and URL for this page
 		 * @type {{label: string, url: string}|null}
 		 */
 		this.image = null;
+
 		/**
 		 * Default layout for rendering this file
 		 * @type {string}
 		 */
 		this.layout = layout;
+
 		/**
 		 * Window title / SEO title for this page, useful for differing from page title
 		 * @type {string|null}
 		 */
 		this.seotitle = null;
+
 		/**
 		 * List of tags associated with this page
 		 * @type {string[]|null}
 		 */
 		this.tags = null;
+
 		/**
 		 * Title for this page, generally rendered as an H1
 		 * @type {string|null}
@@ -124,12 +134,6 @@ class File extends TemplateObject {
 		 * @type {boolean}
 		 */
 		this.bodyLoaded = false;
-
-		/**
-		 * System configuration
-		 * @type {Config}
-		 */
-		this.config = config;
 
 		/**
 		 * Raw Markdown contents of this File
@@ -372,17 +376,21 @@ class File extends TemplateObject {
 		if (this.date) {
 			// Date is set from markdown via the "date" inline header
 			this.datetime = getDatetime(this.date);
-			this.date = this.config.dateFormat(this.datetime);
+			if (typeof this.date === 'string') {
+				// Convert date to an actual Date object (as provided by datetime)
+				this.date = this.datetime;
+			}
+			//this.date = this.config.dateFormat(this.datetime);
 		} else if (dateRegEx.test(this.url)) {
 			// Date is retrieved from file URL
 			// Support 2023-01-02 and 2023/01/02 formats in the URL
-			this.date = dateRegEx.exec(this.url)[0].replace('/', '-');
-			this.datetime = getDatetime(this.date);
-			this.date = this.config.dateFormat(this.datetime);
+			let d = dateRegEx.exec(this.url)[0].replace('/', '-');
+			this.datetime = this.date = getDatetime(d);
+			//this.date = this.config.dateFormat(this.datetime);
 		} else if (this.datetime) {
 			// Lastmodified is retrieved from server response headers or set from the front content
-			this.datetime = getDatetime(this.datetime);
-			this.date = this.config.dateFormat(this.datetime);
+			this.datetime = this.date = getDatetime(this.datetime);
+			//this.date = this.config.dateFormat(this.datetime);
 		}
 	}
 

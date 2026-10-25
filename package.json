@@ -1,7 +1,7 @@
 {
   "name": "markdownmaster",
   "title": "MarkdownMaster CMS",
-  "version": "5.1.1",
+  "version": "6.0.0-alpha",
   "type": "module",
   "description": "Javascript and PHP static site CMS framework using flat-file markdown files.",
   "keywords": [

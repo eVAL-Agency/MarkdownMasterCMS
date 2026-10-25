@@ -73,10 +73,9 @@ let _queuedGetMetas = async (path) => {
 class FileCollection extends TemplateObject {
 
 	constructor(type, layout, config) {
-		super();
+		super(config);
 		this.type = type;
 		this.layout = layout;
-		this.config = config;
 		this.files = [];
 		this.directories = [];
 		this[type] = this.files;

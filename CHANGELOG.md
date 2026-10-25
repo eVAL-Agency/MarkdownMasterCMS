@@ -40,6 +40,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Add second serve option in package; one for static one for full
 - Images rendered via markdown now include `loading="lazy"`
 - Add shortRel to Files to support staging sites with different base paths
+- Object lookups in HTML templates should use .get(...) to ensure string values **breaking change**
 
 ### Fixes
 

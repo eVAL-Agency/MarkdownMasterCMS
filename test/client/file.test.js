@@ -75,7 +75,7 @@ describe('File', () => {
 				expect(f.image).toEqual({alt: 'Success Cat', src: 'https://www.http.cat/200.jpg'});
 				expect(f.tags).toEqual(['Test', 'Document']);
 				expect(f.url).toEqual('test.md');
-				expect(f.date).toEqual('May 7, 2023');
+				expect(f.get('date')).toEqual('May 7, 2023');
 				expect(f.datetime).toBeInstanceOf(Date);
 				expect(f.datetime.getFullYear()).toEqual(2023);
 				expect(f.datetime.getMonth()).toEqual(4);
@@ -227,6 +227,12 @@ images:
 			);
 
 			f.parseFrontMatter();
+			// Using the get method should return the formatted date
+			assert.equal(f.get('date'), 'Apr 10, 2023');
+			assert.equal(f.get('updated'), 'May 11, 2024');
+			assert.equal(f.get('title'), 'This file has a date as the date');
+
+			// Accessing the property directly should be a native Date object
 			expect(f.date).toBeInstanceOf(Date);
 			assert.equal(f.date.getFullYear(), 2023);
 			assert.equal(f.date.getMonth(), 3);
@@ -260,8 +266,9 @@ date: '2023-03-14'
 `;
 			f.parseFrontMatter();
 			assert.equal(f.date, '2023-03-14');
+			assert.equal(f.get('date'), '2023-03-14');
 			f.parseDate();
-			assert.equal(f.date, 'Mar 14, 2023');
+			assert.equal(f.get('date'), 'Mar 14, 2023');
 			expect(f.datetime).toBeInstanceOf(Date);
 			assert.equal(f.datetime.getFullYear(), 2023);
 			assert.equal(f.datetime.getMonth(), 2);
@@ -276,8 +283,9 @@ date: '2023-03-14'
 			f.parseFrontMatter();
 			expect(f.url).toContain('2023-03-14');
 			expect(f.date).toBeNull();
+			expect(f.get('date')).toEqual('');
 			f.parseDate();
-			expect(f.date).toEqual('Mar 14, 2023');
+			expect(f.get('date')).toEqual('Mar 14, 2023');
 			expect(f.datetime).toBeInstanceOf(Date);
 			expect(f.datetime.getFullYear()).toEqual(2023);
 			expect(f.datetime.getMonth()).toEqual(2);
@@ -293,7 +301,7 @@ title: Testing Bug Features
 			expect(f.url).toContain('2023/03/14');
 			expect(f.date).toBeNull();
 			f.parseDate();
-			expect(f.date).toEqual('Mar 14, 2023');
+			expect(f.get('date')).toEqual('Mar 14, 2023');
 			expect(f.datetime).toBeInstanceOf(Date);
 			expect(f.datetime.getFullYear()).toEqual(2023);
 			expect(f.datetime.getMonth()).toEqual(2);
@@ -310,7 +318,7 @@ title: Testing Bug Features
 			f.parseFrontMatter();
 			expect(f.date).toBeNull();
 			f.parseDate();
-			expect(f.date).toEqual('May 7, 2023');
+			expect(f.get('date')).toEqual('May 7, 2023');
 			expect(f.datetime).toBeInstanceOf(Date);
 			expect(f.datetime.getFullYear()).toEqual(2023);
 			expect(f.datetime.getMonth()).toEqual(4);
@@ -326,7 +334,7 @@ date: 2023-04-10
 			f.parseFrontMatter();
 			expect(f.date).toBeInstanceOf(Date);
 			f.parseDate();
-			expect(f.date).toEqual('Apr 10, 2023');
+			expect(f.get('date')).toEqual('Apr 10, 2023');
 			expect(f.datetime).toBeInstanceOf(Date);
 			assert.equal(f.datetime.getFullYear(), 2023);
 			assert.equal(f.datetime.getMonth(), 3);
@@ -404,7 +412,7 @@ This is test content about Zebras`;
 			expect(f.iamempty).toBeNull();
 			expect(f.permalink).toEqual('/posts/topic/test.html');
 			expect(f.url).toEqual('/posts/topic/test.md');
-			expect(f.date).toEqual('Mar 14, 2023');
+			expect(f.get('date')).toEqual('Mar 14, 2023');
 			expect(f.datetime).toBeInstanceOf(Date);
 			expect(f.datetime.getFullYear()).toEqual(2023);
 			expect(f.datetime.getMonth()).toEqual(2);

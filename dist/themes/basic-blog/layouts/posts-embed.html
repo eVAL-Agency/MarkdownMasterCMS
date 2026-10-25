@@ -4,7 +4,7 @@
 			<div class="post-title">
 				<%= post.title %>
 			</div>
-			<time class="post-date"><%= post.date %></time>
+			<time class="post-date"><%= post.get('date') %></time>
 
 			<% if(post.image) { %>
 				<img src="<%= post.image.src %>" alt="<%= post.title %>">
