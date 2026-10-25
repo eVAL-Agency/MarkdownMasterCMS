@@ -41,6 +41,12 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Images rendered via markdown now include `loading="lazy"`
 - Add shortRel to Files to support staging sites with different base paths
 - Object lookups in HTML templates should use .get(...) to ensure string values **breaking change**
+- Update dev dependency babel from 7.26.9 to 7.29.7
+- Update dev dependency js-yaml from 4.1.0 to 5.5.0
+- Update dev dependency iodash from 4.17.19 to 4.18.0
+- Update dev dependency rollup from 4.34.9 to 4.59.0
+- Update dev dependency serialize-javascript from 6.0.2 to 7.1.4
+- Update dev dependency serve from 14.2.4 to 14.2.6
 
 ### Fixes
 

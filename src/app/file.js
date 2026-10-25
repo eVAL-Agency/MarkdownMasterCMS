@@ -14,7 +14,7 @@ import {renderLayout} from './templater';
 import {basename, dirname, getDatetime, pathJoin} from './utils';
 import Log from './log';
 import CMSError from './cmserror';
-import jsYaml from 'js-yaml';
+import * as jsYaml from 'js-yaml';
 import TemplateObject from './templateobject';
 
 /**
@@ -380,17 +380,14 @@ class File extends TemplateObject {
 				// Convert date to an actual Date object (as provided by datetime)
 				this.date = this.datetime;
 			}
-			//this.date = this.config.dateFormat(this.datetime);
 		} else if (dateRegEx.test(this.url)) {
 			// Date is retrieved from file URL
 			// Support 2023-01-02 and 2023/01/02 formats in the URL
 			let d = dateRegEx.exec(this.url)[0].replace('/', '-');
 			this.datetime = this.date = getDatetime(d);
-			//this.date = this.config.dateFormat(this.datetime);
 		} else if (this.datetime) {
 			// Lastmodified is retrieved from server response headers or set from the front content
 			this.datetime = this.date = getDatetime(this.datetime);
-			//this.date = this.config.dateFormat(this.datetime);
 		}
 	}
 
@@ -792,6 +789,13 @@ class File extends TemplateObject {
 			for (let i = 0; i < value.length; i++) {
 				value[i] = this._parseFrontMatterKey(value[i]);
 			}
+		} else if (value && typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value)) {
+			// Previous versions of MarkdownMasterCMS treated a date string as a Date.
+			// js-yaml 5.5.0 changed this behaviour and is returning Dates as strings.
+			// While this would make sense (as it is a string...), this system was designed around
+			// supporting a Date for Date fields, so convert it back to a Date.
+			let d = new Date(value);
+			return new Date(d.getTime() + d.getTimezoneOffset() * 60000);
 		} else if (value instanceof Date) {
 			// Native Date objects will utilize UTC which is probably not what the user wanted.
 			// Convert that date to the user's local timezone

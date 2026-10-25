@@ -122,10 +122,14 @@ describe('File', () => {
 			expect(f.image).toEqual({alt: 'Success Cat', src: 'https://www.http.cat/200.jpg'});
 			expect(f.tags).toEqual(['Test', 'Document']);
 			expect(f.url).toEqual('test.md');
-			expect(f.date).toEqual('2023-03-14');
+			expect(f.get('date')).toEqual('Mar 14, 2023');
 			expect(f.falsy).toEqual(false);
+			expect(f.get('falsy')).toEqual('');
 			expect(f.truth).toEqual(true);
+			expect(f.get('truth')).toEqual('true');
 			expect(f.iamempty).toBeNull();
+			expect(f.get('iamempty')).toEqual('');
+			expect(f.get('iamempty', 'zebra')).toEqual('zebra');
 		});
 		it('protected attributes', () => {
 			let f = new File('test.md', 'test', 'test', default_config());
@@ -265,8 +269,7 @@ date: '2023-03-14'
 ---
 `;
 			f.parseFrontMatter();
-			assert.equal(f.date, '2023-03-14');
-			assert.equal(f.get('date'), '2023-03-14');
+			assert.equal(f.get('date'), 'Mar 14, 2023');
 			f.parseDate();
 			assert.equal(f.get('date'), 'Mar 14, 2023');
 			expect(f.datetime).toBeInstanceOf(Date);
