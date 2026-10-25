@@ -124,6 +124,146 @@ describe('FileCollection', () => {
 	describe('resetFilters', () => {
 		// @todo
 	});
+
+	/**
+	 * Tests for the getPageUrl function of FileCollection
+	 */
+	describe('getPageUrl', () => {
+		it ('basic', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			expect(collection.getPageUrl(1)).toEqual('/tests.html');
+		});
+		it ('basic with page number', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			collection.paginate(1)
+			expect(collection.getPageUrl(2)).toEqual('/tests.html?page=2');
+		});
+		it ('more pages than present', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+
+			// There are 4 tests, so setting paginate to 10 results per page
+			// will result in only one page of results.
+			collection.paginate(10)
+			expect(collection.getPageUrl(2)).toEqual('/tests.html');
+		});
+	});
+
+	/**
+	 * Tests for the getPreviousPageUrl function of FileCollection
+	 */
+	describe('getPreviousPageUrl', () => {
+		it ('basic', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			// When on page 3, previous will be 2.
+			collection.paginate(1, 3)
+			expect(collection.getPreviousPageUrl()).toEqual('/tests.html?page=2');
+		});
+
+		it ('basic on page 2', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			// When on page 2, previous will simply be omitted.
+			collection.paginate(1, 2)
+			expect(collection.getPreviousPageUrl()).toEqual('/tests.html');
+		});
+
+		it ('basic on page 1', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			// When on page 1, previous will simply be omitted.
+			collection.paginate(1, 1)
+			expect(collection.getPreviousPageUrl()).toEqual('/tests.html');
+		});
+
+		it ('no pagination set', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			// When paginate was never called, this function simply returns the URL.
+			expect(collection.getPreviousPageUrl()).toEqual('/tests.html');
+		});
+	});
+
+	/**
+	 * Tests for the getNextPageUrl function of FileCollection
+	 */
+	describe('getNextPageUrl', () => {
+		it ('basic', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			// When on page 3, next will be 4.
+			collection.paginate(1, 3)
+			expect(collection.getNextPageUrl()).toEqual('/tests.html?page=4');
+		});
+
+		it ('basic on last page', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			// When on page 2, previous will simply be omitted.
+			collection.paginate(1, 4)
+			expect(collection.getNextPageUrl()).toEqual('/tests.html?page=4');
+		});
+
+		it ('basic on page 1', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			// When on page 1, previous will simply be omitted.
+			collection.paginate(1, 1)
+			expect(collection.getNextPageUrl()).toEqual('/tests.html?page=2');
+		});
+
+		it ('no pagination set', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			// When paginate was never called, this function simply returns the URL.
+			expect(collection.getNextPageUrl()).toEqual('/tests.html');
+		});
+	});
+
+	/**
+	 * Tests for the getPageTagUrl function of FileCollection
+	 */
+	describe('getPageTagUrl', () => {
+		it ('basic', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			expect(collection.getPageTagUrl('test')).toEqual('/tests.html?tag=test');
+		});
+		it ('already filtered', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+
+			// With the tag already present, it should remove it.
+			collection.filterTag('Test')
+			expect(collection.getPageTagUrl('test')).toEqual('/tests.html');
+		});
+		it ('combined tags', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+
+			// With the tag already present, it should add a second when requested
+			collection.filterTag('Test')
+			expect(collection.getPageTagUrl('GREEK')).toEqual('/tests.html?tag=test%2Cgreek');
+		});
+	});
+
 	describe('filterSort', () => {
 		it ('basic sort', () => {
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
@@ -159,6 +299,55 @@ describe('FileCollection', () => {
 			expect(collection['tests'][0].title).toEqual('Charlie');
 			expect(collection['tests'][1].title).toEqual('Alpha');
 			expect(collection['tests'][2].title).toEqual('Beta');
+			expect(collection['tests'][3].title).toEqual('Zulu');
+		});
+
+		it ('sort with custom function', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+
+			collection.resetFilters();
+			collection.filterSort((a, b) => {
+				return a.title.localeCompare(b.title);
+			})
+
+			expect(collection['tests'][0].title).toEqual('Alpha');
+			expect(collection['tests'][1].title).toEqual('Beta');
+			expect(collection['tests'][2].title).toEqual('Charlie');
+			expect(collection['tests'][3].title).toEqual('Zulu');
+		});
+
+		it ('sort by recent', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+
+			collection.resetFilters();
+			collection.filterSort('recent');
+
+			expect(collection['tests'][0].title).toEqual('Zulu');
+			expect(collection['tests'][1].title).toEqual('Beta');
+			expect(collection['tests'][2].title).toEqual('Charlie');
+			expect(collection['tests'][3].title).toEqual('Alpha');
+		});
+
+		it('random sort with mocked random', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+
+			// Set up predictable random sequence
+			const randomSequence = [0.6, -0.3, 0.8, -0.1];
+			let callCount = 0;
+
+			jest.spyOn(Math, 'random').mockImplementation(() => {
+				return randomSequence[callCount++ % randomSequence.length];
+			});
+
+			collection.resetFilters();
+			collection.filterSort('random');
+
+			expect(collection['tests'][0].title).toEqual('Beta');
+			expect(collection['tests'][1].title).toEqual('Alpha');
+			expect(collection['tests'][2].title).toEqual('Charlie');
 			expect(collection['tests'][3].title).toEqual('Zulu');
 		});
 	});
@@ -274,6 +463,38 @@ describe('FileCollection', () => {
 			expect(tags).toHaveLength(2);
 			expect(tags[0]).toEqual({name: 'Test', tag: 'test', count: 2, url: '/tests.html?tag=test', weight: 10});
 			expect(tags[1]).toEqual({name: 'greek', tag: 'greek', count: 1, url: '/tests.html?tag=greek', weight: 5});
+		});
+
+		it('simple sort with strings', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+
+			collection.resetFilters();
+
+			let tags = collection.getTags('name-r');
+			expect(tags).toHaveLength(2);
+			expect(tags[0]).toEqual({name: 'Test', tag: 'test', count: 2, url: '/tests.html?tag=test', weight: 10});
+			expect(tags[1]).toEqual({name: 'greek', tag: 'greek', count: 1, url: '/tests.html?tag=greek', weight: 5});
+
+			tags = collection.getTags('name');
+			expect(tags[0]).toEqual({name: 'greek', tag: 'greek', count: 1, url: '/tests.html?tag=greek', weight: 5});
+			expect(tags[1]).toEqual({name: 'Test', tag: 'test', count: 2, url: '/tests.html?tag=test', weight: 10});
+		});
+
+		it('simple sort with ints', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+
+			collection.resetFilters();
+
+			let tags = collection.getTags('weight-r');
+			expect(tags).toHaveLength(2);
+			expect(tags[0]).toEqual({name: 'Test', tag: 'test', count: 2, url: '/tests.html?tag=test', weight: 10});
+			expect(tags[1]).toEqual({name: 'greek', tag: 'greek', count: 1, url: '/tests.html?tag=greek', weight: 5});
+
+			tags = collection.getTags('weight');
+			expect(tags[0]).toEqual({name: 'greek', tag: 'greek', count: 1, url: '/tests.html?tag=greek', weight: 5});
+			expect(tags[1]).toEqual({name: 'Test', tag: 'test', count: 2, url: '/tests.html?tag=test', weight: 10});
 		});
 	});
 	describe('getFileByPermalink', () => {

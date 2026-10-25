@@ -204,11 +204,16 @@ class FileCollection extends TemplateObject {
 	 */
 	getPreviousPageUrl() {
 		let url = this.getFileListUrl() + '.html',
-			u = new URLSearchParams(window.location.search);
-		if (this.currentPage !== null && this.currentPage > 1) {
+			u = new URLSearchParams(window.location.search),
+			params;
+
+		if (this.currentPage !== null && this.currentPage > 2) {
 			u.set('page', (this.currentPage - 1).toString());
 		}
-		return url + '?' + u.toString();
+
+		params = u.toString();
+
+		return params === '' ? url : url + '?' + params;
 	}
 
 	/**
@@ -218,11 +223,20 @@ class FileCollection extends TemplateObject {
 	 */
 	getNextPageUrl() {
 		let url = this.getFileListUrl() + '.html',
-			u = new URLSearchParams(window.location.search);
+			u = new URLSearchParams(window.location.search),
+			params;
+
 		if (this.currentPage !== null && this.currentPage < this.totalPages) {
 			u.set('page', (this.currentPage + 1).toString());
 		}
-		return url + '?' + u.toString();
+		else if (this.currentPage !== null && this.currentPage >= this.totalPages) {
+			// More pages than supported, just return the same page.
+			u.set('page', (this.currentPage).toString());
+		}
+
+		params = u.toString();
+
+		return params === '' ? url : url + '?' + params;
 	}
 
 	/**
@@ -233,11 +247,55 @@ class FileCollection extends TemplateObject {
 	 */
 	getPageUrl(page) {
 		let url = this.getFileListUrl() + '.html',
-			u = new URLSearchParams(window.location.search);
+			u = new URLSearchParams(window.location.search),
+			params;
+
 		if (page >= 1 && page <= this.totalPages) {
 			u.set('page', (page).toString());
 		}
-		return url + '?' + u.toString();
+
+		params = u.toString();
+
+		return params === '' ? url : url + '?' + u.toString();
+	}
+
+	/**
+	 * Get the URL for the requested tag
+	 *
+	 * If the tag is already present, it will remove it.
+	 * If the tag is not present, it will add it.
+	 * If other tags are present, an AND is used to combine them
+	 *
+	 * @param {string} tag
+	 * @returns {string}
+	 */
+	getPageTagUrl(tag) {
+		let url = this.getFileListUrl() + '.html',
+			u = new URLSearchParams(),
+			tags = this._filters['tags'] || this._filters['&tags'] || [],
+			index;
+
+		tag = tag.trim().toLowerCase();
+
+		if (!Array.isArray(tags)) {
+			tags = [ tags ];
+		}
+
+		index = tags.indexOf(tag);
+		if (index !== -1) {
+			tags = tags.filter((t, i) => i !== index);
+		}
+		else {
+			tags.push(tag);
+		}
+
+		if (tags.length === 0) {
+			return url;
+		}
+		else {
+			u.set('tag', tags.join(','));
+			return url + '?' + u.toString();
+		}
 	}
 
 	/**
@@ -591,12 +649,15 @@ class FileCollection extends TemplateObject {
 
 		if (typeof query === 'string' && query.indexOf(',') !== -1) {
 			// When multiple tags are requested, set the key to include an 'AND' check
-			query = query.split(',').map(t => t.trim());
+			query = query.toLowerCase().split(',').map(t => t.trim());
 			tag = '&tags';
 		}
 		else if (typeof query === 'string' && query.indexOf('|') !== -1) {
 			// Pipe-separated values result in an 'OR' check (default)
-			query = query.split('|').map(t => t.trim());
+			query = query.toLowerCase().split('|').map(t => t.trim());
+		}
+		else if (typeof query === 'string') {
+			query = query.toLowerCase();
 		}
 
 		let search = {};
@@ -613,6 +674,8 @@ class FileCollection extends TemplateObject {
 	 */
 	hasFilterTag(tag) {
 		let tags = this._filters['tags'] || this._filters['&tags'] || '';
+
+		tag = tag.toLowerCase();
 
 		if (Array.isArray(tags)) {
 			// Check if the tag is in the list of tags
@@ -669,6 +732,7 @@ class FileCollection extends TemplateObject {
 	 *
 	 * @param {string|null} [sort=null] Key ['name', 'count', 'url'] to sort results
 	 * @param {number} [weightMax=10] Max weight
+	 * @param {boolean} [all=false] If true, get all tags, otherwise only get tags of currently filtered files
 	 * @returns {Object} {{name: string, count: number, url: string, weight: int}[]}
 	 */
 	_getTags(sort = null, weightMax = 10, all = false) {
@@ -715,10 +779,20 @@ class FileCollection extends TemplateObject {
 		if (sort) {
 			if (sort.endsWith('-r')) {
 				sort = sort.substring(0, sort.length - 2);
-				tags.sort((a, b) => { return a[sort] < b[sort]; });
+				tags.sort((a, b) => {
+					if (typeof a[sort] === 'string' && typeof b[sort] === 'string') {
+						return b[sort].localeCompare(a[sort]);
+					}
+					return b[sort] - a[sort];
+				});
 			}
 			else {
-				tags.sort((a, b) => { return a[sort] > b[sort]; });
+				tags.sort((a, b) => {
+					if (typeof a[sort] === 'string' && typeof b[sort] === 'string') {
+						return a[sort].localeCompare(b[sort]);
+					}
+					return a[sort] - b[sort];
+				});
 			}
 		}
 
