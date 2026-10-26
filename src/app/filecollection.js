@@ -208,17 +208,47 @@ class FileCollection extends TemplateObject {
 	}
 
 	/**
+	 * Get the search parameters for this FileCollection based on the current filters and pagination.
+	 *
+	 * @returns {URLSearchParams}
+	 */
+	getSearchParams() {
+		let params = new URLSearchParams();
+
+		if (this.currentPage !== null && this.currentPage > 1) {
+			params.set('page', this.currentPage.toString());
+		}
+		/*if (this.resultsPerPage !== null) {
+			params.set('perpage', this.resultsPerPage.toString());
+		}*/
+		if (this._filters['tags'] || this._filters['&tags']) {
+			let tags = this._filters['tags'] || this._filters['&tags'];
+			if (Array.isArray(tags)) {
+				params.set('tag', tags.join(','));
+			}
+			else if (tags) {
+				params.set('tag', tags);
+			}
+		}
+
+		return params;
+	}
+
+	/**
 	 * Get the URL for the previous page (when pagination is enabled)
 	 *
 	 * @returns {string}
 	 */
 	getPreviousPageUrl() {
 		let url = this.getFileListUrl() + '.html',
-			u = new URLSearchParams(window.location.search),
+			u = this.getSearchParams(),
 			params;
 
 		if (this.currentPage !== null && this.currentPage > 2) {
 			u.set('page', (this.currentPage - 1).toString());
+		}
+		else {
+			u.delete('page');
 		}
 
 		params = u.toString();
@@ -233,7 +263,7 @@ class FileCollection extends TemplateObject {
 	 */
 	getNextPageUrl() {
 		let url = this.getFileListUrl() + '.html',
-			u = new URLSearchParams(window.location.search),
+			u = this.getSearchParams(),
 			params;
 
 		if (this.currentPage !== null && this.currentPage < this.totalPages) {
@@ -242,6 +272,9 @@ class FileCollection extends TemplateObject {
 		else if (this.currentPage !== null && this.currentPage >= this.totalPages) {
 			// More pages than supported, just return the same page.
 			u.set('page', (this.currentPage).toString());
+		}
+		else {
+			u.delete('page');
 		}
 
 		params = u.toString();
@@ -257,11 +290,14 @@ class FileCollection extends TemplateObject {
 	 */
 	getPageUrl(page) {
 		let url = this.getFileListUrl() + '.html',
-			u = new URLSearchParams(window.location.search),
+			u = this.getSearchParams(),
 			params;
 
 		if (page >= 1 && page <= this.totalPages) {
 			u.set('page', (page).toString());
+		}
+		else {
+			u.delete('page');
 		}
 
 		params = u.toString();

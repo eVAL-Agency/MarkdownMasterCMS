@@ -15,7 +15,6 @@ import FileCollection from '../../src/app/filecollection';
 import {Config} from '../../src/app/config';
 import {JSDOM} from 'jsdom';
 import File from '../../src/app/file';
-import CMSError from '../../src/app/cmserror';
 
 
 const dom = new JSDOM();
@@ -186,6 +185,16 @@ describe('FileCollection', () => {
 			// When paginate was never called, this function simply returns the URL.
 			expect(collection.getPreviousPageUrl()).toEqual('/tests.html');
 		});
+
+		it ('tag on page 2', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			collection.filterTag('test')
+			collection.paginate(1, 2)
+			expect(collection.getPreviousPageUrl()).toEqual('/tests.html?tag=test');
+		});
 	});
 
 	/**
@@ -225,6 +234,31 @@ describe('FileCollection', () => {
 			collection.resetFilters();
 			// When paginate was never called, this function simply returns the URL.
 			expect(collection.getNextPageUrl()).toEqual('/tests.html');
+		});
+
+		it ('tag on page 1', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			collection.filterTag('test')
+			collection.paginate(1, 1)
+			expect(collection.getNextPageUrl()).toEqual('/tests.html?tag=test&page=2');
+		});
+
+		/**
+		 * Test that filtering by tags preserves the tag on the next page.
+		 *
+		 * This test only has 2 pages which have the test tag, so only 2 pages exist.
+		 */
+		it ('tag on page 2', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			collection.filterTag('test')
+			collection.paginate(1, 2)
+			expect(collection.getNextPageUrl()).toEqual('/tests.html?page=2&tag=test');
 		});
 	});
 
