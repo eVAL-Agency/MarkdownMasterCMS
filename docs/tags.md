@@ -81,3 +81,13 @@ This is notably useful for combining filters in a complex system.
     </a>
 <% }) %>
 ```
+
+### Check if a tag is used
+
+You can use `hasFilterTag()` to check if the given tag is used in the current filters.
+
+```html
+<% if(data.hasFilterTag('test')) { %>
+    The "test" tag is used.
+<% } %>
+```

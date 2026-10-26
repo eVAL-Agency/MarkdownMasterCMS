@@ -99,6 +99,16 @@ class FileCollection extends TemplateObject {
 		this.allFiles = [];
 
 		/**
+		 * Filtered list of files available in this collection
+		 *
+		 * This gets updated as filters are applied, but
+		 * **DOES NOT** get updated with pagination!
+		 *
+		 * @type {File[]}
+		 */
+		this.filteredFiles = [];
+
+		/**
 		 * List of directories to scan when server-side is not available
 		 * @type {string[]}
 		 */
@@ -481,6 +491,7 @@ class FileCollection extends TemplateObject {
 			file.__match = 0;
 			return !file.draft;
 		});
+		this.filteredFiles = this[this.type];
 
 		this._filters = {};
 		this._filterMode = 'AND';
@@ -634,6 +645,7 @@ class FileCollection extends TemplateObject {
 		this[this.type] = this[this.type].filter((file) => {
 			return file.matchesAttributeSearch(search, mode);
 		});
+		this.filteredFiles = this[this.type];
 
 		return this[this.type];
 	}
@@ -751,13 +763,13 @@ class FileCollection extends TemplateObject {
 			source = this.allFiles;
 		}
 		else {
-			source = this[this.type];
+			source = this.filteredFiles;
 		}
 
 		source.forEach(file => {
 			if (!file.draft && file.tags && Array.isArray(file.tags)) {
 				file.tags.forEach(tag => {
-					let tag_lower = tag.toLowerCase(),
+					let tag_lower = tag.toLowerCase().replaceAll(' ', '_'),
 						pos = tagNames.indexOf(tag_lower);
 					if (pos === -1) {
 						// New tag discovered

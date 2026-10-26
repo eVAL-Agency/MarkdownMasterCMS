@@ -118,12 +118,6 @@ describe('FileCollection', () => {
 			});
 		});
 	});
-	describe('loadFiles', () => {
-		// @todo
-	});
-	describe('resetFilters', () => {
-		// @todo
-	});
 
 	/**
 	 * Tests for the getPageUrl function of FileCollection
@@ -525,6 +519,47 @@ describe('FileCollection', () => {
 			expect(tags[1]).toEqual({name: 'Test', tag: 'test', count: 2, url: '/tests.html?tag=test', weight: 10});
 		});
 	});
+
+	describe('getFilteredTags', () => {
+		const files = [
+			new File('/tests/test1.md', 'tests', 'test', new Config()),
+			new File('/tests/test2.md', 'tests', 'test', new Config()),
+			new File('/tests/test3.md', 'tests', 'test', new Config()),
+			new File('/tests/test4.md', 'tests', 'test', new Config()),
+		];
+		files[0].tags = ['test', 'page1'];
+		files[1].tags = ['Test', 'page2'];
+		files[2].tags = ['Test', 'page3'];
+		files[3].tags = ['Test', 'page4'];
+
+		it('pagination does not affect filtered tags', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = files;
+
+			collection.resetFilters();
+
+			// No sorting should return all tags
+			expect(collection.getFilteredTags()).toHaveLength(5);
+
+			// Pagination should return all tags
+			collection.paginate(1, 1);
+			expect(collection.getFilteredTags()).toHaveLength(5);
+		});
+
+		it('filters do affect filtered tags', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = files;
+
+			collection.resetFilters();
+			// Before filtering, all 5 tags are present
+			expect(collection.getFilteredTags()).toHaveLength(5);
+			collection.filterTag('page2')
+
+			// After filtering, just 'test' and 'page2' should be available.
+			expect(collection.getFilteredTags()).toHaveLength(2);
+		});
+	});
+
 	describe('getFileByPermalink', () => {
 		/**
 		 * Test a basic lookup by permalink
