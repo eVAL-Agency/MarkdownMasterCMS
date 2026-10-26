@@ -273,27 +273,33 @@ class FileCollection extends TemplateObject {
 		let url = this.getFileListUrl() + '.html',
 			u = new URLSearchParams(),
 			tags = this._filters['tags'] || this._filters['&tags'] || [],
-			index;
+			found = false,
+			newTags = [];
 
-		tag = tag.trim().toLowerCase();
+		tag = tag.trim().toLowerCase().replaceAll(' ', '_');
 
 		if (!Array.isArray(tags)) {
 			tags = [ tags ];
 		}
 
-		index = tags.indexOf(tag);
-		if (index !== -1) {
-			tags = tags.filter((t, i) => i !== index);
-		}
-		else {
-			tags.push(tag);
+		tags.forEach(t => {
+			t = t.toLowerCase().replaceAll(' ', '_');
+			if (t === tag) {
+				found = true;
+			}
+			else {
+				newTags.push(t);
+			}
+		});
+		if (!found) {
+			newTags.push(tag);
 		}
 
-		if (tags.length === 0) {
+		if (newTags.length === 0) {
 			return url;
 		}
 		else {
-			u.set('tag', tags.join(','));
+			u.set('tag', newTags.join(','));
 			return url + '?' + u.toString();
 		}
 	}

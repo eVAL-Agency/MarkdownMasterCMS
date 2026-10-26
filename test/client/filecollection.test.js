@@ -262,6 +262,13 @@ describe('FileCollection', () => {
 			collection.filterTag('Test')
 			expect(collection.getPageTagUrl('GREEK')).toEqual('/tests.html?tag=test%2Cgreek');
 		});
+
+		it ('spaces and underscores', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+
+			// URLs should generate underscores.
+			expect(collection.getPageTagUrl('Greek TEST')).toEqual('/tests.html?tag=greek_test');
+		});
 	});
 
 	describe('filterSort', () => {
@@ -410,7 +417,7 @@ describe('FileCollection', () => {
 		 */
 		it('multiple tags', () => {
 			let collection = new FileCollection('tests', {list: 'test'}, new Config());
-			let files
+			let files;
 
 			collection.allFiles = good_files;
 
@@ -437,6 +444,27 @@ describe('FileCollection', () => {
 			expect(files).toHaveLength(2); // 2 tests have either "Greek" or "Test"
 			expect(collection.hasFilterTag('greek')).toEqual(true);
 			expect(collection.hasFilterTag('Test')).toEqual(true);
+		});
+
+		it ('spaces and underscores', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			let files;
+			let testFile = new File('/tests/test1.md', 'tests', 'test', new Config());
+			collection.allFiles = [testFile];
+			testFile.tags = ['Greek Test'];
+
+			// Filtering should support underscores and spaces as the same.
+			collection.resetFilters();
+			files = collection.filterTag('greek test');
+			expect(files).toHaveLength(1);
+
+			collection.resetFilters();
+			files = collection.filterTag('greek_test');
+			expect(files).toHaveLength(1);
+
+			collection.resetFilters();
+			files = collection.filterTag('greek');
+			expect(files).toHaveLength(0);
 		});
 	});
 	describe('filterPermalink', () => {

@@ -672,6 +672,13 @@ class File extends TemplateObject {
 			if (this._compare(val, op, check)) {
 				return true;
 			}
+
+			if (key === 'tags') {
+				// Tags support auto replacing underscores to spaces (or vice versa).
+				if (this._compare(val.replaceAll(' ', '_'), op, check.replaceAll(' ', '_'))) {
+					return true;
+				}
+			}
 		}
 
 		return false;
