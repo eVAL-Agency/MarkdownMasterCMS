@@ -30,6 +30,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Implement support for '*' and '!*' filter shorthands
 - Tags support filtering modes AND and OR for multiple tags
 - Add FileCollection.hasFilterTag for checking if a collection has a specific tag filtered
+- New plugin - cms-pagination for easy pagination support in templates
 
 ### Changes
 
@@ -52,6 +53,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Update dev dependency serve from 14.2.4 to 14.2.6
 - Rename FileCollection.files to FileCollection.allFiles **breaking change**
 - Rename FileCollection.page to FileCollection.currentPage **breaking change**
+- Overhaul File attribute searching to better support more complex filtering
 
 ### Fixes
 

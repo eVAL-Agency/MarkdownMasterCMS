@@ -433,7 +433,7 @@ This is test content about Zebras`;
 		});
 	});
 
-	describe('matchesAttributeSearch', () => {
+	describe('matchesAttributeSearch with parsed content', () => {
 		it('comparisons', () => {
 			let f = new File('/posts/topic/test.md', 'test', 'test', default_config());
 			f.content = generic_contents;
@@ -451,6 +451,7 @@ This is test content about Zebras`;
 			let f = new File('/posts/topic/test.md', 'test', 'test', default_config());
 			f.content = generic_contents;
 			f.parseContent();
+			// This file has the tags 'Test' and 'Document'.
 			expect(f.matchesAttributeSearch({tags: 'document'})).toEqual(true);
 			expect(f.matchesAttributeSearch({tags: 'popcorn'})).toEqual(false);
 			expect(f.matchesAttributeSearch({tags: ['document', 'draft']})).toEqual(true);
@@ -489,36 +490,127 @@ This is test content about Zebras`;
 		});
 	});
 
-	describe('_matchesAttribute', () => {
+	describe('matchesAttributeSearch with simple content', () => {
 		let f = new File();
 
 		it('bool true = string true', () => {
 			f.test = true;
-			expect(f._matchesAttribute('test', 'true')).toEqual(true);
+			expect(f.matchesAttributeSearch({test: 'true'})).toEqual(true);
 		});
 
 		it('bool true = string 1', () => {
 			f.test = true;
-			expect(f._matchesAttribute('test', '1')).toEqual(true);
+			expect(f.matchesAttributeSearch({test: '1'})).toEqual(true);
 		});
 
 		it('int 1 = string 1', () => {
 			f.test = 1;
-			expect(f._matchesAttribute('test', '1')).toEqual(true);
+			expect(f.matchesAttributeSearch({test: '1'})).toEqual(true);
 		});
 
 		it('Date 2025-01-01 = string 2025-01-01', () => {
 			f.test = new Date('2025-01-01');
-			expect(f._matchesAttribute('test', '2025-01-01')).toEqual(true);
-		});
-
-		it('NULL != string 1', () => {
-			expect(f._matchesAttribute('attributeDoesNotExist', '!= 1')).toEqual(true);
+			expect(f.matchesAttributeSearch({test: '2025-01-01'})).toEqual(true);
 		});
 
 		it('string /pages/foo.html ~ string foo', () => {
 			f.test = '/pages/foo.html';
-			expect(f._matchesAttribute('test', '~ foo')).toEqual(true);
+			expect(f.matchesAttributeSearch({test: '~ foo'})).toEqual(true);
+		});
+
+		it('string foo matches *', () => {
+			f.test = 'foo';
+			expect(f.matchesAttributeSearch({test: '*'})).toEqual(true);
+		});
+
+		it('string foo does not match !*', () => {
+			f.test = 'foo';
+			expect(f.matchesAttributeSearch({test: '!*'})).toEqual(false);
+		});
+
+		it('NULL does not match string 1', () => {
+			expect(f.matchesAttributeSearch({test: '1'})).toEqual(false);
+		});
+
+		it('NULL != string 1', () => {
+			expect(f.matchesAttributeSearch({test: '!= 1'})).toEqual(true);
+		});
+
+		it('NULL does not match *', () => {
+			expect(f.matchesAttributeSearch({attributeDoesNotExist: '*'})).toEqual(false);
+		});
+
+		it('NULL matches !*', () => {
+			expect(f.matchesAttributeSearch({attributeDoesNotExist: '!*'})).toEqual(true);
+		});
+
+		it('Array has key', () => {
+			f.test = ['foo', 'bar'];
+			expect(f.matchesAttributeSearch({test: 'foo'})).toEqual(true);
+			expect(f.matchesAttributeSearch({test: 'bar'})).toEqual(true);
+			expect(f.matchesAttributeSearch({test: 'zebra'})).toEqual(false);
+		});
+
+		it('Array does not contain key', () => {
+			f.test = ['foo', 'bar'];
+			expect(f.matchesAttributeSearch({test: '!foo'})).toEqual(false);
+			expect(f.matchesAttributeSearch({test: '!bar'})).toEqual(false);
+			expect(f.matchesAttributeSearch({test: '!zebra'})).toEqual(true);
+		});
+
+		it('Array has any keys', () => {
+			f.test = ['foo', 'bar'];
+			expect(f.matchesAttributeSearch({test: ['bar', 'foo']})).toEqual(true);
+			expect(f.matchesAttributeSearch({test: ['bat', 'bar']})).toEqual(true);
+		})
+
+		it('Array has all keys', () => {
+			f.test = ['foo', 'bar'];
+			expect(f.matchesAttributeSearch({'&test': ['bar', 'foo']})).toEqual(true);
+			expect(f.matchesAttributeSearch({'&test': ['bat', 'bar']})).toEqual(false);
+		});
+
+		it('Array has some keys and not some others', () => {
+			f.test = ['foo', 'bar'];
+			expect(f.matchesAttributeSearch({'&test': ['bar', '!foo']})).toEqual(false);
+			expect(f.matchesAttributeSearch({'&test': ['bar', '!zebra']})).toEqual(true);
+		});
+
+		it('Array check against key not present', () => {
+			f.test = ['foo', 'bar'];
+			expect(f.matchesAttributeSearch({test: 'missing'})).toEqual(false);
+		});
+
+		it('Array is present matches *', () => {
+			f.test = ['foo', 'bar'];
+			expect(f.matchesAttributeSearch({test: '*'})).toEqual(true);
+		});
+
+		it('Array is present does not !*', () => {
+			f.test = ['foo', 'bar'];
+			expect(f.matchesAttributeSearch({test: '!*'})).toEqual(false);
+		});
+
+		it('Date is present', () => {
+			f.test = new Date('2025-01-01');
+			expect(f.matchesAttributeSearch({test: '*'})).toEqual(true);
+		});
+
+		it('Date is not present', () => {
+			f.test = new Date('2025-01-01');
+			expect(f.matchesAttributeSearch({test: '!*'})).toEqual(false);
+		});
+
+		it('Date is older than', () => {
+			f.test = new Date('2025-01-01');
+			expect(f.matchesAttributeSearch({test: '< 2026-01-01'})).toEqual(true);
+			expect(f.matchesAttributeSearch({test: '< 2024-01-01'})).toEqual(false);
+		});
+
+		it('Date is newer than', () => {
+			f.test = new Date('2025-01-01');
+			expect(f.matchesAttributeSearch({test: '> 2026-01-01'})).toEqual(false);
+			expect(f.matchesAttributeSearch({test: '> 2024-01-01'})).toEqual(true);
 		});
 	});
 

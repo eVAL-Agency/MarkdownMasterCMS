@@ -703,15 +703,12 @@ class FileCollection extends TemplateObject {
 
 		if (typeof query === 'string' && query.indexOf(',') !== -1) {
 			// When multiple tags are requested, set the key to include an 'AND' check
-			query = query.toLowerCase().split(',').map(t => t.trim());
+			query = query.split(',').map(t => t.trim());
 			tag = '&tags';
 		}
 		else if (typeof query === 'string' && query.indexOf('|') !== -1) {
 			// Pipe-separated values result in an 'OR' check (default)
-			query = query.toLowerCase().split('|').map(t => t.trim());
-		}
-		else if (typeof query === 'string') {
-			query = query.toLowerCase();
+			query = query.split('|').map(t => t.trim());
 		}
 
 		let search = {};
@@ -729,16 +726,19 @@ class FileCollection extends TemplateObject {
 	hasFilterTag(tag) {
 		let tags = this._filters['tags'] || this._filters['&tags'] || '';
 
-		tag = tag.toLowerCase();
+		tag = tag.toLowerCase().replaceAll(' ', '_');
 
-		if (Array.isArray(tags)) {
-			// Check if the tag is in the list of tags
-			return tags.indexOf(tag) !== -1;
+		if (!Array.isArray(tags)) {
+			tags = [ tags ];
 		}
-		else {
-			// Allow single tags to be set; (filters may be an Array or an individual value
-			return tags === tag;
+
+		for (let i = 0; i < tags.length; i++) {
+			if (tags[i].toLowerCase().replaceAll(' ', '_') === tag) {
+				return true;
+			}
 		}
+
+		return false;
 	}
 
 	/**

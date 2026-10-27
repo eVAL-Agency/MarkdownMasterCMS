@@ -494,6 +494,28 @@ describe('FileCollection', () => {
 			files = collection.filterTag('greek');
 			expect(files).toHaveLength(0);
 		});
+
+		/**
+		 * Test excluding specific tags
+		 */
+		it('excluded tags', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			let files;
+
+			collection.allFiles = good_files;
+
+			// No tags set yet, any check for 'hasFilterTag' should return false.
+			expect(collection.hasFilterTag('greek')).toEqual(false);
+			expect(collection.hasFilterTag('Test')).toEqual(false);
+
+			collection.resetFilters();
+			files = collection.filterTag('!Test');
+			expect(files).toHaveLength(2); // There are 2 tests without "Test" as the tag
+			expect(files[0].title).toEqual('Zulu');
+			expect(files[0].matchesAttributeSearch({tags: ['Test'] })).toEqual(false);
+			expect(files[1].title).toEqual('Charlie');
+			expect(files[1].matchesAttributeSearch({tags: ['Test'] })).toEqual(false);
+		});
 	});
 	describe('filterPermalink', () => {
 		it('basic', () => {

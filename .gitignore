@@ -66,3 +66,6 @@ nbdist/
 /.idea/developer-tools.xml
 .idea/copilot*.xml
 /.idea/deployment.xml
+
+# Ignore code coverage
+coverage/

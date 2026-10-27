@@ -7,9 +7,9 @@
  * @module Extras/Chart.js
  * @license The MIT License (MIT)
  * @copyright (c) 2025 eVAL Agency
- * @author Marek Novak
+ * @author Charlie Powell
  * @see https://markdownmaster.com/docs/extras/chartjs.html
- * @since 5.2.0
+ * @since 6.0.0
  */
 
 {

@@ -635,13 +635,6 @@ class File extends TemplateObject {
 		let op = '=',
 			local_val;
 
-		// Key conversions, (must be before local_var assignment)
-		if (key === 'date') {
-			// This is a useless parameter as it's formatted into a human-friendly version,
-			// but we can remap it to datetime (that's probably what they wanted)
-			key = 'datetime';
-		}
-
 		local_val = Object.hasOwn(this, key) ? this[key] : null;
 		if (!Array.isArray(local_val)) {
 			// To support array values, just convert everything to an array to make the logic simpler.
@@ -662,26 +655,40 @@ class File extends TemplateObject {
 				op = check.substring(0, 1);
 				check = check.substring(2);
 			}
+			else if (check.startsWith('!')) {
+				op = '!=';
+				check = check.substring(1);
+			}
 		}
+
+		if (key === 'tags') {
+			// Tags are a special case where they convert spaces to underscores.
+			// This is because "Tech Manual" and "tech_manual" are the SAME tag.
+			check = check.replaceAll(' ', '_');
+		}
+
+		// If the check is an inverse (not present),
+		// then the default case should be True that it did NOT match anything.
+		let defaultValue = op.startsWith('!');
 
 		for (let val of local_val) {
 			if (val === null) {
 				val = '';
 			}
 
-			if (this._compare(val, op, check)) {
-				return true;
+			if (key === 'tags') {
+				// Tags are a special case where they convert spaces to underscores.
+				// This is because "Tech Manual" and "tech_manual" are the SAME tag.
+				val = val.replaceAll(' ', '_');
 			}
 
-			if (key === 'tags') {
-				// Tags support auto replacing underscores to spaces (or vice versa).
-				if (this._compare(val.replaceAll(' ', '_'), op, check.replaceAll(' ', '_'))) {
-					return true;
-				}
+			let result = this._compare(val, op, check);
+			if (result.matched) {
+				return result.result;
 			}
 		}
 
-		return false;
+		return defaultValue;
 	}
 
 	/**
@@ -691,40 +698,65 @@ class File extends TemplateObject {
 	 * this is because YAML will convert "true" to a boolean TRUE when parsed,
 	 * but HTML will treat all attributes as a string.
 	 *
-	 * @param {Date|boolean|string|integer} val
+	 * @param {Date|boolean|string|integer|number} val
 	 * @param {string} op
-	 * @param {string} check
-	 * @returns {boolean}
+	 * @param {string|number} check
+	 * @returns {Object[string, boolean]}
 	 * @private
 	 */
 	_compare(val, op, check) {
+
+		// Standardize input parameters, notably process strings case insensitively.
+		if (typeof val === 'string') {
+			val = val.toLowerCase();
+		}
+		if (typeof check === 'string') {
+			check = check.toLowerCase();
+		}
+
 		if (op === '~' || op === '!~') {
 			// Regex check
 			let re = new RegExp(check),
 				invert = op === '!~',
 				test = re.test(val.toString());
 
-			return invert ? !test : test;
+			return {
+				matched: test,
+				result: invert ? !test : test,
+			};
 		}
 
-		if (op === '=' && (check === '*' || check === '!*')) {
+		if (op === '=' && check === '*') {
 			// Wildcard check; just checks if the attribute contains a value
-			let invert = check === '!*';
-
-			if (invert) {
-				return val.toString() === '';
-			}
-			else {
-				return val.toString() !== '';
-			}
+			return {
+				matched: val.toString() !== '',
+				result: val.toString() !== '',
+			};
 		}
+
+		if (op === '!=' && check === '*') {
+			// Wildcard check; just checks if the attribute contains a value
+			return {
+				matched: val.toString() !== '',
+				result: val.toString() === '',
+			};
+		}
+
+		// For standard comparisons, map complex objects like Dates to common values.
+		if (val instanceof Date) {
+			// If the value is a Date, ensure the input string is also Date-like.
+			val = val.getTime();
+			check = (new Date(check)).getTime();
+		}
+
+		// Used to determine if a check was performed.
+		// If null, no comparisons were performed.
+		let result = null;
 
 		if (op === '=' || op === '!=') {
 			// Equality check
 			let invert = op === '!=',
 				test;
-
-			check = check.toLowerCase();
 
 			if (val === true) {
 				test = check === '1' || check === 'true' || check === 'yes' || check === 'on';
@@ -732,53 +764,55 @@ class File extends TemplateObject {
 			else if(val === false) {
 				test = check === '0' || check === 'false' || check === 'no' || check === 'off';
 			}
-			else if(val instanceof Date) {
-				test = val.getTime() === (new Date(check)).getTime();
-			}
 			else {
-				test = val.toString().toLowerCase() === check;
+				test = val.toString() === check.toString();
 			}
 
-			return invert ? !test : test;
+			if (test) {
+				result = invert ? !test : test;
+			}
 		}
 
 		if (op === '>') {
-			if (val instanceof Date) {
-				return val > (new Date(check));
+			if (typeof val === 'string') {
+				result = val.localeCompare(check) > 0;
 			}
 			else {
-				return val > check;
+				result = val > check;
 			}
 		}
 
 		if (op === '<') {
-			if (val instanceof Date) {
-				return val < (new Date(check));
+			if (typeof val === 'string') {
+				result = val.localeCompare(check) < 0;
 			}
 			else {
-				return val < check;
+				result = val < check;
 			}
 		}
 
 		if (op === '>=') {
-			if (val instanceof Date) {
-				return val >= (new Date(check));
+			if (typeof val === 'string') {
+				result = val.localeCompare(check) >= 0;
 			}
 			else {
-				return val >= check;
+				result = val >= check;
 			}
 		}
 
 		if (op === '<=') {
-			if (val instanceof Date) {
-				return val <= (new Date(check));
+			if (typeof val === 'string') {
+				result = val.localeCompare(check) <= 0;
 			}
 			else {
-				return val <= check;
+				result = val <= check;
 			}
 		}
 
-		return false;
+		return {
+			matched: result !== null,
+			result: result !== null ? result : false,
+		};
 	}
 
 	/**
