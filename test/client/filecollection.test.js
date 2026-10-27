@@ -644,7 +644,159 @@ describe('FileCollection', () => {
 		});
 
 	});
-	describe('render', () => {
-		// @todo
+
+	describe('clone', () => {
+		/**
+		 * Ensure that basic attributes are copied over.
+		 */
+		it ('ensure attributes match', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+
+			let copy = collection.clone();
+
+			expect(copy.allFiles).toEqual(collection.allFiles);
+			expect(copy.config).toEqual(collection.config);
+			expect(copy.type).toEqual(collection.type);
+			expect(copy.layout).toEqual(collection.layout);
+			expect(copy.tests).toEqual(collection.tests);
+		});
+
+		/**
+		 * Ensure that modifications to the clone do not affect the original.
+		 */
+		it ('ensure meta separate', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			collection.paginate(1, 2);
+
+			let copy = collection.clone();
+			// Reset the filters on the copy to revert the pagination.
+			copy.resetFilters();
+
+			// Apply a different filter from the original and check that the results are different.
+			copy.filterTag('Test');
+			expect(collection.tests).toHaveLength(1);
+			expect(copy.tests).toHaveLength(2);
+		});
+	});
+
+	describe ('getSearchParams', () => {
+		it ('no parameters', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+
+			let s = collection.getSearchParams();
+			expect(s).toBeInstanceOf(URLSearchParams);
+			expect(s.toString()).toEqual('');
+		});
+
+		it ('page 1', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			collection.paginate(1, 1);
+
+			let s = collection.getSearchParams();
+			expect(s.toString()).toEqual(''); // Page 1 does not need any parameters.
+		});
+
+		it ('page 2', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			collection.paginate(1, 2);
+
+			let s = collection.getSearchParams();
+			expect(s.toString()).toEqual('page=2');
+		});
+
+		it ('tag', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			collection.filterTag('Test');
+
+			let s = collection.getSearchParams();
+			expect(s.toString()).toEqual('tag=test');
+		});
+
+		it ('all tags', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			collection.filterTag('Test, Greek');
+
+			let s = collection.getSearchParams();
+			expect(s.toString()).toEqual('tag=test%2Cgreek');
+		});
+
+		it ('any tags', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			collection.filterTag('Test | Greek');
+
+			let s = collection.getSearchParams();
+			expect(s.toString()).toEqual('tag=test%7Cgreek');
+		});
+	});
+
+	describe ('paginate', () => {
+		it ('simple', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			collection.paginate(1, 2);
+
+			expect(collection.tests).toHaveLength(1);
+			expect(collection.currentPage).toEqual(2);
+			expect(collection.totalPages).toEqual(4);
+		});
+
+		it ('too low page', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			collection.paginate(1, 0); // 0 or below is not a valid page.
+
+			expect(collection.tests).toHaveLength(1);
+			expect(collection.currentPage).toEqual(1);
+			expect(collection.totalPages).toEqual(4);
+		});
+
+		it ('too high page', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			collection.paginate(1, 12); // there are only 4 pages.
+
+			expect(collection.tests).toHaveLength(1);
+			expect(collection.currentPage).toEqual(4);
+			expect(collection.totalPages).toEqual(4);
+		});
+
+		/**
+		 * While not normal behaviour, the CMS should properly handle repeated calls to paginate.
+		 */
+		it ('repeated calls', () => {
+			let collection = new FileCollection('tests', {list: 'test'}, new Config());
+			collection.allFiles = good_files;
+			collection.resetFilters();
+			collection.paginate(1, 3);
+
+			expect(collection.tests).toHaveLength(1);
+			expect(collection.currentPage).toEqual(3);
+			expect(collection.totalPages).toEqual(4);
+
+			collection.paginate(20, 1);
+
+			expect(collection.tests).toHaveLength(4);
+			expect(collection.currentPage).toEqual(1);
+			expect(collection.totalPages).toEqual(1);
+		});
 	});
 });

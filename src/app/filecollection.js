@@ -195,6 +195,7 @@ class FileCollection extends TemplateObject {
 		clone.resultsPerPage = this.resultsPerPage;
 		clone.totalPages = this.totalPages;
 		clone.totalResults = this.totalResults;
+		clone[this.type] = this[this.type];
 		return clone;
 	}
 
@@ -221,14 +222,22 @@ class FileCollection extends TemplateObject {
 		/*if (this.resultsPerPage !== null) {
 			params.set('perpage', this.resultsPerPage.toString());
 		}*/
+
 		if (this._filters['tags'] || this._filters['&tags']) {
+			let sep = ','; // Default for 'AND' tags (comma-separated) from '&tags'
+			if (this._filters['tags']) {
+				// If 'tags' are used, an 'OR' separator is used instead.
+				sep = '|';
+			}
 			let tags = this._filters['tags'] || this._filters['&tags'];
-			if (Array.isArray(tags)) {
-				params.set('tag', tags.join(','));
+
+			if (!Array.isArray(tags)) {
+				tags = [ tags ];
 			}
-			else if (tags) {
-				params.set('tag', tags);
-			}
+
+			let tagsFlat = tags.map(t => t.toLowerCase().replaceAll(' ', '_'));
+			tagsFlat = tagsFlat.filter(t => t !== '');
+			params.set('tag', tagsFlat.join(sep));
 		}
 
 		return params;
@@ -909,7 +918,7 @@ class FileCollection extends TemplateObject {
 
 		this.resultsPerPage = results;
 		this.currentPage = page || (u.has('page') ? parseInt(u.get('page')) : 1);
-		this.totalResults = this[this.type].length;
+		this.totalResults = this.filteredFiles.length;
 		this.totalPages = Math.ceil(this.totalResults / this.resultsPerPage);
 
 		if (this.currentPage > this.totalPages) {
@@ -920,7 +929,7 @@ class FileCollection extends TemplateObject {
 		start = (this.currentPage - 1) * this.resultsPerPage;
 		end = Math.min(this.currentPage * this.resultsPerPage, this.totalResults);
 
-		this[this.type] = this[this.type].slice(start, end);
+		this[this.type] = this.filteredFiles.slice(start, end);
 	}
 
 	/**
