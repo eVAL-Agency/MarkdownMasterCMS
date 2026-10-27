@@ -61,6 +61,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Implement simple asset versions for cache busting in browsers
 - Various fixes in FileCollection related to sorting and filtering
 - Fix FileCollection.getFilteredTags for retrieving all tags filtered on a collection
+- File.getTags sorting and structure are now on par with FileCollection
 
 ### Security
 

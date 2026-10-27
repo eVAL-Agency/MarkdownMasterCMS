@@ -117,6 +117,36 @@ export function basename(path, without_extension) {
 	return path;
 }
 
+/**
+ * Sort a list of objects by a given key
+ *
+ * Handles string and number based keys, performs the sort in place.
+ *
+ * If the key ends with '-r', it will be sorted in reverse order.
+ *
+ * @param {Array<Object>} listOfObjects
+ * @param {string} sort
+ */
+export function smartSort(listOfObjects, sort) {
+	if (sort.endsWith('-r')) {
+		sort = sort.substring(0, sort.length - 2);
+		listOfObjects.sort((a, b) => {
+			if (typeof a[sort] === 'string' && typeof b[sort] === 'string') {
+				return b[sort].localeCompare(a[sort]);
+			}
+			return b[sort] - a[sort];
+		});
+	}
+	else {
+		listOfObjects.sort((a, b) => {
+			if (typeof a[sort] === 'string' && typeof b[sort] === 'string') {
+				return a[sort].localeCompare(b[sort]);
+			}
+			return a[sort] - b[sort];
+		});
+	}
+}
+
 export class AttributeBuilder {
 	/**
 	 *

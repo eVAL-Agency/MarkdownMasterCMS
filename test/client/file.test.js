@@ -687,4 +687,32 @@ This is test content about Zebras`;
 			});
 		});
 	});
+
+	describe('getTags', () => {
+		it('basic', () => {
+			let f = new File('/posts/topic/test.md', 'tests', 'test', default_config());
+			f.content = generic_contents;
+			f.parseContent();
+
+			let tags = f.getTags();
+			expect(tags).toHaveLength(2);
+			expect(tags[0]).toEqual({name: 'Test', tag: 'test', count: 1, url: '/tests.html?tag=test', weight: 1});
+			expect(tags[1]).toEqual({name: 'Document', tag: 'document', count: 1, url: '/tests.html?tag=document', weight: 1});
+		});
+
+		it('simple sort with strings', () => {
+			let f = new File('/posts/topic/test.md', 'tests', 'test', default_config());
+			f.content = generic_contents;
+			f.parseContent();
+
+			let tags = f.getTags('name-r');
+			expect(tags).toHaveLength(2);
+			expect(tags[0]).toEqual({name: 'Test', tag: 'test', count: 1, url: '/tests.html?tag=test', weight: 1});
+			expect(tags[1]).toEqual({name: 'Document', tag: 'document', count: 1, url: '/tests.html?tag=document', weight: 1});
+
+			tags = f.getTags('name');
+			expect(tags[0]).toEqual({name: 'Document', tag: 'document', count: 1, url: '/tests.html?tag=document', weight: 1});
+			expect(tags[1]).toEqual({name: 'Test', tag: 'test', count: 1, url: '/tests.html?tag=test', weight: 1});
+		});
+	});
 });

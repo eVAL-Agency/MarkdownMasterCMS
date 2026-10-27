@@ -11,7 +11,7 @@
  */
 
 import {renderLayout} from './templater';
-import {basename, dirname, getDatetime, pathJoin} from './utils';
+import {basename, dirname, getDatetime, pathJoin, smartSort} from './utils';
 import Log from './log';
 import CMSError from './cmserror';
 import * as jsYaml from 'js-yaml';
@@ -267,18 +267,20 @@ class File extends TemplateObject {
 
 		if (this.tags && Array.isArray(this.tags)) {
 			this.tags.forEach(tag => {
+				let tag_key = tag.toLowerCase().replace(/ /g, '_');
+
 				tags.push({
-					tag: tag.toLowerCase(),
+					tag: tag_key,
 					name: tag.replace(/_/g, ' '),
 					count: 1,
 					weight: 1,
-					url: this.config.webpath + this.type + '.html?tag=' + encodeURIComponent(tag.toLowerCase())
+					url: this.config.webpath + this.type + '.html?tag=' + encodeURIComponent(tag_key)
 				});
 			});
 		}
 
 		if (sort) {
-			tags.sort((a, b) => { return a[sort] > b[sort]; });
+			smartSort(tags, sort);
 		}
 
 		return tags;

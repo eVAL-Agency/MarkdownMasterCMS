@@ -11,7 +11,7 @@
  */
 
 import {renderLayout} from './templater';
-import {pathJoin} from './utils';
+import {pathJoin, smartSort} from './utils';
 import File from './file';
 import Log from './log';
 import CMSError from './cmserror';
@@ -840,23 +840,7 @@ class FileCollection extends TemplateObject {
 		}
 
 		if (sort) {
-			if (sort.endsWith('-r')) {
-				sort = sort.substring(0, sort.length - 2);
-				tags.sort((a, b) => {
-					if (typeof a[sort] === 'string' && typeof b[sort] === 'string') {
-						return b[sort].localeCompare(a[sort]);
-					}
-					return b[sort] - a[sort];
-				});
-			}
-			else {
-				tags.sort((a, b) => {
-					if (typeof a[sort] === 'string' && typeof b[sort] === 'string') {
-						return a[sort].localeCompare(b[sort]);
-					}
-					return a[sort] - b[sort];
-				});
-			}
+			smartSort(tags, sort);
 		}
 
 		return tags;
