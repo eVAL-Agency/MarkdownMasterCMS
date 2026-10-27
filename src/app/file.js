@@ -701,7 +701,7 @@ class File extends TemplateObject {
 	 * @param {Date|boolean|string|integer|number} val
 	 * @param {string} op
 	 * @param {string|number} check
-	 * @returns {Object[string, boolean]}
+	 * @returns {Object<string, boolean>}
 	 * @private
 	 */
 	_compare(val, op, check) {
