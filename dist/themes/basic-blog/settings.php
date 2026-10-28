@@ -35,5 +35,6 @@ return [
 		'cms-icon' => [],
 		'cms-button' => [],
 		'external-links' => [],
+		'cms-reading-time' => [],
 	],
 ];

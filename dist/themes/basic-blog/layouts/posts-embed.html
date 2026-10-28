@@ -6,6 +6,8 @@
 			</div>
 			<time class="post-date"><%= post.get('date') %></time>
 
+			<cms-reading-time file="<%= post.permalink %>"></cms-reading-time>
+
 			<% if(post.image) { %>
 				<img src="<%= post.image.src %>" alt="<%= post.title %>">
 			<% } %>

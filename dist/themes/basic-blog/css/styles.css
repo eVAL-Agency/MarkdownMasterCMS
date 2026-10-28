@@ -967,6 +967,17 @@ cms-form .error-message.hidden {
 .page-pages-single .page-heading cms-pagelist .post-date:before {
 	content: '📅 ';
 }
+.page-pages-single .page-heading cms-pagelist cms-reading-time {
+	position: absolute;
+	bottom: 1em;
+	right: 0;
+	width: calc(100% - 2rem);
+	z-index: 3;
+	padding: 1rem;
+	font-size: 0.75rem;
+	color: #bdbdbd;
+	text-align: right;
+}
 .page-pages-single .page-heading cms-pagelist img {
 	position: absolute;
 	top: 0;

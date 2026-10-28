@@ -31,6 +31,8 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Tags support filtering modes AND and OR for multiple tags
 - Add FileCollection.hasFilterTag for checking if a collection has a specific tag filtered
 - New plugin - cms-pagination for easy pagination support in templates
+- New plugin - cms-reading-time to display an estimated reading time (and optional
+  word count) for a page, based on its content
 
 ### Changes
 
