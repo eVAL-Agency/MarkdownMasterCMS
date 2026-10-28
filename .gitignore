@@ -70,3 +70,4 @@ nbdist/
 
 # Ignore code coverage
 coverage/
+/.idea/j2kLlmSettings.xml
