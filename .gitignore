@@ -48,6 +48,7 @@ nbdist/
 
 # Generated files
 .idea/**/contentModel.xml
+.idea/*.iml
 
 # Sensitive or high-churn files
 .idea/**/dataSources/
