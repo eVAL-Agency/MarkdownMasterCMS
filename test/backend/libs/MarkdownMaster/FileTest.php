@@ -12,8 +12,18 @@ class FileTest extends TestCase {
 
 	public static function setUpBeforeClass(): void {
 		// Spoof config
+		// types is an associative array keyed by type (like production); a bare
+		// list would make Config::GetTypes() return the list indexes ([0]) and
+		// break File construction.
 		Config::OverrideConfig([
-			'types' => ['tests'],
+			'types' => [
+				'tests' => [
+					'list'  => 'testss',
+					'single' => 'test',
+					'sort'  => 'title',
+					'title' => 'Testss',
+				],
+			],
 			'host' => 'http://localhost',
 			'webpath' => '/',
 			'rootpath' => dirname(__DIR__, 3) . '/assets/',
@@ -195,5 +205,70 @@ but it should still render.</p>
 
 		$this->assertEquals($imagePath . 'product3.jpg', $file->getMeta('products')[2]['image']);
 		$this->assertEquals('Product 3', $file->getMeta('products')[2]['title']);
+	}
+
+	/**
+	 * A published page with a past date is published.
+	 *
+	 * @return void
+	 */
+	public function testCheckIsPublishedPublishedPage() {
+		$file = new File(Config::GetRootPath() . 'tests/good_file.md');
+		$this->assertFalse($file->getMeta('draft', false));
+		$this->assertTrue($file->checkIsPublished());
+	}
+
+	/**
+	 * A non-draft page whose date is in the future is not yet published.
+	 *
+	 * @return void
+	 */
+	public function testCheckIsPublishedFutureDateNotPublished() {
+		$file = new File(Config::GetRootPath() . 'tests/future_dated.md');
+		$this->assertFalse($file->getMeta('draft', false));
+		$this->assertFalse($file->checkIsPublished());
+	}
+
+	/**
+	 * A draft is never published, even when its date is in the past.
+	 *
+	 * @return void
+	 */
+	public function testCheckIsPublishedDraftWins() {
+		// Plain draft (date auto-derived from filename / mtime)
+		$file = new File(Config::GetRootPath() . 'tests/draft_file.md');
+		$this->assertTrue($file->getMeta('draft', false));
+		$this->assertFalse($file->checkIsPublished());
+
+		// Draft whose date is already in the past still stays hidden.
+		$file = new File(Config::GetRootPath() . 'tests/draft_past.md');
+		$this->assertTrue($file->getMeta('draft', false));
+		$this->assertFalse($file->checkIsPublished());
+	}
+
+	/**
+	 * An unparseable date fails open and still publishes (assuming not a draft).
+	 *
+	 * @return void
+	 */
+	public function testCheckIsPublishedUnparseableDateFailsOpen() {
+		$file = new File(Config::GetRootPath() . 'tests/good_file.md');
+		$file->getMetas();
+		$file->setMeta('draft', false);
+		$file->setMeta('date', 'not-a-date');
+		$this->assertTrue($file->checkIsPublished());
+	}
+
+	/**
+	 * An unparseable date on a draft still keeps it hidden (draft wins).
+	 *
+	 * @return void
+	 */
+	public function testCheckIsPublishedUnparseableDateDraftStillHidden() {
+		$file = new File(Config::GetRootPath() . 'tests/good_file.md');
+		$file->getMetas();
+		$file->setMeta('draft', true);
+		$file->setMeta('date', 'not-a-date');
+		$this->assertFalse($file->checkIsPublished());
 	}
 }

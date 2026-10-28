@@ -45,9 +45,10 @@ class ListingController extends Controller {
 		$view->canonical = Config::GetHost() . Config::GetWebPath() . $this->params . '.html';
 		$view->body = '<h1>Listing of ' . $this->params . '</h1>';
 		foreach ($listing->files as $file) {
-			if (!$file->getMeta('draft', false)) {
-				$view->body .= $file->getListing();
+			if (!$file->checkIsPublished()) {
+				continue;
 			}
+			$view->body .= $file->getListing();
 		}
 
 		return $view;

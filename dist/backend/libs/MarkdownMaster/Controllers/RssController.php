@@ -76,49 +76,51 @@ class RssController extends Controller {
 		];
 
 		foreach ($listing->getFiles([], 'date DESC', 50) as $file) {
-			if (!$file->getMeta('draft', false)) {
-				$definition = [
-					'title' => $file->getMeta(['title', 'seotitle'], ''),
-					'link' => $file->url,
-					'guid' => [
-						'@isPermaLink' => 'false',
-						'#' => (string)Uuid::uuid3(Uuid::NAMESPACE_URL, $file->url),
-					],
-					'description' => $file->getMeta(['excerpt', 'description'], ''),
-					'content:encoded' => (string)$file,
-					'pubDate' => date('r', strtotime($file->getMeta('date', 0))),
-				];
-
-				if ($file->getMeta('image')) {
-					$image = $file->getMeta('image');
-					if (is_array($image) && isset($image['src']) && str_starts_with($image['src'], Config::GetHost())) {
-						// Remap this URL to a physical file so we can grab the filesize
-						$imageFile = Config::GetRootPath() . substr($image['src'], strlen(Config::GetHost() . Config::GetWebPath()));
-						if (file_exists($imageFile)) {
-							$definition['content:encoded'] = '<img src="' . $image['src'] . '" alt="' . $image['alt'] . '" />' . $definition['content:encoded'];
-							$definition['media:content'] = [
-								'@url' => $image['src'],
-								'@medium' => 'image',
-								'@type' => mime_content_type($imageFile),
-							];
-						}
-					}
-				}
-
-				if ($file->getMeta('tags')) {
-					$definition['category'] = $file->getMeta('tags');
-				}
-
-				if ($authorListing && $file->getMeta('author')) {
-					// One or the other search, (alias or name), should work to retrieve the author.
-					$author = $authorListing->getFiles(['alias' => $file->getMeta('author')], null, 1) +
-						$authorListing->getFiles(['title' => $file->getMeta('author')], null, 1);
-					if (count($author) >= 1) {
-						$definition['author'] = $author[0]->getMeta(['title', 'seotitle'], '');
-					}
-				}
-				$view->data['channel']['item'][] = $definition;
+			if (!$file->checkIsPublished()) {
+				continue;
 			}
+
+			$definition = [
+				'title' => $file->getMeta(['title', 'seotitle'], ''),
+				'link' => $file->url,
+				'guid' => [
+					'@isPermaLink' => 'false',
+					'#' => (string)Uuid::uuid3(Uuid::NAMESPACE_URL, $file->url),
+				],
+				'description' => $file->getMeta(['excerpt', 'description'], ''),
+				'content:encoded' => (string)$file,
+				'pubDate' => date('r', strtotime($file->getMeta('date', 0))),
+			];
+
+			if ($file->getMeta('image')) {
+				$image = $file->getMeta('image');
+				if (is_array($image) && isset($image['src']) && str_starts_with($image['src'], Config::GetHost())) {
+					// Remap this URL to a physical file so we can grab the filesize
+					$imageFile = Config::GetRootPath() . substr($image['src'], strlen(Config::GetHost() . Config::GetWebPath()));
+					if (file_exists($imageFile)) {
+						$definition['content:encoded'] = '<img src="' . $image['src'] . '" alt="' . $image['alt'] . '" />' . $definition['content:encoded'];
+						$definition['media:content'] = [
+							'@url' => $image['src'],
+							'@medium' => 'image',
+							'@type' => mime_content_type($imageFile),
+						];
+					}
+				}
+			}
+
+			if ($file->getMeta('tags')) {
+				$definition['category'] = $file->getMeta('tags');
+			}
+
+			if ($authorListing && $file->getMeta('author')) {
+				// One or the other search, (alias or name), should work to retrieve the author.
+				$author = $authorListing->getFiles(['alias' => $file->getMeta('author')], null, 1) +
+					$authorListing->getFiles(['title' => $file->getMeta('author')], null, 1);
+				if (count($author) >= 1) {
+					$definition['author'] = $author[0]->getMeta(['title', 'seotitle'], '');
+				}
+			}
+			$view->data['channel']['item'][] = $definition;
 		}
 
 		return $view;

@@ -237,6 +237,71 @@ class File {
 	}
 
 	/**
+	 * Determine whether this file should be publicly visible right now.
+	 *
+	 * This is the single "published" gate used by all listing endpoints
+	 * (meta.json, listing pages, sitemap, RSS, search).  It returns false
+	 * when any negative check hits:
+	 *
+	 *   - the page is marked as a draft, OR
+	 *   - its publish date (`date` meta field) is still in the future.
+	 *
+	 * Pages are therefore automatically hidden until their `date` arrives,
+	 * which gives the `date` field its "scheduled publishing" behaviour
+	 * without any extra meta field.  A draft always wins: it stays hidden
+	 * regardless of its date.
+	 *
+	 * Deliberately NOT called from PageController, so an author can always
+	 * load a draft or future-dated page directly by URL to preview the work
+	 * before it goes live.
+	 *
+	 * @return bool
+	 */
+	public function checkIsPublished(): bool {
+		// Drafts are never shown through listing endpoints, period.
+		if ((bool)$this->getMeta('draft', false)) {
+			return false;
+		}
+
+		$publishTs = $this->_dateToUnixTimestamp();
+		if ($publishTs === false) {
+			// Unknown or unparseable publish date: fail open so a single bad
+			// value does not hide an entire page from everywhere.
+			return true;
+		}
+
+		// Hidden until its publish date has been reached.
+		return $publishTs <= time();
+	}
+
+	/**
+	 * Convert the page publish date to a unix timestamp.
+	 *
+	 * The `date` meta field is normally normalised to a `Y-m-d` string by
+	 * _parse(), but any unix timestamp (int / float / DateTime) or any
+	 * strtotime()-able string (ISO 8601, 'Y-m-d', relative forms) is also
+	 * accepted for robustness.
+	 *
+	 * @return int|false Unix timestamp, or false if unset / unparseable.
+	 */
+	private function _dateToUnixTimestamp(): int|false {
+		$date = $this->getMeta('date', null);
+
+		if ($date === null || $date === false || $date === '') {
+			return false;
+		}
+		if (is_int($date) || is_float($date)) {
+			return (int)$date;
+		}
+		if ($date instanceof \DateTime) {
+			return (int)$date->getTimestamp();
+		}
+
+		$timestamp = strtotime((string)$date);
+		return $timestamp === false ? false : (int)$timestamp;
+	}
+
+	/**
 	 * Ensure the file has been parsed
 	 *
 	 * @return void

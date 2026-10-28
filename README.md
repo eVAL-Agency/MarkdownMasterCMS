@@ -130,6 +130,8 @@ completely overhauled manually because code generation (or any AI generation) su
 and is not reliable.
 
 All code in this repo are either written or thoroughly audited by actual humans.
+This is not a ban against AI-generated code (eg when in agent mode),
+but all generated code **must** be audited by a person before committed.
 
 All commits are performed by actual humans; chatbots are **NOT** allowed to issue `git commit`.
 
@@ -139,6 +141,7 @@ Code generated completely by AI, commits issued by AI, and pull requests generat
 ### List of Models and Hardware Used
 
 * [Qwen 3.5 9b](https://ollama.com/library/qwen3.5) on a 24GB ASRock RX 7900 XTX
+* [Bonsai-2 27b](https://ollama.com/library/bonsai-2) on a 24GB ASRock RX 7900 XTX
 
 
 ## Thanks!

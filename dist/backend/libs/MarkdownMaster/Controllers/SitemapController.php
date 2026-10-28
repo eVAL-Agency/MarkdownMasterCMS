@@ -52,9 +52,10 @@ class SitemapController extends Controller {
 		foreach ($types as $type) {
 			$collection = new FileCollection($type);
 			foreach ($collection->files as $file) {
-				if (!$file->getMeta('draft', false)) {
-					$view->data['url'][] = ['loc' => $file->url];
+				if (!$file->checkIsPublished()) {
+					continue;
 				}
+				$view->data['url'][] = ['loc' => $file->url];
 			}
 		}
 

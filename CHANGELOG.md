@@ -45,6 +45,10 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Add second serve option in package; one for static one for full
 - Images rendered via markdown now include `loading="lazy"`
 - Add shortRel to Files to support staging sites with different base paths
+- Scheduled publishing: the `date` meta field now acts as the publish gate —
+  non-draft pages are hidden from listings, `meta.json`, the sitemap, RSS and
+  search until their `date` arrives, then go live automatically.  Drafts remain
+  hidden regardless of date, and direct URL access is still always allowed.
 - Object lookups in HTML templates should use .get(...) to ensure string values **breaking change**
 - Update dev dependency babel from 7.26.9 to 7.29.7
 - Update dev dependency compression from 1.8.1 to 1.8.2

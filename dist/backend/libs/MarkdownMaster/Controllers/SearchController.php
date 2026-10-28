@@ -41,11 +41,12 @@ class SearchController extends Controller {
 			$collection = new FileCollection($_GET['t']);
 			$results = [];
 			foreach ($collection->files as $file) {
-				if (!$file->getMeta('draft', false)) {
-					$match = $file->getMatch($q);
-					if ($match > 0) {
-						$results[] = ['match' => $match, 'file' => $file->rel];
-					}
+				if (!$file->checkIsPublished()) {
+					continue;
+				}
+				$match = $file->getMatch($q);
+				if ($match > 0) {
+					$results[] = ['match' => $match, 'file' => $file->rel];
 				}
 			}
 

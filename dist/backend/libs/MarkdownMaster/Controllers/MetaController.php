@@ -50,14 +50,15 @@ class MetaController extends Controller {
 			$collection = new FileCollection($type);
 			$view->data[$type] = [];
 			foreach ($collection->files as $file) {
-				if (!$file->getMeta('draft', false)) {
-					$view->data[$type][] = [
-						'url' => $file->url,
-						'path' => $file->rel,
-						'meta' => $file->getMetas(),
-						'timestamp' => $file->getTimestamp(),
-					];
+				if (!$file->checkIsPublished()) {
+					continue;
 				}
+				$view->data[$type][] = [
+					'url' => $file->url,
+					'path' => $file->rel,
+					'meta' => $file->getMetas(),
+					'timestamp' => $file->getTimestamp(),
+				];
 			}
 		}
 

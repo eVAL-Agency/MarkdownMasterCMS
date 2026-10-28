@@ -56,7 +56,12 @@ class Request {
 			$this->uri = substr($this->uri, 0, strpos($this->uri, '?'));
 		}
 		$this->params = $_REQUEST;
-		$this->headers = getallheaders();
+		if (function_exists('getallheaders')) {
+			$this->headers = getallheaders();
+		}
+		else {
+			$this->headers = [];
+		}
 	}
 
 	/**

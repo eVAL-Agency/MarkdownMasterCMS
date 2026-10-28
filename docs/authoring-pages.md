@@ -159,12 +159,24 @@ If the value starts with `/`, it is assumed to be at the root of the website, an
 | seotitle    | Browser title to set when viewing the page                            |
 | excerpt     | Short excerpt or description of this page to display on listing pages |
 | description | Description of this page to use for SEO purposes                      | 
-| date        | Date this article was published                                       |
+| date        | Date this article was published — acts as the publish gate: the page is hidden from listings until this date arrives |
 | author      | Name or alias of the author of this page                              |
 | tags        | Comma-separated list of tags for the content on this page             |
 | image       | Fully resolve or relative path to preview image of this page          |
 | draft       | If true, this page will be hidden from listing pages                  |
 | extras      | List of plugins to load on this page                                  |
+
+### Scheduled publishing
+
+The `date` field doubles as the publish gate.  A non-draft page whose `date`
+is in the future is simply skipped by every listing endpoint (listing pages,
+`meta.json`, `sitemap.xml`, RSS, and search) until that date arrives, at which
+point it goes live automatically.  No extra meta field is required.
+
+A page marked `draft: true` is always hidden from listings regardless of its
+date.  Direct URL access (`/posts/some-post.html`) is **not** subject to either
+gate, so an author can load any draft or future-dated page to preview the work
+before it goes live.
 
 
 ### Protected Attributes

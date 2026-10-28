@@ -3,6 +3,7 @@
 use MarkdownMaster\Config;
 use MarkdownMaster\Controllers\FormController;
 use MarkdownMaster\Request;
+use MarkdownMaster\Route;
 use MarkdownMaster\Views\JSONView;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
@@ -13,6 +14,12 @@ use PHPUnit\Framework\TestCase;
 #[UsesClass(JSONView::class)]
 #[CoversClass(FormController::class)]
 class FormControllerTest extends TestCase {
+
+	public static function setUpBeforeClass(): void {
+		// Register the route that /form resolves to.
+		Route::RegisterRoute('/form', 'MarkdownMaster\Controllers\FormController');
+	}
+
 	private function _setupRequest(array $formData): Request {
 		// Spoof the request for a successful form request
 		$request = new Request();
@@ -21,9 +28,9 @@ class FormControllerTest extends TestCase {
 		$request->headers['Content-Type'] = 'application/json';
 		$request->overrideBody($formData);
 
-		// Spoof config
+		// Spoof config (associative types, like production)
 		Config::OverrideConfig([
-			'types' => ['test'],
+			'types' => ['test' => ['list' => 'testss', 'single' => 'test', 'sort' => 'title', 'title' => 'Testss']],
 			'webpath' => '/',
 			'forms' => [
 				'test' => [
