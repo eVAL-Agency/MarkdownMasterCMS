@@ -33,6 +33,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - New plugin - cms-pagination for easy pagination support in templates
 - New plugin - cms-reading-time to display an estimated reading time (and optional
   word count) for a page, based on its content
+- cms-search now marks matched strings in search results
 
 ### Changes
 
@@ -68,6 +69,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Various fixes in FileCollection related to sorting and filtering
 - Fix FileCollection.getFilteredTags for retrieving all tags filtered on a collection
 - File.getTags sorting and structure are now on par with FileCollection
+- Server-side search results are now sorted correctly by the match weight
 
 ### Security
 

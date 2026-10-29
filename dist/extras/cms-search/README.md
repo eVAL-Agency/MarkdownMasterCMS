@@ -4,6 +4,9 @@ title: Extra - CMS-Search
 
 Provides search input functionality that hooks into the site
 
+As of v6.0.0, cms-search will now inject `<mark>` snippets
+around matched results.
+
 
 ## Initialization
 
@@ -45,4 +48,12 @@ N/A
 
 ## Example Styles
 
-N/A
+Matching text is wrapped in `<mark data-cms-search>` tags in the rendered
+search results. You may override the default highlight appearance:
+
+```css
+mark[data-cms-search] {
+	background-color: #fff9c4;
+	border-radius: 2px;
+}
+```

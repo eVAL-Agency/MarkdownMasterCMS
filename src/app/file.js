@@ -186,9 +186,8 @@ class File extends TemplateObject {
 		/**
 		 * Internal match score for this file when matchesAttributeSearch is used.
 		 * @type {number}
-		 * @private
 		 */
-		this.__match = 0;
+		this._match = 0;
 	}
 
 	/**
@@ -566,7 +565,7 @@ class File extends TemplateObject {
 			}
 		}
 
-		this.__match = match_total > 0 ? (match_count / match_total) : 0;
+		this._match = match_total > 0 ? (match_count / match_total) : 0;
 
 		if (mode.toUpperCase() === 'OR') {
 			// an OR check just needs at least one matching result

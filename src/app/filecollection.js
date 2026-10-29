@@ -533,7 +533,7 @@ class FileCollection extends TemplateObject {
 	 */
 	resetFilters() {
 		this[this.type] = this.allFiles.filter((file) => {
-			file.__match = 0;
+			file._match = 0;
 			return !file.draft;
 		});
 		this.filteredFiles = this[this.type];
@@ -624,8 +624,14 @@ class FileCollection extends TemplateObject {
 	/**
 	 * Search file collection by attribute.
 	 *
+	 * Filters the collection to files matching the query and keeps
+	 * `filteredFiles` in sync with the visible `this[type]` set so that
+	 * pagination operates on the actual search results. When server results
+	 * are available they are ranked by relevance; the local fallback matches
+	 * against the in-memory content.
+	 *
 	 * @param {string} search - Search query.
-	 * @returns {File[]} Set of filtered files
+	 * @returns {Promise<File[]>} Set of filtered files
 	 */
 	async filterSearch(search) {
 		return new Promise(resolve => {
@@ -638,11 +644,12 @@ class FileCollection extends TemplateObject {
 				url.searchParams.append('t', this.type);
 			}
 			catch (e) {
+				// Local-only fallback search.
 				Log.Debug('FileCollection.filterSearch/' + this.type, 'Using local-only fallback search');
 				this[this.type] = this[this.type].filter((file) => {
 					return file.matchesSearch(search);
 				});
-
+				this.filteredFiles = this[this.type];
 				resolve(this[this.type]);
 				return;
 			}
@@ -654,8 +661,17 @@ class FileCollection extends TemplateObject {
 				})
 				.then(results => {
 					Log.Debug('FileCollection.filterSearch/' + this.type, 'Server provided search results', results);
-					this[this.type] = this[this.type].filter((file) => {
-						return results.indexOf(file.url) !== -1;
+					this[this.type] = [];
+					this.filteredFiles = [];
+
+					// Order the results by the order as provided by the server; these are weighted by match
+					results.forEach(result => {
+						let matches = this.allFiles.filter(f => f.url === result.file);
+						if (matches.length > 0) {
+							matches[0]._match = result.match;
+							this[this.type].push(matches[0]);
+							this.filteredFiles.push(matches[0]);
+						}
 					});
 
 					resolve(this[this.type]);
@@ -667,6 +683,7 @@ class FileCollection extends TemplateObject {
 						return file.matchesSearch(search);
 					});
 
+					this.filteredFiles = this[this.type];
 					resolve(this[this.type]);
 				});
 		});

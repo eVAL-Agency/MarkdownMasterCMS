@@ -33,6 +33,22 @@ use MarkdownMaster\Views\JSONView;
 use MarkdownMaster\FileCollection;
 
 class SearchController extends Controller {
+	/**
+	 * GET operation to /search.json to return server-side provided
+	 * results for a given search term.
+	 *
+	 * Server-side check is used by default because it can scan through all
+	 * files in the CMS quicker than the client can.
+	 *
+	 * Populates the data array of the return with the following:
+	 *
+	 * * `file` - relative URL to the markdown file
+	 * * `match` - 0 to 1 for the score of the match
+	 *
+	 * Results are returned in the order of best match
+	 *
+	 * @return JSONView
+	 */
 	public function get() {
 		$view = new JSONView();
 
@@ -52,11 +68,10 @@ class SearchController extends Controller {
 
 			// Sort results
 			usort($results, function ($a, $b) {
-				return $a['match'] <=> $b['match'];
+				return $a['match'] - $b['match'];
 			});
-			foreach ($results as $result) {
-				$view->data[] = $result['file'];
-			}
+
+			$view->data = $results;
 		}
 		else {
 			$view->data = [];
