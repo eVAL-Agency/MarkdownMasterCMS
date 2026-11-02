@@ -43,6 +43,9 @@ Route::RegisterRoute('/sitemap.xml', 'MarkdownMaster\\Controllers\\SitemapContro
 // Meta content route, provides information about pages
 Route::RegisterRoute('/meta.json', 'MarkdownMaster\\Controllers\\MetaController');
 
+// Route for service worker configuration parameters
+Route::RegisterRoute('/sw-config.json', 'MarkdownMaster\\Controllers\\SwConfigController');
+
 // Form submission route, handles all forms
 Route::RegisterRoute('/form', 'MarkdownMaster\\Controllers\\FormController');
 

@@ -1,0 +1,14 @@
+<main class="offline">
+	<h1>You're offline</h1>
+	<p>Some content may not be available. Check your connection and try again.</p>
+	<p class="hint">Content that was visited before is still available.</p>
+</main>
+
+<style>
+	.offline { text-align: center; padding: 3rem; font-family: inherit; }
+	.offline .hint { font-size: 0.875rem; opacity: 0.6; }
+</style>
+
+<script>
+	document.addEventListener('online', () => location.reload());
+</script>

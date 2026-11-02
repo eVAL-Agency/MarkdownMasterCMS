@@ -285,6 +285,17 @@ class Config {
 		return self::_Get('elementId') ?? 'cms';
 	}
 
+	/**
+	 * Get the service worker full path or true for the default worker.
+	 * If False or an empty string is returned, that triggers the service worker to be disabled.
+	 *
+	 * @return string|bool
+	 */
+	public static function GetServiceWorker(): string|bool {
+		// @todo Switch to True by default once tested
+		return self::_Get('serviceWorker') ?? false;
+	}
+
 	public static function GetExtras(): array {
 		return self::_Get('extras') ?? [];
 	}
@@ -371,6 +382,7 @@ class Config {
 			'webpath' => self::GetWebPath(),
 			'layoutDirectory' => self::GetWebPath() . 'themes/' . self::GetTheme() . '/layouts/',
 			'extras' => $extras,
+			'serviceWorker' => self::GetServiceWorker(),
 		];
 
 		// Additional / extra options not usually present

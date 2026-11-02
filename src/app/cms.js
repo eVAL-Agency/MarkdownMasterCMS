@@ -80,6 +80,13 @@ class CMS {
 		 */
 		this.log = Log;
 
+		/**
+		 * Service worker registration
+		 *
+		 * @type {null|ServiceWorkerRegistration}
+		 */
+		this.serviceWorker = null;
+
 		// Register the CMS object as a global variable
 		// This is useful for plugins which tap into internal functional for features such as
 		// loading pages, searching, etc.
@@ -174,6 +181,8 @@ class CMS {
 
 		this.config.load(options);
 
+		this.loadServiceWorker();
+
 		if (this.config.debug) {
 			Log.EnableDebug();
 		}
@@ -184,6 +193,53 @@ class CMS {
 		}
 		else {
 			setSystemLayoutPath(this.config.webpath, this.config.layoutDirectory);
+		}
+	}
+
+	loadServiceWorker() {
+		if (!('serviceWorker' in navigator)) {
+			// This browser does not support service workers; nothing to enable or disable.
+			return;
+		}
+
+		// serviceWorker
+		if (this.config.serviceWorker === false || this.config.serviceWorker === '') {
+			// Service worker is configured to be disabled
+			navigator.serviceWorker.getRegistrations().then(registrations => {
+				if (registrations && registrations.length > 0) {
+					registrations.forEach(registration => {
+						registration.unregister();
+					});
+					location.reload();
+				}
+			});
+		}
+		else {
+			const path = this.config.serviceWorker === true
+				? this.config.webpath + 'sw.js'
+				: this.config.serviceWorker;
+
+			navigator
+				.serviceWorker
+				.register(
+					path,
+					{scope: this.config.webpath}
+				)
+				.then(registration => {
+					this.serviceWorker = registration;
+				})
+				.catch(error => {
+					Log.Error(error);
+				});
+
+			navigator.serviceWorker.addEventListener('message', event => {
+				if (event.data?.action === 'sw-configuration-changed') {
+					// Small delay lets the SW finish its precacheFiles() before the
+					// reload fires, so the reloaded page hits a freshly primed cache
+					// for the offline fallback.
+					setTimeout(() => location.reload(), 500);
+				}
+			});
 		}
 	}
 
@@ -375,6 +431,11 @@ class CMS {
 	 */
 	route() {
 		Log.Debug('CMS.route', 'Running routing');
+
+		// Inform the service worker to check for updates while the next page is loading.
+		if (this.serviceWorker) {
+			this.serviceWorker.active.postMessage({action: 'config-check'});
+		}
 
 		// Users expect the viewport to start at the top of the page on navigation events.
 		window.scrollTo({ top: 0, behavior: 'smooth' });

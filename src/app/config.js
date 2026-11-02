@@ -186,6 +186,17 @@ export class Config extends Object {
 		 */
 		this.version = '1';
 
+		/**
+		 * Controls if the service worker is loaded into this application
+		 *
+		 * If set to a non-empty string, is expected to be the path to the service worker.
+		 * If set to True, the default service worker is used.
+		 * If set to False or an empty string, no service worker is enabled.
+		 *
+		 * @type {boolean|string}
+		 */
+		this.serviceWorker = false;
+
 		// Allow options to be passed in by default for convenience
 		if (options) {
 			this.load(options);
