@@ -1,0 +1,64 @@
+/**
+ * Default styling for the offline-notification extra.
+ *
+ * These rules use class-based (BEM) selectors so that a theme can override
+ * any of them simply by adding its own rules targeting the same class names.
+ * Because CSS is cascading, both the plugin stylesheet and a theme stylesheet
+ * may be loaded at the same time; theme rules take precedence when they use
+ * equal or higher specificity.
+ *
+ * To customize, add rules like the following to your theme's stylesheet:
+ *
+ *     .offline-notification {
+ *         background-color: #e74c3c;
+ *         color: #ffffff;
+ *     }
+ */
+
+.offline-notification {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: baseline;
+	gap: 0.3em 0.75em;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 0.45em 1em;
+	font-size: 0.9em;
+	line-height: 1.35;
+	text-align: left;
+	color: #3a2e12;
+	background-color: #ffd66f;
+	border-bottom: 0.1em solid #e3b05a;
+}
+
+.offline-notification__icon {
+	flex: none;
+	font-size: 1.1em;
+	line-height: 1;
+	vertical-align: middle;
+}
+
+.offline-notification__title {
+	margin: 0;
+	font-weight: 700;
+}
+
+.offline-notification__message {
+	margin: 0;
+	font-weight: 400;
+}
+
+/*
+ * Theme-agnostic dark-mode default.
+ *
+ * A theme with its own dark styling will load after (or override) these
+ * values by targeting the same class names; keep these in place only as a
+ * baseline so the notification still reads in dark mode by default.
+ */
+@media (prefers-color-scheme: dark) {
+	.offline-notification {
+		color: #fff3d6;
+		background-color: #7c5a1e;
+		border-bottom-color: #9a752e;
+	}
+}

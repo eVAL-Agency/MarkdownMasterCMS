@@ -33,7 +33,10 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - New plugin - cms-pagination for easy pagination support in templates
 - New plugin - cms-reading-time to display an estimated reading time (and optional
   word count) for a page, based on its content
+- New plugin - offline-notification to display a small offline-mode banner at the top
+  of the page when the browser reports no connection
 - cms-search now marks matched strings in search results
+- Basic service worker to support offline mode
 
 ### Changes
 
