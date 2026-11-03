@@ -227,7 +227,7 @@ class PageController extends Controller {
 
 		// Add a request for the agent to call the cron once for a full view.
 		// This is to support a lazy webcron.
-		$view->footScripts[] = 'window.requestIdleCallback(() => { fetch("' . Config::GetHost() . Config::GetWebPath() . 'cron"); });';
+		$view->footScripts[] = 'window.requestIdleCallback(() => { fetch("' . Config::GetHost() . Config::GetWebPath() . 'cron", {method: "POST"}); });';
 
 		return $view;
 	}
