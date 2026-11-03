@@ -34,11 +34,22 @@ use MarkdownMaster\View;
  * View responsible for rendering JSON responses.
  */
 class JSONView extends View {
-	public $data = [];
+	/**
+	 * JSON payload
+	 * @var array
+	 */
+	public array $data = [];
+
+	/**
+	 * Content-Type for the rendered response. Defaults to application/json,
+	 * but can be overridden (e.g. application/manifest+json for PWA manifests).
+	 * @var string
+	 */
+	public string $contentType = 'application/json';
 
 	public function render() {
 		http_response_code($this->status);
-		header('Content-Type: application/json');
+		header('Content-Type: ' . $this->contentType);
 		echo json_encode($this->data);
 	}
 }
