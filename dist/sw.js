@@ -113,16 +113,18 @@ self.deleteCache = async () => {
 }
 
 /**
- * Precache all files necessary for this application to operate, notably if an offline state is encountered.
+ * Precache all files necessary for this application to operate, notably if an
+ * offline state is encountered.  Includes the Web App Manifest and theme icons
+ * so that the PWA install prompt keeps working when the site is re-opened
+ * while offline.
  *
  * @returns {Promise<void>}
  */
 self.precacheFiles = async () => {
 	console.debug(`[serviceworker] Precaching files into cache`);
 
-	const files = [
-		config.layoutDirectory + 'offline.html',
-	];
+	const theme = config.theme || 'default';
+	const files = config.offlineFiles || [];
 	const cache = await caches.open(CACHE_NAME);
 
 	for (const file of files) {
@@ -149,7 +151,7 @@ self.addEventListener('install', (event) => {
 		(async () => {
 			await self.loadConfiguration();
 			await self.deleteCache();
-			await self.precacheFiles(config);
+			await self.precacheFiles();
 			self.skipWaiting();
 		})()
 	);
@@ -177,9 +179,30 @@ self.addEventListener('message', event => {
 
 /**
  * Event dispatched after installation of the SW has been completed
+ *
+ * Skips waiting so the new worker takes over immediately, and deletes any
+ * stale caches left behind by previous versions.
  */
 self.addEventListener('activate', (event) => {
 	console.debug('[serviceworker] Activate event firing');
+
+	event.waitUntil(
+		(async () => {
+			try {
+				const cacheNames = await caches.keys();
+				for (const name of cacheNames) {
+					if (name !== CACHE_NAME) {
+						await caches.delete(name);
+					}
+				}
+			}
+			catch (err) {
+				console.debug('[serviceworker] Failed to clean up stale caches', err);
+			}
+
+			self.skipWaiting();
+		})()
+	);
 });
 
 /**
@@ -286,7 +309,7 @@ function cacheFirst(requestUrl, request) {
 			// Network error, usually due to network connectivity issues
 			if (requestUrl.endsWith('.html')) {
 				// If the requested file is HTML, try to replace with the offline HTML snippet
-				return caches.match(`/${config.layoutDirectory}offline.html`).then((cached) => {
+				return caches.match(config.layoutDirectory + 'offline.html').then((cached) => {
 					if (cached) {
 						return cached;
 					}

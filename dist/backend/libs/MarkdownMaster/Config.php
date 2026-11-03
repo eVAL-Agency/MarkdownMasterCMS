@@ -34,6 +34,83 @@ class Config {
 	private static ?array $_config = null;
 
 	/**
+	 * Parse and standardize an array of icons
+	 *
+	 * @param string $path
+	 * @param array $icons
+	 * @return array
+	 */
+	private static function _ParseIcons(string $path, array $icons): array {
+		$ret = [];
+
+		foreach($icons as $icon) {
+			if (is_scalar($icon)) {
+				// Simple string
+				$iconData = [
+					'src' => $icon,
+				];
+			}
+			else {
+				$iconData = $icon;
+			}
+
+			if (!isset($iconData['src'])) {
+				// Icons need a src
+				continue;
+			}
+
+			$physicalPath = BASE_DIR . '/' . $path . $iconData['src'];
+			// Prefix images with the requested source,
+			// this allows a theme to define its icons relative to the theme
+			// without needing to include the path to the theme itself.
+			// During Load, the theme it was pulled from is prepended as the path.
+			$iconData['src'] = $path . $iconData['src'];
+
+			// Require icons to exist
+			if (!file_exists($physicalPath)) {
+				continue;
+			}
+
+			if (!isset($iconData['type'])) {
+				$iconData['type'] = mime_content_type($physicalPath);
+			}
+
+			if (!isset($iconData['sizes'])) {
+				// SVGs are "any" because they're scalable.
+				if (str_contains($iconData['type'], 'image/svg')) {
+					$iconData['sizes'] = 'any';
+				}
+				elseif (function_exists('getimagesize')) {
+					// Guess the size from the image data
+					$sizes = getimagesize($physicalPath);
+					if ($sizes !== false) {
+						$iconData['sizes'] = $sizes[0] . 'x' . $sizes[1];
+					}
+					else {
+						$iconData['sizes'] = 'any';
+					}
+				}
+			}
+
+			if (!isset($iconData['purpose'])) {
+				if (str_contains($iconData['src'], '-maskable')) {
+					$iconData['purpose'] = 'maskable';
+				}
+				elseif (str_contains($iconData['src'], '-monochrome')) {
+					$iconData['purpose'] = 'monochrome';
+				}
+				else {
+					$iconData['purpose'] = 'any';
+				}
+			}
+
+			$ret[] = $iconData;
+		}
+
+		return $ret;
+	}
+
+	/**
 	 * Load the configuration file
 	 *
 	 * @return void
@@ -53,11 +130,29 @@ class Config {
 			throw new Exception('Configuration file must return an array', 500);
 		}
 
+		if (isset($config['icons'])) {
+			// Load icons from the root location
+			$config['icons'] = self::_ParseIcons('', $config['icons']);
+		}
+
 		// Allow the theme to set defaults
 		if (isset($config['theme'])) {
 			$themeSettingsFile = BASE_DIR . '/themes/' . $config['theme'] . '/settings.php';
 			if (file_exists($themeSettingsFile)) {
 				$themeConfig = require BASE_DIR . '/themes/' . $config['theme'] . '/settings.php';
+
+				if (isset($themeConfig['icons'])) {
+					if (isset($config['icons'])) {
+						// Icons from the environment configuration takes presedence for icons
+						unset($themeConfig['icons']);
+					}
+					else {
+						$themeConfig['icons'] = self::_ParseIcons(
+							'themes/' . $config['theme'] . '/',
+							$themeConfig['icons']
+						);
+					}
+				}
 				$config = array_merge_recursive($themeConfig, $config);
 			}
 		}
@@ -115,6 +210,27 @@ class Config {
 		}
 
 		self::$_config = $config;
+
+		// Post Operations
+		// Any operation that relies on Config being set, (now that the config is stored)
+
+		// Resolve the paths for icons to their actual web path
+		if (isset(self::$_config['icons'])) {
+			$webPath = Config::GetWebPath();
+			$icons = self::$_config['icons'];
+			// Ensure all the icon src attributes are prefixed
+			$icons = array_map(
+				function ($icon) use ($webPath) {
+					if (!str_starts_with($icon['src'], '/')) {
+						$icon['src'] = $webPath . $icon['src'];
+					}
+					return $icon;
+				},
+				$icons
+			);
+
+			self::$_config['icons'] = $icons;
+		}
 	}
 
 	private static function _Get(string $key, $default = null) {
@@ -406,7 +522,30 @@ class Config {
 		self::$_config = $config;
 	}
 
+	/**
+	 * Get the assets version, controls cache-busting version strings
+	 *
+	 * NOT the actual version of the application!
+	 *
+	 * @return string
+	 */
 	public static function GetVersion(): string {
 		return (string)self::_Get('version', 1);
+	}
+
+	/**
+	 * Get a list of icons defined for this application
+	 *
+	 * Each icon will contain:
+	 *
+	 * * src
+	 * * sizes
+	 * * purpose
+	 * * type
+	 *
+	 * @return array
+	 */
+	public static function GetIcons(): array {
+		return self::_Get('icons', []);
 	}
 }

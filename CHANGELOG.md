@@ -37,6 +37,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
   of the page when the browser reports no connection
 - cms-search now marks matched strings in search results
 - Basic service worker to support offline mode
+- Icon support in configuration system, provides support for PWA and favicon
 
 ### Changes
 

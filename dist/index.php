@@ -29,6 +29,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
+/**
+ * Root physical directory of the application, no trailing '/'
+ */
 define('BASE_DIR', __DIR__);
 
 spl_autoload_register(function($class) {

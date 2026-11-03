@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Root physical directory of the application, no trailing '/'
+ */
 define('BASE_DIR', realpath(__DIR__ . '/../../dist'));
 
 spl_autoload_register(function($class) {
