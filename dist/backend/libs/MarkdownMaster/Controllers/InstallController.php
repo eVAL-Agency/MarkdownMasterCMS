@@ -66,11 +66,24 @@ class InstallController extends Controller {
 
 		try {
 			$dir = dirname($path);
+			$htaccessPath = $dir . '/.htaccess';
 
 			if (!is_dir($dir)) {
 				$this->_log("Creating database directory: $dir", $view);
 				mkdir($dir, 0755, true);
 			}
+
+			if (!file_exists($htaccessPath)) {
+				file_put_contents(
+					$htaccessPath,
+					"# Deny all web access to this directory\n"
+					. "Require all denied\n"
+					. "Deny from all\n"
+				);
+				chmod($htaccessPath, 0644);
+				$this->_log("Created .htaccess to protect database directory", $view);
+			}
+
 			if (!file_exists($path)) {
 				$this->_log("Creating database file: $path", $view);
 				touch($path);
