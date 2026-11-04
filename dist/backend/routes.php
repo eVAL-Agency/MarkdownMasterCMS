@@ -43,8 +43,16 @@ Route::RegisterRoute('/sitemap.xml', 'MarkdownMaster\\Controllers\\SitemapContro
 // Meta content route, provides information about pages
 Route::RegisterRoute('/meta.json', 'MarkdownMaster\\Controllers\\MetaController');
 
-// Route for service worker configuration parameters
-Route::RegisterRoute('/sw-config.json', 'MarkdownMaster\\Controllers\\SwConfigController');
+$sw = Config::GetServiceWorker();
+if ($sw === true || (is_scalar($sw) && strlen($sw) > 1)) {
+	// Service worker is configured for default (TRUE) or custom, load those routes
+
+	// Route for service worker configuration parameters
+	Route::RegisterRoute('/sw-config.json', 'MarkdownMaster\\Controllers\\SwConfigController');
+
+	// Web App Manifest route (PWA), served as application/manifest+json
+	Route::RegisterRoute('/manifest.json', 'MarkdownMaster\\Controllers\\ManifestController');
+}
 
 // Form submission route, handles all forms
 Route::RegisterRoute('/form', 'MarkdownMaster\\Controllers\\FormController');

@@ -44,6 +44,25 @@ return [
 	// This is used to invalidate browser caches.
 	'version' => '1',
 
+	// Set to True to enable the service worker and PWA
+	'serviceWorker' => false,
+
+	// Web App Manifest (PWA) settings.
+	// Each theme ships its own defaults in themes/<theme>/settings.php ("pwa" block).
+	// Keys defined here override the theme's. Refer to the PWA docs for details:
+	// https://markdownmaster.com/docs/pwa.html
+	/*
+	'pwa' => [
+		'name' => 'My Site',
+		'short_name' => 'MySite',
+		'display' => 'standalone',
+		'theme_color' => '#1e3a5d',
+		'background_color' => '#ffffff',
+		// Optional. Defaults to webpath (e.g. "/").
+		'start_url' => '/',
+	],
+	*/
+
 	// Uncomment and configure to enable email sending
 	/*
 	'email' => [

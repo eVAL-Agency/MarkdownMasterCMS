@@ -218,6 +218,7 @@ async function fetchMeta(request) {
 
 	try {
 		response = await fetch(request);
+		cloned = response.clone();
 	}
 	catch (error) {
 		// Try from cache instead.
@@ -233,12 +234,12 @@ async function fetchMeta(request) {
 
 	if (response.ok && db) {
 		// Store this response in the offline cache so it's available
-		caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
+		caches.open(CACHE_NAME).then((cache) => cache.put(request, cloned.clone()));
 
 		// Iterate through the returned JSON to find the pages and their
 		// last updated timestamp, and store them in IndexedDB as plain
 		// key/value pairs (path -> timestamp).
-		const data = await response.clone().json();
+		const data = await cloned.clone().json();
 
 		for (const type of Object.keys(data)) {
 			const items = data[type] || [];
@@ -265,7 +266,7 @@ async function fetchMeta(request) {
 			}
 		}
 	}
-	return response;
+	return cloned.clone();
 };
 
 /**

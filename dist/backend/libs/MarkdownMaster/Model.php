@@ -29,6 +29,7 @@
 namespace MarkdownMaster;
 
 use Error;
+use MarkdownMaster\Events\RenderPageViewEvent;
 use PDO;
 use Exception;
 use PDOException;
@@ -500,6 +501,22 @@ class Model {
 		catch (PDOException $e) {
 			$db->rollBack();
 			error_log("Failed to remove record: " . $e->getMessage());
+		}
+	}
+
+	public static function AttachDebugInformation(RenderPageViewEvent $event): void {
+		$event->view->footScripts[] = 'console.debug("Database:", ' . json_encode(Model::GetDebugInfo()) . ');';
+
+		$databasesOk = true;
+		foreach(Model::GetRegisteredModels() as $modelClass) {
+			$res = $modelClass::GetTableState();
+			if ($res !== 'OK') {
+				$databasesOk = false;
+				$event->view->footScripts[] = 'console.error("Database Error: ' . str_replace('\\', '/', $modelClass) . '", ' . json_encode($res) . ');';
+			}
+		}
+		if ($databasesOk) {
+			$event->view->footScripts[] = 'console.log("%c Database OK ", "background-color: lightgreen; color: darkgreen;");';
 		}
 	}
 }

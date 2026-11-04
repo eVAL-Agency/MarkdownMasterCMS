@@ -60,7 +60,8 @@ you will need to update to `allFiles`.
 
 ## FileCollection page -> currentPage
 
-Update your templates to use `data.currentPage` instead of `data.page`.
+Update your templates to use `data.currentPage` instead of `data.page` for keeping track
+of the current page number being viewed when pagination is enabled.
 
 This change was implemented to allow the use of "page" as a file type,
 this is useful if you want the URL to be `/page/about.html` instead of `/pages/about.html`.
@@ -91,4 +92,35 @@ _After this update, `currentPage` is now a reserved word and cannot be used as a
         <a href="<%= data.getNextPageUrl() %>" title="Next Page">&raquo;</a>
     <% } %>
 <% } %>
+```
+
+## New Service Worker and PWA
+
+A new service worker has been added to v6.0.0; to use it add the following to your config.php:
+
+```php
+return [
+  // ...
+
+  'serviceWorker' => true,
+];
+```
+
+This will enable the default service worker and enable PWA support for application installation
+and offline browsing of your web application.
+
+To configure the PWA options, add and adjust this in your config.php:
+
+```php
+return [
+  // ...
+
+  'pwa' => [
+    'name'             => 'My Company',
+    'short_name'       => 'MyCo',
+    'display'          => 'standalone',   // or: "browser", "minimalUI", "inline"
+    'theme_color'      => '#1e3a5d',
+    'background_color' => '#ffffff',
+  ],
+];
 ```

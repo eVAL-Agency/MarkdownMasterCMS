@@ -28,8 +28,8 @@
 
 namespace MarkdownMaster;
 
+use MarkdownMaster\Events\FileParsedEvent;
 use Spatie\YamlFrontMatter\YamlFrontMatter;
-use MarkdownMaster\Services\HookService;
 
 class File {
 	/** @var string Full web URL of directory */
@@ -435,7 +435,7 @@ class File {
 		$this->meta = $meta;
 
 		// Allow scripts to hook into file parsing
-		HookService::Run('file_parsed', $this);
+		(new FileParsedEvent($this))->dispatch();
 	}
 
 	/**

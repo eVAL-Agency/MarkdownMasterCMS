@@ -28,7 +28,8 @@
 
 namespace MarkdownMaster\Services;
 
-use MarkdownMaster\Config;
+use MarkdownMaster\Events\FileParsedEvent;
+use MarkdownMaster\Events\RenderPageViewEvent;
 
 /**
  * Simple hooks system to allow plugins to extend functionality
@@ -45,83 +46,55 @@ class HookService {
 	/**
 	 * Add a new callback to a given hook
 	 *
+	 * @deprecated v6.0.0 to be removed v7.0.0
+	 *
 	 * @param string $hook
 	 * @param callable $function
+	 *
 	 * @return void
 	 */
 	public static function Add(string $hook, callable $function) {
-		// Grab the location of the hook, this can be useful for debugging where hooks are added.
-		$backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
-		$source = substr($backtrace[0]['file'], strlen(Config::GetRootPath()));
-		$hooks = &self::$hooks;
-		if (!isset($hooks[$hook])) {
-			$hooks[$hook] = ['description' => '', 'functions' => []];
+		// Redirect to the new Event system
+		switch($hook) {
+			case 'render_page_view':
+				RenderPageViewEvent::Subscribe($function);
+				break;
+			case 'file_parsed':
+				FileParsedEvent::Subscribe($function);
+				break;
 		}
-		$hooks[$hook]['functions'][] = ['fn' => $function, 'source' => $source];
 	}
 
 	/**
 	 * Run all callbacks for a given hook
+	 *
+	 * @deprecated v6.0.0 to be removed v7.0.0
 	 *
 	 * @param string $hook
 	 * @param ...$args
 	 * @return void
 	 */
 	public static function Run(string $hook, ...$args): void {
-		$hooks = &self::$hooks;
-		if (isset($hooks[$hook])) {
-			foreach($hooks[$hook]['functions'] as $function) {
-				call_user_func_array($function['fn'], $args);
-			}
+		switch($hook) {
+			case 'render_page_view':
+				$event = new RenderPageViewEvent(...$args);
+				$event->dispatch();
+				break;
+			case 'file_parsed':
+				$event = new FileParsedEvent(...$args);
+				$event->dispatch();
+				break;
 		}
 	}
 
 	/**
 	 * Register a new hook with a description
 	 *
+	 * @deprecated v6.0.0 to be removed v7.0.0
+	 *
 	 * @param string $hook
 	 * @param string $description
 	 * @return void
 	 */
-	public static function Register(string $hook, string $description) {
-		$hooks = &self::$hooks;
-		if (!isset($hooks[$hook])) {
-			$hooks[$hook] = ['description' => $description, 'functions' => []];
-		}
-		else {
-			$hooks[$hook]['description'] = $description;
-		}
-	}
-
-	/**
-	 * Get debug information about registered hooks and their callbacks
-	 *
-	 * Returns:
-	 * ```
-	 * [
-	 *   'hook_name' => [
-	 *     'description' => 'Description of the hook',
-	 *     'calls' => [
-	 *       'path/to/file.php',
-	 *       ...
-	 *     ]
-	 * ],
-	 * ```
-	 *
-	 * @return array
-	 */
-	public static function GetDebugInfo(): array {
-		$debug = [];
-		foreach(self::$hooks as $hook => $details) {
-			$debug[$hook] = [
-				'description' => $details['description'],
-				'calls' => [],
-			];
-			foreach($details['functions'] as $function) {
-				$debug[$hook]['calls'][] = $function['source'];
-			}
-		}
-
-		return $debug;
-	}
+	public static function Register(string $hook, string $description) { }
 }

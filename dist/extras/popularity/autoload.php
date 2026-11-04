@@ -10,19 +10,21 @@ use MarkdownMaster\Services\HookService;
 use MarkdownMaster\Model;
 use MarkdownMaster\Route;
 use Popularity\Services\PopularityService;
+use MarkdownMaster\Events\RenderPageViewEvent;
+use MarkdownMaster\Events\FileParsedEvent;
 
 
 Model::RegisterModel('Popularity\Models\PopularityViewsModel');
 Model::RegisterModel('Popularity\Models\PopularityDailyModel');
 
-HookService::Add('render_page_view', function(File $file, View $view, Request $request) {
+RenderPageViewEvent::Subscribe(function(RenderPageViewEvent $event) {
 	// Record this page view into the local database
-	PopularityService::Record($file, $request);
+	PopularityService::Record($event->file, $event->request);
 });
 
-HookService::Add('file_parsed', function(File $file) {
-	$score = PopularityService::GetScoreFor($file->shortRel);
-	$file->setmeta('popularity', $score);
+FileParsedEvent::Subscribe(function(FileParsedEvent $event) {
+	$score = PopularityService::GetScoreFor($event->file->shortRel);
+	$event->file->setmeta('popularity', $score);
 });
 
 CronService::Register('popularity-rollup', 3600, function() { PopularityService::Rollup(); });

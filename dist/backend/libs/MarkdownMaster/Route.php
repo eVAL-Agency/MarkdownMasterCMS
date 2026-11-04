@@ -29,6 +29,8 @@
 
 namespace MarkdownMaster;
 
+use MarkdownMaster\Events\RenderPageViewEvent;
+
 /**
  * Route handler for MarkdownMaster - Allows loading of dynamic routes
  */
@@ -133,5 +135,9 @@ class Route {
 		}
 
 		return null;
+	}
+
+	public static function AttachDebugInformation(RenderPageViewEvent $event): void {
+		$event->view->footScripts[] = 'console.debug("Routes:", ' . json_encode(Route::GetRoutes()) . ');';
 	}
 }

@@ -29,6 +29,8 @@
 namespace MarkdownMaster\Services;
 
 use Exception;
+use MarkdownMaster\Config;
+use MarkdownMaster\Events\RenderPageViewEvent;
 use MarkdownMaster\Models\CronModel;
 
 class CronService {
@@ -117,5 +119,19 @@ class CronService {
 				$job->delete();
 			}
 		}
+	}
+
+	/**
+	 * Hook into the View to install a background webcron request
+	 *
+	 * @param RenderPageViewEvent $event
+	 * @return void
+	 * @throws Exception
+	 */
+	public static function HookPageView(RenderPageViewEvent $event): void {
+		// Add a request for the agent to call the cron once for a full view.
+		// This is to support a lazy webcron.
+		$pageUrl = Config::GetHost() . Config::GetWebPath() . 'cron';
+		$event->view->footScripts[] = 'window.requestIdleCallback(() => { fetch("' . $pageUrl . '", {method: "POST"}); });';
 	}
 }

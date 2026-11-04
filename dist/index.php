@@ -49,6 +49,10 @@ use MarkdownMaster\Config;
 use MarkdownMaster\Request;
 use MarkdownMaster\Services\HookService;
 use MarkdownMaster\Model;
+use MarkdownMaster\Services\CronService;
+use MarkdownMaster\Events\RenderPageViewEvent;
+use MarkdownMaster\Event;
+use MarkdownMaster\Route;
 
 
 // Load system models
@@ -59,6 +63,16 @@ Model::RegisterModel('MarkdownMaster\Models\CronModel');
 HookService::Register('render_page_view', 'Modify the page view before rendering, provides the arguments File, View, and Request.');
 HookService::Register('file_parsed', 'Modify the file after it has been parsed, provides the File object.');
 
+
+// Attach system events to the various systems
+RenderPageViewEvent::Subscribe([CronService::class, 'HookPageView']);
+
+// Add debug information if enabled
+if (Config::GetDebug()) {
+	RenderPageViewEvent::Subscribe([Event::class, 'AttachDebugInformation']);
+	RenderPageViewEvent::Subscribe([Route::class, 'AttachDebugInformation']);
+	RenderPageViewEvent::Subscribe([Model::class, 'AttachDebugInformation']);
+}
 
 // As of 5.1, allow plugins to load server-side code to provide additional functionality
 foreach(array_keys(Config::GetExtras()) as $extra) {
