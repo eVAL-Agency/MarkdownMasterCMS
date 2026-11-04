@@ -11,8 +11,8 @@ return [
 
 	// Web App Manifest (PWA) defaults, overridden by the root config.php "pwa" block
 	'pwa' => [
-		'name' => 'MarkdownMasterCMS Website',
-		'short_name' => 'MarkdownMasterCMS',
+		'name' => 'My Wiki',
+		'short_name' => 'Wiki',
 		'display' => 'standalone',
 		'theme_color' => '#1c3280',
 		'background_color' => '#ffffff',

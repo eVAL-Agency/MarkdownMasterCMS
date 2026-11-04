@@ -43,8 +43,7 @@ Route::RegisterRoute('/sitemap.xml', 'MarkdownMaster\\Controllers\\SitemapContro
 // Meta content route, provides information about pages
 Route::RegisterRoute('/meta.json', 'MarkdownMaster\\Controllers\\MetaController');
 
-$sw = Config::GetServiceWorker();
-if ($sw === true || (is_scalar($sw) && strlen($sw) > 1)) {
+if (Config::IsServiceWorkerEnabled()) {
 	// Service worker is configured for default (TRUE) or custom, load those routes
 
 	// Route for service worker configuration parameters

@@ -124,3 +124,9 @@ return [
   ],
 ];
 ```
+
+## New Icon Support
+
+Icons are now supported natively when using the backend application.
+This means that if `config.php` or your theme `settings.php` contains `icons`,
+take note if they should either be removed or if the favicon should be removed from the HTML.

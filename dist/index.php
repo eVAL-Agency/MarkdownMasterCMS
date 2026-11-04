@@ -47,12 +47,14 @@ set_include_path(get_include_path() . PATH_SEPARATOR . __DIR__ . '/backend/libs'
 
 use MarkdownMaster\Config;
 use MarkdownMaster\Request;
-use MarkdownMaster\Services\HookService;
 use MarkdownMaster\Model;
-use MarkdownMaster\Services\CronService;
-use MarkdownMaster\Events\RenderPageViewEvent;
 use MarkdownMaster\Event;
+use MarkdownMaster\Events\RenderPageViewEvent;
 use MarkdownMaster\Route;
+use MarkdownMaster\Services\HookService;
+use MarkdownMaster\Services\CronService;
+use MarkdownMaster\Services\ManifestService;
+use MarkdownMaster\Services\FaviconService;
 
 
 // Load system models
@@ -73,6 +75,13 @@ if (Config::GetDebug()) {
 	RenderPageViewEvent::Subscribe([Route::class, 'AttachDebugInformation']);
 	RenderPageViewEvent::Subscribe([Model::class, 'AttachDebugInformation']);
 }
+
+RenderPageViewEvent::Subscribe([FaviconService::class, 'InjectFavicon']);
+
+if (Config::IsServiceWorkerEnabled()) {
+	RenderPageViewEvent::Subscribe([ManifestService::class, 'InjectManifestLinks']);
+}
+
 
 // As of 5.1, allow plugins to load server-side code to provide additional functionality
 foreach(array_keys(Config::GetExtras()) as $extra) {

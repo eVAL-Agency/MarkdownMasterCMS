@@ -32,8 +32,8 @@ return [
 
 	// Web App Manifest (PWA) defaults, overridden by the root config.php "pwa" block
 	'pwa' => [
-		'name' => 'MarkdownMasterCMS Website',
-		'short_name' => 'MarkdownMasterCMS',
+		'name' => 'My Blog',
+		'short_name' => 'Blog',
 		'display' => 'standalone',
 		'theme_color' => '#3f70b3',
 		'background_color' => '#ffffff',

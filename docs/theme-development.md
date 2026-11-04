@@ -50,8 +50,36 @@ return [
 		'cms-button' => [],
 		'external-links' => [],
 	],
+	
+	'pwa' => [
+		'name' => 'MarkdownMasterCMS Website',
+		'short_name' => 'MarkdownMasterCMS',
+		'display' => 'standalone',
+		'theme_color' => '#3f70b3',
+		'background_color' => '#ffffff',
+	],
+
+	'icons' => [
+		'icons/icon.svg',
+		'icons/icon-192.png',
+		'icons/icon-512.png',
+		'icons/icon-maskable-512.png',
+	],
 ];
 ```
 
 The theme settings should define plugins and parameters used by that theme.
 For example if your theme utilizes specific functionality, it should be defined here.
+
+## Icons
+
+Icons can be included in the theme to provide default favicons and PWA icons.
+Including them in the settings.php means you **do not need to include them manually**
+in the theme `index.html`.
+
+Icons are parsed and injected automatically into the HTML.
+
+## Progress Web App
+
+As of v6.0.0 PWA is natively supported, and the theme can define default values for
+the appearance of the application when installed as a PWA.

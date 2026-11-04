@@ -43,6 +43,7 @@ class HTMLTemplateView extends View {
 	public string $body = '';
 	public string $canonical = '';
 	public array $meta = [];
+	public array $links = [];
 	public array $classes = [];
 	public array $headScripts = [];
 	public array $footScripts = [];
@@ -91,28 +92,15 @@ class HTMLTemplateView extends View {
 			$xpath->query('//title')->item(0)->nodeValue = htmlspecialchars($this->seoTitle, ENT_XML1, 'UTF-8');
 		}
 		if ($this->description) {
-			$tag = $xpath->query('/html/head/meta[@name="description"]');
-			if ($tag->length == 0) {
-				$tag = $dom->createElement('meta');
-				$tag->setAttribute('name', 'description');
-				$tag->setAttribute('content', $this->description);
-				$xpath->query('/html/head')->item(0)->appendChild($tag);
-			}
-			else {
-				$tag->item(0)->setAttribute('content', $this->description);
-			}
+			// Description is an alias for meta description,
+			// Use the standard meta logic.
+			$this->meta['description'] = $this->description;
 		}
 		if ($this->canonical) {
-			$tag = $xpath->query('/html/head/link[@rel="canonical"]');
-			if ($tag->length == 0) {
-				$tag = $dom->createElement('link');
-				$tag->setAttribute('rel', 'canonical');
-				$tag->setAttribute('href', $this->canonical);
-				$xpath->query('/html/head')->item(0)->appendChild($tag);
-			}
-			else {
-				$tag->item(0)->setAttribute('href', $this->canonical);
-			}
+			$this->setLink([
+				'rel' => 'canonical',
+				'href' => $this->canonical,
+			]);
 		}
 
 		foreach ($this->meta as $key => $value) {
@@ -128,6 +116,19 @@ class HTMLTemplateView extends View {
 			}
 			else {
 				$tag->item(0)->setAttribute('content', $value);
+			}
+		}
+
+		foreach ($this->links as $attributes) {
+			// Multiple links may have the same rel; this is valid.
+			// eg: rel=stylesheet href=...
+			$tag = $dom->createElement('link');
+			$xpath->query('/html/head')->item(0)->appendChild($tag);
+
+			foreach ($attributes as $attr => $value) {
+				if ($attr !== false) {
+					$tag->setAttribute($attr, $value);
+				}
 			}
 		}
 
@@ -176,6 +177,50 @@ class HTMLTemplateView extends View {
 		}
 
 		return $dom->saveHTML();
+	}
+
+	/**
+	 * Set a link for the head content of this page.
+	 *
+	 * Populates the `<link rel="..." href="..."/>` elements in the HTML.
+	 *
+	 * This function forces only **ONE** link with the given rel,
+	 * useful for links such as `canonical` where it should only have one.
+	 *
+	 * If `rel` is not present in the attributes, this function ignores the request.
+	 *
+	 * @param array $attributes Key/value pair of attributes to set
+	 * @return void
+	 */
+	public function setLink(array $attributes): void {
+		if (!isset($attributes['rel'])) {
+			// Cannot search for duplicates if a rel is not present.
+			return;
+		}
+
+		// Search through $this->links for a duplicate rel entry.
+		// If found, that entry should be replaced with the incoming $attributes.
+		// no match, the new attributes just get appended.
+		$key = array_search($attributes['rel'], array_column($this->links, 'rel'));
+		if ($key !== false) {
+			$this->links[$key] = $attributes;
+		} else {
+			$this->links[] = $attributes;
+		}
+	}
+
+	/**
+	 * Add a new link to this HTML's head section.
+	 *
+	 * Populates the `<link rel="..." href="..."/>` elements in the HTML.
+	 *
+	 * This function **DOES NOT** check for duplicates, it just appends.
+	 *
+	 * @param array $attributes
+	 * @return void
+	 */
+	public function addLink(array $attributes): void {
+		$this->links[] = $attributes;
 	}
 
 	/**

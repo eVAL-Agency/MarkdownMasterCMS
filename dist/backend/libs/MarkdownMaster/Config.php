@@ -75,19 +75,26 @@ class Config {
 				$iconData['type'] = mime_content_type($physicalPath);
 			}
 
-			if (!isset($iconData['sizes'])) {
+			if (!(isset($iconData['sizes']) && isset($iconData['width']) && isset($iconData['height']))) {
+				// At least one of the dimension keys are missing.
 				// SVGs are "any" because they're scalable.
 				if (str_contains($iconData['type'], 'image/svg')) {
-					$iconData['sizes'] = 'any';
+					$iconData['sizes'] = $iconData['sizes'] ?? 'any';
+					$iconData['width'] = $iconData['width'] ?? 0;
+					$iconData['height'] = $iconData['height'] ?? 0;
 				}
 				elseif (function_exists('getimagesize')) {
 					// Guess the size from the image data
 					$sizes = getimagesize($physicalPath);
 					if ($sizes !== false) {
-						$iconData['sizes'] = $sizes[0] . 'x' . $sizes[1];
+						$iconData['sizes'] = $iconData['sizes'] ?? ($sizes[0] . 'x' . $sizes[1]);
+						$iconData['width'] = $sizes[0];
+						$iconData['height'] = $sizes[1];
 					}
 					else {
-						$iconData['sizes'] = 'any';
+						$iconData['sizes'] = $iconData['sizes'] ?? 'any';
+						$iconData['width'] = 0;
+						$iconData['height'] = 0;
 					}
 				}
 			}
@@ -412,6 +419,19 @@ class Config {
 		return self::_Get('serviceWorker') ?? false;
 	}
 
+	/**
+	 * Check if service worker support is enabled
+	 *
+	 * Returns true if the service worker is set to True (default worker)
+	 * or a non-empty string (custom worker).
+	 *
+	 * @return bool
+	 */
+	public static function IsServiceWorkerEnabled(): bool {
+		$sw = Config::GetServiceWorker();
+		return ($sw === true || (is_scalar($sw) && strlen($sw) > 1));
+	}
+
 	public static function GetExtras(): array {
 		return self::_Get('extras') ?? [];
 	}
@@ -542,6 +562,29 @@ class Config {
 	 * * sizes
 	 * * purpose
 	 * * type
+	 *
+	 * For example:
+	 *
+	 * ```json
+	 * [
+	 *   {
+	 *     'src': '/themes/yourtheme/icons/icon.svg',
+	 *     'type': 'image/svg+xml',
+	 *     'sizes': 'any',
+	 *     'purpose': 'any',
+	 *     'width': 0,
+	 *     'height': 0,
+	 *   },
+	 *   {
+	 *     'src': '/themes/yourtheme/icons/icon.png',
+	 *     'type': 'image/png',
+	 *     'sizes': '192x192',
+	 *     'purpose': 'any',
+	 *     'width': 192,
+	 *     'height': 192,
+	 *   },
+	 * ]
+	 * ```
 	 *
 	 * @return array
 	 */
