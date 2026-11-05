@@ -1,20 +1,18 @@
 <?php
 
-use MarkdownMaster\Services\HookService;
-use MarkdownMaster\File;
-use MarkdownMaster\Views\HTMLTemplateView;
 use MarkdownMaster\Config;
-use MarkdownMaster\Request;
+use MarkdownMaster\Events\RenderPageViewEvent;
 
-HookService::Add('render_page_view', function(File $file, HTMLTemplateView $view, Request $request) {
-	// Add the necessary Matomo tracking code into the page header
-	$host = Config::GetExtraParameter('matomo', 'host', null);
-	$site = Config::GetExtraParameter('matomo', 'siteId', null);
-	if (!$host || !$site) {
-		// Matomo not configured
-		return;
-	}
-	$view->headScripts[] = <<<EOD
+
+$host = Config::GetExtraParameter('matomo', 'host', null);
+$site = Config::GetExtraParameter('matomo', 'siteId', null);
+
+if ($host && $site) {
+	RenderPageViewEvent::Subscribe(function(RenderPageViewEvent $event) {
+		// Add the necessary Matomo tracking code into the page header
+		$host = Config::GetExtraParameter('matomo', 'host', null);
+		$site = Config::GetExtraParameter('matomo', 'siteId', null);
+		$event->view->headScripts[] = <<<EOD
 var _paq = window._paq = window._paq || [];
 /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
 //_paq.push(['trackPageView']);
@@ -28,7 +26,8 @@ _paq.push(['enableLinkTracking']);
 })();
 EOD;
 
-	$view->footContent[] = <<<EOD
+		$event->view->footContent[] = <<<EOD
 <noscript><p><img referrerpolicy="no-referrer-when-downgrade" src="//$host/matomo.php?idsite={$site}&amp;rec=1" style="border:0;" alt="" /></p></noscript>
 EOD;
-});
+	});
+}
