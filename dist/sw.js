@@ -314,6 +314,7 @@ function cacheFirst(requestUrl, request) {
 					if (cached) {
 						return cached;
 					}
+					console.log('[serviceworker] HTML fallback "offline.html" failed!  Please ensure your theme has an offline.html in the layouts and browser cache is NOT DISABLED!');
 					throw error;
 				});
 			}

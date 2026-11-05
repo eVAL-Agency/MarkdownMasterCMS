@@ -27,33 +27,33 @@ let layout_path = '',
  * @throws {CMSError}
  */
 export async function loadTemplate(url, data) {
-	return new Promise((resolve, reject) => {
-		fetch(url)
-			.then(response => {
-				if (!response.ok) {
-					reject(new CMSError(response.status, response.statusText));
-				}
-				return response.text();
-			})
-			.then(tmpl => {
-				let fn = new Function(
-						'data',
-						'var output=' +
-						JSON.stringify(tmpl)
-							.replace(/<%=(.+?)%>/g, '"+($1)+"')
-							.replace(/<%(.+?)%>/g, '";$1\noutput+="') +
-						';return output;'
-					),
-					html = '';
+	let response;
+	try {
+		response = await fetch(url);
+	}
+	catch (error) {
+		throw new CMSError(500, error.message);
+	}
 
-				try {
-					html = fn.call(this, data); //renderer(data);
-					resolve(html);
-				} catch (e) {
-					reject(new CMSError(500, e));
-				}
-			});
-	});
+	if (!response.ok) {
+		throw new CMSError(response.status, response.statusText);
+	}
+
+	const tmpl = await response.text();
+	let fn = new Function(
+		'data',
+		'var output=' +
+		JSON.stringify(tmpl)
+			.replace(/<%=(.+?)%>/g, '"+($1)+"')
+			.replace(/<%(.+?)%>/g, '";$1\noutput+="') +
+		';return output;'
+	);
+
+	try {
+		return fn.call(this, data);
+	} catch (e) {
+		throw new CMSError(500, e.message);
+	}
 }
 
 /**
@@ -72,19 +72,11 @@ export async function fetchLayout(layout, data) {
 		version = data.config.version;
 	}
 
-	return new Promise((resolve, reject) => {
-		let url = pathJoin(layout_path, `${layout}.html?v=${version}`);
-		Log.Debug('fetchLayout', url);
-		loadTemplate(url, data)
-			.then(html => {
-				Log.Debug('fetchLayout', 'Fetched templated layout', url);
-				resolve(html);
-			})
-			.catch(e => {
-				Log.Error('fetchLayout', 'Error while rendered layout', url, e.message);
-				reject(e);
-			});
-	});
+	let url = pathJoin(layout_path, `${layout}.html?v=${version}`);
+	Log.Debug('fetchLayout', url);
+	const html = await loadTemplate(url, data);
+	Log.Debug('fetchLayout', 'Fetched templated layout', url);
+	return html;
 }
 
 /**
@@ -97,14 +89,7 @@ export async function fetchLayout(layout, data) {
  * @throws {CMSError}
  */
 export async function renderLayout(layout, data) {
-	return new Promise((resolve, reject) => {
-		fetchLayout(layout, data).then(html => {
-			system_container.innerHTML = html;
-			resolve();
-		}).catch(e => {
-			reject(e);
-		});
-	});
+	system_container.innerHTML = await fetchLayout(layout, data);
 }
 
 /**

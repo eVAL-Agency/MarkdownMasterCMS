@@ -210,7 +210,8 @@ class CMS {
 					registrations.forEach(registration => {
 						registration.unregister();
 					});
-					location.reload();
+					Log.Debug('Service worker requested to be uninstalled, issuing a reload.');
+					setTimeout(() => { location.reload(); }, 500);
 				}
 			});
 		}
@@ -237,6 +238,7 @@ class CMS {
 					// Small delay lets the SW finish its precacheFiles() before the
 					// reload fires, so the reloaded page hits a freshly primed cache
 					// for the offline fallback.
+					Log.Debug('Service worker informed an update is required, issuing a reload.');
 					setTimeout(() => location.reload(), 500);
 				}
 			});

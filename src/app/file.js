@@ -197,47 +197,42 @@ class File extends TemplateObject {
 	 * @throws {CMSError}
 	 */
 	async loadContent() {
-		return new Promise((resolve, reject) => {
-			if (this.content !== null) {
-				// Already loaded!
-				resolve(this.content);
-				return;
-			}
+		if (this.content !== null) {
+			// Already loaded!
+			return this.content;
+		}
 
-			let url = this.url;
-			if (this.timestamp) {
-				// Append a timestamp to the URL to ensure the browser gets the most updated version.
-				// This is required because repeated viewers will often not see updates, and getting
-				// some browsers *cough Chrome cough* to actually poll the server can be challenging.
-				url += '?t=' + this.timestamp;
-			}
+		let url = this.url;
+		if (this.timestamp) {
+			// Append a timestamp to the URL to ensure the browser gets the most updated version.
+			// This is required because repeated viewers will often not see updates, and getting
+			// some browsers *cough Chrome cough* to actually poll the server can be challenging.
+			url += '?t=' + this.timestamp;
+		}
 
-			fetch(url)
-				.then(response => {
-					if (!response.ok) {
-						Log.Warn(this.type, 'Unable to load file', this.url, response);
+		let response;
+		try {
+			response = await fetch(url);
+		}
+		catch (error) {
+			// Usually due to a network error
+			throw new CMSError(503, error.message);
+		}
 
-						reject(new CMSError(response.status, response.statusText));
-					}
+		if (!response.ok) {
+			Log.Warn(this.type, 'Unable to load file', this.url, response);
+			throw new CMSError(response.status, response.statusText);
+		}
 
-					if (response.headers.has('Last-Modified')) {
-						this.datetime = response.headers.get('Last-Modified');
-					}
+		if (response.headers.has('Last-Modified')) {
+			this.datetime = response.headers.get('Last-Modified');
+		}
 
-					return response.text();
-				})
-				.then(content => {
-					this.content = content;
-					this.parseContent();
+		this.content = await response.text();
+		this.parseContent();
 
-					Log.Debug('File.loadContent/' + this.type, 'Loaded file ', this);
-					resolve(content);
-				})
-				.catch(e => {
-					Log.Warn(this.type, 'Unable to load file', this, e);
-					reject(new CMSError(503, e));
-				});
-		});
+		Log.Debug('File.loadContent/' + this.type, 'Loaded file ', this);
+		return this.content;
 	}
 
 	/**
@@ -396,51 +391,43 @@ class File extends TemplateObject {
 	 * Parse file body from the markdown content
 	 */
 	async parseBody() {
-		return new Promise((resolve, reject) => {
-			if (this.bodyLoaded) {
-				// Only render content if it hasn't been loaded yet, (allows for repeated calls)
-				resolve(this.body);
-				return;
-			}
+		if (this.bodyLoaded) {
+			// Only render content if it hasn't been loaded yet, (allows for repeated calls)
+			return this.body;
+		}
 
-			this.loadContent()
-				.then(content => {
-					let html;
-					if (this._checkHasFrontMatter()) {
-						// Trim off the FrontMatter from the content
-						html = content
-							.split(this.config.frontMatterSeperator)
-							.splice(2)
-							.join(this.config.frontMatterSeperator);
-					} else {
-						// This file does not contain any valid formatted FrontMatter content
-						html = content;
-					}
+		const content = await this.loadContent();
+		let html;
+		if (this._checkHasFrontMatter()) {
+			// Trim off the FrontMatter from the content
+			html = content
+				.split(this.config.frontMatterSeperator)
+				.splice(2)
+				.join(this.config.frontMatterSeperator);
+		} else {
+			// This file does not contain any valid formatted FrontMatter content
+			html = content;
+		}
 
-					if (this.config.markdownParser) {
-						this.body = this.config.markdownParser(html);
+		if (this.config.markdownParser) {
+			this.body = this.config.markdownParser(html);
 
-						// Scripts being loaded from within a script can be tricky,
-						// extract out any embedded scripts and process them separately.
-						// We do not need to worry about ```<script>example code...</script>``` as this is escaped by the markdown engine.
-						if (this.body.includes('<script')) {
-							let scripts = this.body.matchAll(/<script.*?>([\s\S]*?)<\/script>/g);
-							scripts.forEach(script => {
-								this.scripts.push(script[1]);
-							});
-							this.body = this.body.replace(/<script.*?>[\s\S]*?<\/script>/g, '');
-						}
-					} else {
-						this.body = '<pre>' + html + '</pre>';
-					}
-
-					this.bodyLoaded = true;
-					resolve(this.body);
-				})
-				.catch(e => {
-					reject(e);
+			// Scripts being loaded from within a script can be tricky,
+			// extract out any embedded scripts and process them separately.
+			// We do not need to worry about ```<script>example code...</script>``` as this is escaped by the markdown engine.
+			if (this.body.includes('<script')) {
+				let scripts = this.body.matchAll(/<script.*?>([\s\S]*?)<\/script>/g);
+				scripts.forEach(script => {
+					this.scripts.push(script[1]);
 				});
-		});
+				this.body = this.body.replace(/<script.*?>[\s\S]*?<\/script>/g, '');
+			}
+		} else {
+			this.body = '<pre>' + html + '</pre>';
+		}
+
+		this.bodyLoaded = true;
+		return this.body;
 	}
 
 	/**
@@ -586,40 +573,32 @@ class File extends TemplateObject {
 	async render(preRenderCallback = null) {
 		document.title = 'Loading ' + this.url + '...';
 
-		return new Promise((resolve, reject) => {
-			this.parseBody().then(() => {
-				// Rendering a full page will update the page title
-				if (this.seotitle) {
-					document.title = this.seotitle;
-				} else if (this.title) {
-					document.title = this.title;
-				} else {
-					document.title = 'Page';
-				}
+		await this.parseBody();
 
-				if (preRenderCallback && typeof preRenderCallback === 'function') {
-					// Allow a callback to be provided to modify the file before rendering.
-					preRenderCallback(this);
-				}
+		// Rendering a full page will update the page title
+		if (this.seotitle) {
+			document.title = this.seotitle;
+		} else if (this.title) {
+			document.title = this.title;
+		} else {
+			document.title = 'Page';
+		}
 
-				renderLayout(this.layout, this).then(() => {
-					// Add any inline scripts to the page once rendering is complete.
-					this.scripts.forEach(script => {
-						let s = document.createElement('script');
-						s.type = 'text/javascript';
-						// Auto-include IIFE wrapper around scripts to prevent scope issues
-						s.textContent = '(() => { \n' + script + '\n})();';
-						document.body.appendChild(s);
-						this.scriptsLoaded.push(s);
-					});
+		if (preRenderCallback && typeof preRenderCallback === 'function') {
+			// Allow a callback to be provided to modify the file before rendering.
+			preRenderCallback(this);
+		}
 
-					resolve();
-				}).catch(e => {
-					reject(e);
-				});
-			}).catch(e => {
-				reject(e);
-			});
+		await renderLayout(this.layout, this);
+
+		// Add any inline scripts to the page once rendering is complete.
+		this.scripts.forEach(script => {
+			let s = document.createElement('script');
+			s.type = 'text/javascript';
+			// Auto-include IIFE wrapper around scripts to prevent scope issues
+			s.textContent = '(() => { \n' + script + '\n})();';
+			document.body.appendChild(s);
+			this.scriptsLoaded.push(s);
 		});
 	}
 
