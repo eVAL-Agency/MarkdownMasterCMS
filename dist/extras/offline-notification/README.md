@@ -42,20 +42,20 @@ This plugin is **client-side only** and has no server component.
 | Parameter     | Required | Example    | Description                                          | Default              |
 |---------------|----------|------------|------------------------------------------------------|----------------------|
 | `styles`      | no       | `false`    | Load the bundled default stylesheet (see below).     | `true`               |
-| `title`       | no       | `'Offline'`| Bold heading shown inside the notification.          | `'You\u2019re offline'`|
 | `message`     | no       | `'...'`    | Body text explaining the offline state.              | *see default below*  |
 | `showIcon`    | no       | `false`    | Show the leading warning glyph.                      | `true`               |
+| `autoReload`  | no       | `false`    | Auto-reload the page when connection is restored     | `true`               |
 
 Defaults:
 
 ```js
 {
     styles: true,
-    title: "You are offline!",
     message: "Connection to the server was lost. You are viewing an offline " +
              "version of this site and some features may be unavailable until you " +
              "reconnect.",
     showIcon: true,
+	autoReload: true,
 }
 ```
 
@@ -79,11 +79,6 @@ below to your theme stylesheet.
 
 .offline-notification__icon {
 	font-size: 1.25em;
-}
-
-.offline-notification__title {
-	font-weight: 700;
-	margin: 0;
 }
 
 .offline-notification__message {

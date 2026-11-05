@@ -18,7 +18,7 @@
 .offline-notification {
 	display: flex;
 	flex-wrap: wrap;
-	align-items: baseline;
+	align-items: center;
 	gap: 0.3em 0.75em;
 	width: 100%;
 	box-sizing: border-box;
@@ -33,19 +33,16 @@
 
 .offline-notification__icon {
 	flex: none;
-	font-size: 1.1em;
+	font-size: 1.5em;
 	line-height: 1;
 	vertical-align: middle;
-}
-
-.offline-notification__title {
-	margin: 0;
-	font-weight: 700;
 }
 
 .offline-notification__message {
 	margin: 0;
 	font-weight: 400;
+	flex: 1 1 0;
+	min-width: 20em;
 }
 
 /*

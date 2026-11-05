@@ -53,6 +53,19 @@ let notificationElement = null;
 const cms = window.CMS;
 
 /**
+ * Used to track if a connection was lost and subsequently reconnected.
+ *
+ * @type {boolean}
+ */
+let wasOffline = false;
+
+/**
+ * Time the script started so we can ignore sub-2-second flickers during page load/reload.
+ * @type {DOMHighResTimeStamp}
+ */
+const PAGE_LOAD_TIME = performance.now();
+
+/**
  * Safely fetch a single extra option.
  *
  * @param {string} name  Plugin name
@@ -76,9 +89,6 @@ const options = {
 	// Auto-load the bundled default stylesheet.
 	styles: extraOption('offline-notification', 'styles', true),
 
-	// Bold heading shown inside the notification.
-	title: extraOption('offline-notification', 'title', 'You are offline!'),
-
 	// Body message explaining the offline state.
 	message: extraOption('offline-notification', 'message',
 		'Connection to the server was lost. You are viewing an offline ' +
@@ -88,6 +98,9 @@ const options = {
 
 	// Show the leading warning glyph.
 	showIcon: extraOption('offline-notification', 'showIcon', true),
+
+	// Auto reload on reconnection
+	autoReload: extraOption('offline-notification', 'autoReload', true),
 };
 
 /**
@@ -145,11 +158,6 @@ function showNotification() {
 		notification.appendChild(icon);
 	}
 
-	let title = document.createElement('p');
-	title.className = 'offline-notification__title';
-	title.textContent = options.title;
-	notification.appendChild(title);
-
 	let message = document.createElement('p');
 	message.className = 'offline-notification__message';
 	message.textContent = options.message;
@@ -181,8 +189,15 @@ function hideNotification() {
 function updateNotification() {
 	if (window.navigator.onLine) {
 		hideNotification();
+		if (options.autoReload && wasOffline) {
+			window.location.reload();
+		}
 	} else {
 		showNotification();
+		if (performance.now() - PAGE_LOAD_TIME > 5000) {
+			// Only mark that it was offline if it occurred after the initial page load.
+			wasOffline = true;
+		}
 	}
 }
 

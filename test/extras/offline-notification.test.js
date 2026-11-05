@@ -139,14 +139,12 @@ describe('offline-notification', () => {
 		expect(ctx.doc.body.firstElementChild).toBe(bar);
 	});
 
-	it('uses the default title and message when offline', () => {
+	it('uses the default message when offline', () => {
 		let ctx = setup({ online: false });
 		let bar = ctx.doc.querySelector('.offline-notification');
 
-		let title = bar.querySelector('.offline-notification__title');
 		let message = bar.querySelector('.offline-notification__message');
 
-		expect(title.textContent).toBe('You are offline!');
 		expect(message.textContent).toContain('offline version');
 	});
 
@@ -167,22 +165,19 @@ describe('offline-notification', () => {
 		expect(icon).toBeNull();
 	});
 
-	it('honors custom title and message options', () => {
+	it('honors custom message options', () => {
 		let ctx = setup({
 			online: false,
 			extras: {
 				'offline-notification': {
-					title: 'No connection',
 					message: 'Custom message text',
 				},
 			},
 		});
 		let bar = ctx.doc.querySelector('.offline-notification');
 
-		let title = bar.querySelector('.offline-notification__title');
 		let message = bar.querySelector('.offline-notification__message');
 
-		expect(title.textContent).toBe('No connection');
 		expect(message.textContent).toBe('Custom message text');
 	});
 
