@@ -16,13 +16,20 @@ class SwConfigController extends Controller {
 		$view = new JSONView();
 
 		$icons = Config::GetIcons();
+		$layoutsPhysical = Config::GetRootPath() . 'themes/' . Config::GetTheme() . '/layouts/';
+		$layoutsWeb = Config::GetWebPath() . 'themes/' . Config::GetTheme() . '/layouts/';
+
+		// List of files to cache for offline use
 		$offlineFiles = [
 			Config::GetWebPath() . 'manifest.json',
 		];
 
-		// The offline.html template (if it exists) should be cached for offline use
-		if (file_exists(Config::GetRootPath() . 'themes/' . Config::GetTheme() . '/layouts/offline.html')) {
-			$offlineFiles[] = Config::GetWebPath() . 'themes/' . Config::GetTheme() . '/layouts/offline.html';
+		// Common errors
+		$errorFiles = ['offline.html', 'error404.html', 'error500.html'];
+		foreach ($errorFiles as $file) {
+			if (file_exists($layoutsPhysical . $file)) {
+				$offlineFiles[] = $layoutsWeb . $file;
+			}
 		}
 
 		// Core icons get cached
