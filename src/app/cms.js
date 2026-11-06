@@ -435,7 +435,7 @@ class CMS {
 		Log.Debug('CMS.route', 'Running routing');
 
 		// Inform the service worker to check for updates while the next page is loading.
-		if (this.serviceWorker) {
+		if (this.serviceWorker && this.serviceWorker.active) {
 			this.serviceWorker.active.postMessage({action: 'config-check'});
 		}
 
