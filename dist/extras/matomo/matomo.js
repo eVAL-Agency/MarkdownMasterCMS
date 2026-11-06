@@ -27,12 +27,7 @@
 document.addEventListener('cms:route', event => {
 	let _paq = window._paq || [];
 
-	if (event.detail.tag !== null) {
-		// Track tag listings as search events
-		// trackSiteSearch(keyword, [category], [resultsCount])
-		_paq.push(['trackSiteSearch', 'tag:' + event.detail.tag, event.detail.type, event.detail.collection.totalResults]);
-	}
-	else if(event.detail.search !== null) {
+	if(event.detail.search !== null) {
 		// Track search events
 		// trackSiteSearch(keyword, [category], [resultsCount])
 		_paq.push(['trackSiteSearch', event.detail.search, event.detail.type, event.detail.collection.totalResults]);
