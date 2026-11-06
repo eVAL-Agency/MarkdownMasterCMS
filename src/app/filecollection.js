@@ -63,11 +63,7 @@ let _queuedGetMetas = async (path) => {
  * Represents a file collection.
  * @constructor
  * @param {string} type   The type of file collection (i.e. posts, pages).
- * @param {Object} layout The layouts of the file collection type.
- * @param {string} layout.list   Listing template
- * @param {string} layout.single Single page template
- * @param {string} layout.sort   Default sort for listing view
- * @param {string} layout.title  Title for listing view
+ * @param {ConfigTypeLayout} layout The layouts of the file collection type.
  * @param {Config} config Configuration from the CMS
  */
 class FileCollection extends TemplateObject {
@@ -87,7 +83,7 @@ class FileCollection extends TemplateObject {
 		/**
 		 * Layout to use for rendering this collection
 		 *
-		 * @type {string}
+		 * @type {ConfigTypeLayout}
 		 */
 		this.layout = layout;
 
@@ -943,7 +939,10 @@ class FileCollection extends TemplateObject {
 	async render() {
 
 		// Rendering a full page will update the page title
-		if (this.layout.title) {
+		if (this.layout.titleResolver) {
+			document.title = this.layout.titleResolver(this);
+		}
+		else if (this.layout.title) {
 			document.title = this.layout.title;
 		} else {
 			document.title = 'Listing';

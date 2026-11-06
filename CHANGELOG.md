@@ -39,6 +39,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Basic service worker to support offline mode
 - Icon support in configuration system, provides support for PWA and favicon
 - New Event system to replace Hooks
+- Client-side dynamic titles for listing pages
 
 ### Changes
 

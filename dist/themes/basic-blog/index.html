@@ -148,6 +148,18 @@
 	// Setup all page types supported by this theme
 	CMS.config.addTypes({{types}});
 
+	CMS.config.getTypeLayout('posts').titleResolver = collection => {
+		if (collection.hasFilterTag('cats')) {
+			return 'Cats';
+		}
+		else if (collection.hasFilterTag('turtles')) {
+			return 'Turtles';
+		}
+		else {
+			return 'Posts';
+		}
+	};
+
 	/**
 	 * Called immediately upon successful initialization of the CMS
 	 *

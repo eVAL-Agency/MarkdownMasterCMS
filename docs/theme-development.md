@@ -83,3 +83,28 @@ Icons are parsed and injected automatically into the HTML.
 
 As of v6.0.0 PWA is natively supported, and the theme can define default values for
 the appearance of the application when installed as a PWA.
+
+
+## Dynamic Titles for Listing Pages
+
+As of v6.0.0, titles of listing pages can be adjusted by the client-side configuration.
+This is useful for listing pages which support different content based on the tags provided, (for example).
+
+```js
+CMS.config.getTypeLayout('posts').titleResolver = collection => {
+    if (collection.hasFilterTag('cats')) {
+        return 'Cats';
+    }
+    else if (collection.hasFilterTag('turtles')) {
+        return 'Turtles';
+    }
+    else {
+        return 'Posts';
+    }
+};
+```
+
+The `titleResolver` method on the configured file types supports a function
+with the `FileCollection` used for rendering the view passed as the one argument.
+
+This method is expected to return a string which is injected as the SEO title of the page.

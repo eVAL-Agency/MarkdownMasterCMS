@@ -253,6 +253,30 @@ export class Config extends Object {
 	}
 
 	/**
+	 * Get the type layout for the given type.
+	 *
+	 * Either single or list name can be provided, eg: 'page' or 'pages'.
+	 *
+	 * @param {string} type
+	 * @return {ConfigTypeLayout}
+	 */
+	getTypeLayout(type) {
+		for(let i = 0, len = this.types.length; i < len; i++) {
+			if (
+				this.types[i].name === type
+				|| this.types[i].layout.list === type
+				|| this.types[i].layout.single === type
+			) {
+				return this.types[i].layout;
+			}
+		}
+
+		// Not found, return something so the calling script doesn't error out
+		console.warn(`Layout for requested type [${type}] not found!`);
+		return new ConfigTypeLayout();
+	}
+
+	/**
 	 * Get a plugin / extra configuration value
 	 *
 	 * @param {string} name Name of the plugin
@@ -292,6 +316,71 @@ export class ConfigType extends Object {
 		super();
 
 		this.name = name;
-		this.layout = layout;
+		this.layout = new ConfigTypeLayout();
+
+		this.layout.list = layout.list ?? '';
+		this.layout.single = layout.single ?? '';
+		this.layout.sort = layout.sort ?? 'title';
+		this.layout.title = layout.title ?? '';
+	}
+}
+
+/**
+ * Layout definition for a given type of File
+ *
+ * @constructor
+ */
+export class ConfigTypeLayout extends Object {
+	constructor() {
+		super();
+
+		/**
+		 * Template file to use for listing this content type
+		 *
+		 * Example 'pages'
+		 *
+		 * @type {string}
+		 */
+		this.list = '';
+
+		/**
+		 * Template file to use for rendering a single page
+		 *
+		 * Example 'page'
+		 *
+		 * @type {string}
+		 */
+		this.single = '';
+
+		/**
+		 * Default sort for files when browsing the listing page
+		 *
+		 * Example 'title'
+		 *
+		 * @type {string}
+		 */
+		this.sort = '';
+
+		/**
+		 * Page title set when browsing the listing page
+		 *
+		 * Example 'Pages'
+		 *
+		 * @type {string}
+		 */
+		this.title = '';
+
+		/**
+		 * Optional function to compute the listing page title dynamically.
+		 *
+		 * Receives the FileCollection instance so it has access to
+		 * the current filter state (tags, pagination, etc.) and can
+		 * return an appropriate display title.
+		 *
+		 * If not set, falls back to `this.title`, then 'Listing'.
+		 *
+		 * @type {function(FileCollection):string|null}
+		 */
+		this.titleResolver = null;
 	}
 }

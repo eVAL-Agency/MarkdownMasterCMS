@@ -374,8 +374,10 @@ self.addEventListener('fetch', (event) => {
 
 	// List of requests which should check the cache first and only hit the server if not found
 	const ext = checkUrl.slice(checkUrl.lastIndexOf('.')).toLowerCase() || '';
+	// Important, .js files **MUST NOT USE CACHE FIRST STRATEGY**
+	// This is because the JS files are critical to this application, so having fresh versions
+	// is more important than a few extra ms for the lookups.
 	const defaultCacheExtensions = [
-		'.js',
 		'.css',
 		'.woff2',
 		'.png',
