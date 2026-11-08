@@ -105,7 +105,7 @@ return [
 ];
 ```
 
-These 4 icons are parsed to:
+These 4 icons would be parsed to:
 
 ```json
 {
@@ -143,6 +143,27 @@ in your `config.php` site configuration pointing to the files.
 
 (Keep the maskable icon's content inside the central ~80% circle so it survives the launcher
 masking).
+
+### Icon Sizes
+
+Icons can be added of varying sizes, with PHP calculating the image size automatically.
+
+The following image sizes are recommended to be used:
+
+| Size      | Description                     | Platform       | Rel (where it lives)       |
+|-----------|---------------------------------|----------------|----------------------------|
+| 16x16     | Favicon (low res)               | All            | link @rel=icon             |
+| 32x32     | Favicon for Chrome, Brave       | All            | link @rel=icon             |
+| 48x48     | Favicon for crawlers            | All            | link @rel=icon             |
+| 64x64     | Favicon                         | All            | link @rel=icon             |
+| 120×120   | iPhone home screen @2x          | iOS            | link @rel=apple-touch-icon |
+| 128×128   | Favicon for Firefox             | Windows, Linux | link @rel=icon             |
+| 180×180   | iPhone home screen @3x          | iOS            | link @rel=apple-touch-icon |
+| 192×192   | Android home screen / PWA       | Android        | Manifest                   |
+| 192×192 M | PWA maskable                    | Android        | Manifest                   |
+| 256x256   | Windows high-dpi                | Windows        | link @rel=icon             |
+| 512×512   | Install prompt, splash screen   | Android, Linux | Manifest                   |
+| 512×512 M | PWA maskable, large             | Android        | Manifest                   |
 
 ## Installing and Testing
 

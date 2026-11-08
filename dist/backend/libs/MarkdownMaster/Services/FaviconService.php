@@ -26,43 +26,58 @@ class FaviconService {
 	public static function InjectFavicon(RenderPageViewEvent $event): void {
 		$icons = Config::GetIcons();
 
-		$standardTypes = [
+		$vectorTypes = [
 			'image/svg+xml',
 			'image/svg',
+		];
+		$standardTypes = [
 			'image/png',
 			'image/gif',
 			'image/jpeg',
 		];
+		$standardSizes = [
+			'16x16',
+			'32x32',
+			'48x48',
+			'64x64',
+			'128x128',
+			'256x256',
+		];
 		$appleTypes = [
 			'image/png',
 		];
+		$appleSizes = [
+			'120x120',
+			'180x180',
+		];
 
 		foreach($icons as $icon) {
-			// Check for standard icons
-			if (in_array($icon['type'], $standardTypes) && $icon['width'] <= 128 && $icon['height'] <= 128) {
-				if ($icon['sizes'] === 'any') {
-					$event->view->addLink([
-						'rel' => 'icon',
-						'href' => $icon['src'],
-						'type' => $icon['type'],
-					]);
-				}
-				else {
-					$event->view->addLink([
-						'rel' => 'icon',
-						'href' => $icon['src'],
-						'type' => $icon['type'],
-						'sizes' => $icon['sizes'],
-					]);
-				}
+			// Standard icons support vector
+			if (in_array($icon['type'], $vectorTypes)) {
+				$event->view->addLink([
+					'rel' => 'icon',
+					'href' => $icon['src'],
+					'type' => $icon['type'],
+				]);
 			}
 
-			if (in_array($icon['type'], $appleTypes) && $icon['width'] == 180 && $icon['height'] == 180) {
+			// Check for standard icons
+			if (in_array($icon['type'], $standardTypes) && in_array($icon['sizes'], $standardSizes)) {
+				$event->view->addLink([
+					'rel' => 'icon',
+					'href' => $icon['src'],
+					'type' => $icon['type'],
+					'sizes' => $icon['sizes'],
+				]);
+			}
+
+			// Check for apple touch icons
+			if (in_array($icon['type'], $appleTypes) && in_array($icon['sizes'], $appleSizes)) {
 				$event->view->addLink([
 					'rel' => 'apple-touch-icon',
 					'href' => $icon['src'],
 					'type' => $icon['type'],
-					'sizes' => '180x180',
+					'sizes' => $icon['sizes'],
 				]);
 			}
 		}

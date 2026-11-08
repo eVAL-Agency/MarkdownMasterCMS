@@ -46,6 +46,25 @@ return [
 		'icons/icon-maskable-512.png',
 	],
 
+	// List of icons to use for testing icon usages,
+	// each icon lists the width of the image.
+	/*
+	'icons' => [
+		'test_icons/test16.png',
+		'test_icons/test32.png',
+		'test_icons/test48.png',
+		'test_icons/test64.png',
+		'test_icons/test120.png',
+		'test_icons/test128.png',
+		'test_icons/test180.png',
+		'test_icons/test192.png',
+		'test_icons/test192-maskable.png',
+		'test_icons/test256.png',
+		'test_icons/test512.png',
+		'test_icons/test512-maskable.png',
+	],
+	*/
+
 	'extras' => [
 		'cms-search' => [],
 		'cms-icon' => [],
