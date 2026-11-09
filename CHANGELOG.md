@@ -79,6 +79,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Fix FileCollection.getFilteredTags for retrieving all tags filtered on a collection
 - File.getTags sorting and structure are now on par with FileCollection
 - Server-side search results are now sorted correctly by the match weight
+- Ensure extras use asset versioning string in lookup
 
 ### Security
 
