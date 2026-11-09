@@ -308,7 +308,8 @@ function cacheFirst(requestUrl, request) {
 			return response;
 		}).catch(error => {
 			// Network error, usually due to network connectivity issues
-			if (requestUrl.endsWith('.html')) {
+			if (requestUrl.endsWith('.html') || requestUrl.endsWith('.md')) {
+				console.log('[serviceworker] Failed to fetch, attempting offline.html');
 				// If the requested file is HTML, try to replace with the offline HTML snippet
 				return caches.match(config.layoutDirectory + 'offline.html').then((cached) => {
 					if (cached) {

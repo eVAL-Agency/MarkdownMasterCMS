@@ -15,7 +15,8 @@ import CMSError from './cmserror';
 import Log from './log';
 
 let layout_path = '',
-	system_container = null;
+	system_container = null,
+	loading_container = null;
 
 /**
  * Time (in ms) for the new content to fade in after content is swapped.
@@ -165,8 +166,8 @@ export async function renderLayout(layout, data) {
 				// The swap is complete; reveal the new content.
 				system_container.classList.remove('cms-fade-out');
 				system_container.classList.add('cms-fade-in');
-				if (data.config.loadingContainer) {
-					data.config.loadingContainer.classList.remove('show');
+				if (loading_container) {
+					loading_container.classList.remove('show');
 				}
 
 				setTimeout(() => {
@@ -182,8 +183,8 @@ export async function renderLayout(layout, data) {
 		system_container.classList.remove('cms-preload');
 		system_container.classList.remove('cms-fade-out');
 
-		if (data.config.loadingContainer) {
-			data.config.loadingContainer.classList.remove('show');
+		if (loading_container) {
+			loading_container.classList.remove('show');
 		}
 		throw e;
 	}
@@ -196,7 +197,14 @@ export async function renderLayout(layout, data) {
  * @returns {Promise}
  */
 export async function renderError(error) {
-	return renderLayout('error' + error.code, {});
+	try {
+		return await renderLayout('error' + error.code, {});
+	}
+	catch (e) {
+		// This is the last ditch effort; renderLayout should generate a pretty error message,
+		// but if that fails for some reason, at least do something.
+		system_container.innerHTML = error.message;
+	}
 }
 
 /**
@@ -215,4 +223,13 @@ export function setSystemLayoutPath(...args) {
  */
 export function setSystemContainer(container) {
 	system_container = container;
+}
+
+/**
+ * Set the loading container
+ *
+ * @param {HTMLElement} container
+ */
+export function setLoadingContainer(container) {
+	loading_container = container;
 }

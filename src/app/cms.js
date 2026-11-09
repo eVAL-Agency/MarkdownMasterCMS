@@ -15,6 +15,7 @@ import {
 	renderLayout,
 	setSystemLayoutPath,
 	setSystemContainer,
+	setLoadingContainer,
 	fetchLayout,
 	renderError
 } from './templater';
@@ -263,16 +264,18 @@ class CMS {
 			return;
 		}
 
-		// setup container
+		// setup containers
 		this.config.container = document.getElementById(this.config.elementId);
+		this.config.loadingContainer = document.getElementById('cms-loading');
 		if (!this.config.container) {
 			Log.Error('CMS.init', 'Element ID not found:', this.config.elementId);
 			return;
 		}
 
-		this.config.loadingContainer = document.getElementById('cms-loading');
-
 		setSystemContainer(this.config.container);
+		if (this.config.loadingContainer) {
+			setLoadingContainer(this.config.loadingContainer);
+		}
 
 		this.view.addEventListener('click', (e) => {
 			if (e.target && e.target.closest('a')) {
