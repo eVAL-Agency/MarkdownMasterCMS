@@ -179,8 +179,11 @@ export async function renderLayout(layout, data) {
 		// Restore the existing content's visibility if the swap failed;
 		// the caller (e.g. CMS.route) typically renders an error layout
 		// afterwards, which handles its own transition.
-		if (allowTransition) {
-			system_container.classList.remove('cms-fade-out');
+		system_container.classList.remove('cms-preload');
+		system_container.classList.remove('cms-fade-out');
+
+		if (data.config.loadingContainer) {
+			data.config.loadingContainer.classList.remove('show');
 		}
 		throw e;
 	}
