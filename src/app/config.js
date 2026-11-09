@@ -197,6 +197,20 @@ export class Config extends Object {
 		 */
 		this.serviceWorker = false;
 
+		/**
+		 * Container for rendering content in the CMS
+		 *
+		 * @type {null|HTMLElement}
+		 */
+		this.container = null;
+
+		/**
+		 * Container for loading hint in the CMS
+		 *
+		 * @type {null|HTMLElement}
+		 */
+		this.loadingContainer = null;
+
 		// Allow options to be passed in by default for convenience
 		if (options) {
 			this.load(options);

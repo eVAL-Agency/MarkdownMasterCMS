@@ -130,3 +130,14 @@ return [
 Icons are now supported natively when using the backend application.
 This means that if `config.php` or your theme `settings.php` contains `icons`,
 take note if they should either be removed or if the favicon should be removed from the HTML.
+
+## New Fade in/out
+
+New fade animation support is included in 6.0.0 for base content.
+To make use of this, add styles for `.cms-fade-in` and `.cms-fade-out`
+with appropriate animation styles in your custom CSS.
+
+This is not strictly required, but can be beneficial for general user experience.
+
+Refer to the [content fade documentation](https://markdownmaster.com/docs/content-fade-animation.html)
+for example styles to implement to support this new feature.

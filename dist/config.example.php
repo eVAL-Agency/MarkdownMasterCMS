@@ -45,6 +45,8 @@ return [
 	'version' => '1',
 
 	// Set to True to enable the service worker and PWA
+	// IMPORTANT - when actively developing this site, it is recommended to set this to false
+	// because otherwise the service worker will heavily cache assets.
 	'serviceWorker' => false,
 
 	// Web App Manifest (PWA) settings.

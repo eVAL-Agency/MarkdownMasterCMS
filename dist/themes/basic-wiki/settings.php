@@ -25,5 +25,14 @@ return [
 		'icons/icon-maskable-512.png',
 	],
 
-	'extras' => [],
+	'extras' => [
+		'cms-search' => [],
+		'cms-icon' => [],
+		'cms-toc' => [],
+		'cms-pagelist' => [],
+		'prismjs' => [
+			'lineNumbers' => true,
+		],
+		'cms-theme-selector' => [],
+	],
 ];

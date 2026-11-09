@@ -40,6 +40,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Icon support in configuration system, provides support for PWA and favicon
 - New Event system to replace Hooks
 - Client-side dynamic titles for listing pages
+- New content fade animations to minimize content flickering
 
 ### Changes
 
@@ -68,6 +69,7 @@ description: List of changes to the MarkdownMaster CMS application and archived 
 - Rename FileCollection.page to FileCollection.currentPage **breaking change**
 - Overhaul File attribute searching to better support more complex filtering
 - JSONView supports defining the content type, useful for custom JSON feeds
+- Change recommended load mechanism to handle error and load events of the application
 
 ### Fixes
 

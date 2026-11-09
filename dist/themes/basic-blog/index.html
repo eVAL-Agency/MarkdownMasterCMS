@@ -98,9 +98,10 @@
 </header>
 
 <div>
-	<noscript>Please enable JavaScript to view this site.</noscript>
 	<!-- CMS -->
 	<div id="cms"></div>
+
+	<div id="cms-loading"><span>↻</span></div>
 </div>
 
 <footer>
@@ -138,27 +139,49 @@
 <!-- BEGIN: Body footer scripts -->
 
 <!-- CMS.js -->
-<script src="{{webpath}}app/cms.min.js"></script>
+<script>
+	(function() {
+		// Immediately mark the static content as "preloaded" to minimize content flicker
+		document.getElementById('cms').classList.add('cms-preload');
+		document.getElementById('cms-loading').classList.add('show');
+
+		var u="{{webpath}}app/cms.min.js?v={{version}}",
+			s=document.createElement('script');
+		s.async=true;
+		s.src=u;
+		s.onload = () => {
+			// Setup config from server
+			CMS.load({{config}});
+
+			// Setup all page types supported by this theme
+			CMS.config.addTypes({{types}});
+
+			CMS.config.getTypeLayout('posts').titleResolver = collection => {
+				if (collection.hasFilterTag('cats')) {
+					return 'Cats';
+				}
+				else if (collection.hasFilterTag('turtles')) {
+					return 'Turtles';
+				}
+				else {
+					return 'Posts';
+				}
+			};
+
+			// Inform the CMS that the configuration is ready.
+			CMS.init();
+		};
+		s.onerror = () => {
+			document.getElementById('cms').classList.remove('cms-preload');
+			document.getElementById('cms-loading').classList.remove('show');
+		}
+		document.body.appendChild(s);
+	})();
+</script>
+
 
 <!-- Defaults from theme/server (only available when running in server+client mode) -->
 <script>
-	// Setup config from server
-	CMS.load({{config}});
-
-	// Setup all page types supported by this theme
-	CMS.config.addTypes({{types}});
-
-	CMS.config.getTypeLayout('posts').titleResolver = collection => {
-		if (collection.hasFilterTag('cats')) {
-			return 'Cats';
-		}
-		else if (collection.hasFilterTag('turtles')) {
-			return 'Turtles';
-		}
-		else {
-			return 'Posts';
-		}
-	};
 
 	/**
 	 * Called immediately upon successful initialization of the CMS
@@ -183,13 +206,7 @@
 	document.addEventListener('cms:route', event => {
 		// Add any code required to run after a page has loaded here
 	});
-
-	// Inform the CMS that the configuration is ready.
-	CMS.init();
 </script>
-
-<!-- Config (only necessary when in client-only mode) -->
-<!-- <script src="{{webpath}}config.js"></script> -->
 
 <script>
 	(() => {

@@ -266,6 +266,8 @@ class CMS {
 			return;
 		}
 
+		this.config.loadingContainer = document.getElementById('cms-loading');
+
 		setSystemContainer(this.config.container);
 
 		this.view.addEventListener('click', (e) => {
@@ -445,6 +447,14 @@ class CMS {
 		// Unload the current page prior to doing anything
 		if (this.currentPage && this.currentPage.onUnload) {
 			this.currentPage.onUnload();
+		}
+
+		// Mark the page as being unloaded, this allows styles to tap into the UI.
+		if (this.config.container) {
+			this.config.container.classList.add('cms-fade-out');
+		}
+		if (this.config.loadingContainer) {
+			this.config.loadingContainer.classList.add('show');
 		}
 
 		this.currentPagePath = window.location.pathname;
