@@ -30,6 +30,18 @@ namespace MarkdownMaster;
 
 use Exception;
 
+function recursiveArrayMerge(array $base, array $overrides): array {
+	foreach ($overrides as $key => $value) {
+		if (isset($base[$key]) && is_array($base[$key]) && is_array($value)) {
+			$base[$key] = recursiveArrayMerge($base[$key], $value);
+		} else {
+			$base[$key] = $value;
+		}
+	}
+
+	return $base;
+}
+
 class Config {
 	private static ?array $_config = null;
 
@@ -160,7 +172,7 @@ class Config {
 						);
 					}
 				}
-				$config = array_merge_recursive($themeConfig, $config);
+				$config = recursiveArrayMerge($themeConfig, $config);
 			}
 		}
 

@@ -26,7 +26,7 @@ events to allow CSS to provide clean animations between the application states.
  * as an intentional transition rather than a flash.
  */
 .cms-preload {
-  display: none;
+  opacity: 0;
 }
 
 .cms-fade-out {
