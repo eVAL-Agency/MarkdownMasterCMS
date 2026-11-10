@@ -25,7 +25,7 @@ class SwConfigController extends Controller {
 		];
 
 		// Common errors
-		$errorFiles = ['offline.html', 'error404.html', 'error500.html'];
+		$errorFiles = ['offline.html', 'error404.html', 'error500.html', 'error503.html'];
 		foreach ($errorFiles as $file) {
 			if (file_exists($layoutsPhysical . $file)) {
 				$offlineFiles[] = $layoutsWeb . $file;
